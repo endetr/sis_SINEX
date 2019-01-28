@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION snx.ft_ucsbequipo_reset(
 AS $BODY$
 
 BEGIN
-	TRUNCATE TABLE snx.tucsbequipo;
+	TRUNCATE TABLE snx.tucsbequipo RESTART IDENTITY;
 
 	--Cantidades de clase de aislación
 	INSERT INTO snx.tucsbequipo (id_unidadconstructivasb, id_equipo, cantidadequ, id_usuario_reg, fecha_reg, estado_reg)

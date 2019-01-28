@@ -21,7 +21,7 @@ Begin
 		FETCH cur_ucsb into rec_ucsb;
 		EXIT WHEN NOT FOUND;
 		
-		PERFORM snx.calcularprecioucsbsingle(rec_ucsb.id_unidadconstructivasb,1);		
+		PERFORM snx.calcularprecioucsbsingle(rec_ucsb.id_unidadconstructivasb,1,1);		
 	END LOOP;
 	
 	CLOSE cur_ucsb;
