@@ -298,10 +298,13 @@ Phx.vista.Unidadconstructivamo=Ext.extend(Phx.gridInterfaz,{
 		},
 		
 		resetcant : function() {
+			
+			var r = confirm("Esta seguro que desea resetear las cantidades?");
 			var rec = this.sm.getSelected();
 			var data = rec.data;
 			
-			if (data) {
+			if (r == true) {
+				if (data) {
 				Phx.CP.loadingShow();
 				
 				Ext.Ajax.request({
@@ -317,7 +320,9 @@ Phx.vista.Unidadconstructivamo=Ext.extend(Phx.gridInterfaz,{
 						timeout : this.timeout,
 						scope : this
 					});
-			}
+				}
+			}			
+			
 		 }	
 	}
 )

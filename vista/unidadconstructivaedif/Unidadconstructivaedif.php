@@ -299,25 +299,28 @@ Phx.vista.Unidadconstructivaedif=Ext.extend(Phx.gridInterfaz,{
 		},
 		
 	resetcant : function() {
+		var r = confirm("Esta seguro que desea resetear las cantidades?");		
 		var rec = this.sm.getSelected();
 		var data = rec.data;
 		
-		if (data) {
-		Phx.CP.loadingShow();
-		
-		Ext.Ajax.request({
-			url : '../../sis_SINEX/control/Unidadconstructivaedif/resetCantOBC',
-			params : {
-				'id_unidadconstructivaedif' : data.id_unidadconstructivaedif
-			},
-			success : function(data) {
-				this.load({params:{start:0, limit:50}})
-				this.successExport();		
-			    },
-				failure : this.conexionFailure,
-				timeout : this.timeout,
-				scope : this
-			});
+		if (r == true) {
+			if (data) {
+			Phx.CP.loadingShow();
+			
+			Ext.Ajax.request({
+				url : '../../sis_SINEX/control/Unidadconstructivaedif/resetCantOBC',
+				params : {
+					'id_unidadconstructivaedif' : data.id_unidadconstructivaedif
+				},
+				success : function(data) {
+					this.load({params:{start:0, limit:50}})
+					this.successExport();		
+				    },
+					failure : this.conexionFailure,
+					timeout : this.timeout,
+					scope : this
+				});
+			}
 		}
 	 }	
 	}
