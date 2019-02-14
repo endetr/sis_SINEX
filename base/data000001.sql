@@ -1,4 +1,4 @@
-/***********************************I-SCP-JYP-CMS-1-04/02/2019****************************************/
+/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
 --Cantidades Tabla Temporal
 TRUNCATE TABLE snx.tucsbequipotemp RESTART IDENTITY;
 INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb, id_equipo, cantidadequ) VALUES (1, 1035, 3);
@@ -5095,16 +5095,20 @@ SELECT snx.calcularprecioucsb();
 
 
 /***********************************I-SCP-JYP-CMS-1-07/02/2019****************************************/
---Eliminación de opciones de menú de prueba
+--EliminaciÃ³n de opciones de menÃº de prueba
 DELETE FROM segu.tprocedimiento_gui WHERE id_gui IN (283,284,285,286,287,288,289,290,291,299,300,306,307,311,312,313,315,316);
 DELETE FROM segu.testructura_gui WHERE id_gui IN (283,284,285,286,287,288,289,290,291,299,300,306,307,311,312,313,315,316);
 DELETE FROM segu.tgui_rol WHERE id_gui IN (283,284,285,286,287,288,289,290,291,299,300,306,307,311,312,313,315,316);
 DELETE FROM segu.tgui WHERE id_gui IN (287,288,289,290,291,299,300,306,311,312,313,315,316);
 DELETE FROM segu.tgui WHERE id_gui IN (283,284,285,286,307);
 
---Eliminación de tablas y bases de datos de prueba
+--EliminaciÃ³n de tablas y bases de datos de prueba
 DROP SCHEMA pr CASCADE;
 DROP SCHEMA pr2 CASCADE;
 DROP SCHEMA ti01 CASCADE;
 DROP SCHEMA ti02 CASCADE;
-/***********************************I-SCP-JYP-CMS-1-07/02/2019****************************************/
+/***********************************F-SCP-JYP-CMS-1-07/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-13/02/2019****************************************/
+DROP FUNCTION snx.obtenertrm(integer, integer);
+/***********************************F-SCP-JYP-CMS-1-13/02/2019****************************************/

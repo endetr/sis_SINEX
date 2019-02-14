@@ -2,7 +2,7 @@
 
 -- DROP FUNCTION snx.ft_actualizarucsbobracivil();
 
-CREATE FUNCTION snx.ft_actualizarucsbobracivil()
+CREATE OR REPLACE FUNCTION snx.ft_actualizarucsbobracivil()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100

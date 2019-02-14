@@ -49,8 +49,7 @@ BEGIN
 												   tmatecan.id_tensionservicio = uclt.id_tensionservicio AND
 												   ((((tmatecan.id_hilosguarda = uclt.id_hilosguarda AND uclt.id_hilosguarda <> 4) OR (tmatecan.id_hilosguarda = 3 AND uclt.id_hilosguarda = 4)) AND 
 												   uclt.id_unidadconstructivalt <> 8) OR (uclt.id_unidadconstructivalt = 8)) AND 
-												   ((tmatecan.id_configuracionlt = uclt.id_configuracionlt AND uclt.id_unidadconstructivalt NOT IN (9,18)) OR
-												   (tmatecan.id_configuracionlt = 1 AND uclt.id_unidadconstructivalt IN (9,18))) AND
+												   tmatecan.id_configuracionlt = uclt.id_configuracionlt AND
 												   tmatecan.id_tipoestructura = uclt.id_tipoestructura
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND tmatecan.cantidadmontajelt > 0 AND tmatecan.id_tipolinea <> 3
 	GROUP BY	uclt.id_unidadconstructivalt, tmatecan.id_funcionestructura, tmatecan.id_puestatierra, tmatecan.id_aislador, tmate.id_ambitoprecio, tmate.id_materiallt, tmatecan.id_extralt;

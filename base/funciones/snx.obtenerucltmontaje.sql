@@ -26,9 +26,7 @@ BEGIN
 				FROM		snx.tmontajelt tmate
 				INNER JOIN	snx.tmontajecantidadlt tmatecan ON tmate.id_montajelt = tmatecan.id_montajelt
 				INNER JOIN	snx.tunidadconstructivalt uclt ON tmatecan.id_tensionservicio = uclt.id_tensionservicio AND tmatecan.id_tipoestructura = uclt.id_tipoestructura AND 
-															   ((tmatecan.id_configuracionlt = uclt.id_configuracionlt AND uclt.id_unidadconstructivalt NOT IN (9,18)) OR
-												   			   (tmatecan.id_configuracionlt = 1 AND uclt.id_unidadconstructivalt IN (9,18))) AND 
-															   tmatecan.id_tipolinea = uclt.id_tipolinea
+															   tmatecan.id_configuracionlt = uclt.id_configuracionlt AND tmatecan.id_tipolinea = uclt.id_tipolinea
 				WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND tmatecan.cantidadmontajelt > 0
 				GROUP BY 	uclt.id_unidadconstructivalt, tmatecan.id_funcionestructura;
 	
