@@ -12,8 +12,7 @@ Proyecto creado por Colombianos
   * Se agrega cuadro de dialogo de confirmación sobre los botones de reseteo de cantidades.
   * Se realizan ajustes sobre los archivos de la carpeta base del proyecto.
 * Versión 1.0.2.1 - 2019-02-08
-  * Se agrega script en data000001.sql para los proyectos de prueba no relacionados con sis_SINEX.
-  *
+  * Se agrega script en data000001.sql para los proyectos de prueba no relacionados con sis_SINEX.  
 * Versión 1.0.2.0 - 2019-01-28
  * Se realizo cambio sobre funciones relacionadas con el reseteo de las cantidades de equipos.
 * Versión 1.0.1.0 - 2019-01-22
