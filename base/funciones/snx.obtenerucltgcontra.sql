@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION snx.obtenerucltgcontra(
     ROWS 1000
 AS $BODY$
 
+
 DECLARE
 	calcvanoprom numeric:= 1;
 	
@@ -104,12 +105,9 @@ BEGIN
 				CAST('Topografía' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
 				uclt.longitud AS costobase,
-				CASE 
-					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)														 
-					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
-					WHEN uclt.id_tipolinea = 1 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 5)
-					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 15 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
-					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 16 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 35))
+				CASE
+					WHEN uclt.id_unidadconstructivalt IN (9,18) AND uclt.longitud < 1 THEN 1
+					ELSE uclt.longitud
 				END AS cantidaditem,
 				CASE
 					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
@@ -149,8 +147,9 @@ BEGIN
 				8 AS id_descripcion,
 				CAST('Limpieza y Roce' AS character varying) AS descripcion,
 				CAST('HA' AS character varying) AS unidad,
-				CASE uclt.id_tipolinea
-					WHEN 2 THEN uclt.longitud * 3 * 0.1
+				CASE 
+					WHEN uclt.id_unidadconstructivalt = 8 THEN 0
+					WHEN uclt.id_tipolinea = 2 THEN uclt.longitud * 3 * 0.1
 					ELSE uclt.longitud * 0.1 * ceil(10 + (power((uclt.longitud*1000/calcvanoprom),2)*(tcondumate.peso)/(8*0.2*tcondumate.cargarotura)) + 5 + (0.02*ttempts.numtensionserv)) 
 				END AS costobase,
 				((uclt.porcvegetamaleza*(SELECT costoroce FROM snx.tvegetacion WHERE id_vegetacion = 1))+(uclt.porcvegetamatorral*(SELECT costoroce FROM snx.tvegetacion WHERE id_vegetacion = 2))+(uclt.porcvegetaforestacion*(SELECT costoroce FROM snx.tvegetacion WHERE id_vegetacion = 3))+(uclt.porcvegetabosque*(SELECT costoroce FROM snx.tvegetacion WHERE id_vegetacion = 4)))/100 AS cantidaditem,
@@ -183,6 +182,7 @@ BEGIN
 	SELECT * FROM ttempgcontra;																											 
 																											 
 end;
+
 
 $BODY$;
 

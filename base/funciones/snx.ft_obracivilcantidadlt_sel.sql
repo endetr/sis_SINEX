@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_obracivilcantidadlt_sel(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SINEX
  FUNCION: 		snx.ft_obracivilcantidadlt_sel
@@ -78,7 +79,11 @@ BEGIN
 						funes.funcionestructura,
 						terr.terrenolt as desc_terreno,
 						tcim.tipocimentacion,
-						tcan.tipocanalizacion
+						tcan.tipocanalizacion,
+						occlt.id_bancoductos,
+						tband.bancoductos,
+						occlt.id_cajaempalme,
+						tcajae.cajaempalme
 						from snx.tobracivilcantidadlt occlt
 						inner join segu.tusuario usu1 on usu1.id_usuario = occlt.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = occlt.id_usuario_mod
@@ -90,6 +95,8 @@ BEGIN
 						inner join snx.tterrenolt terr on occlt.id_terreno = terr.id_terrenolt
 						inner join snx.ttipocimentacion tcim on occlt.id_tipocimentacion = tcim.id_tipocimentacion
 						inner join snx.ttipocanalizacion tcan on occlt.id_tipocanalizacion = tcan.id_tipocanalizacion
+						inner join snx.tbancoductos tband on occlt.id_bancoductos = tband.id_bancoductos
+						inner join snx.tcajaempalme tcajae on occlt.id_cajaempalme = tcajae.id_cajaempalme
 				        where  ';
 			
 			--Definicion de la respuesta
@@ -141,6 +148,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
+
 
 $BODY$;
 

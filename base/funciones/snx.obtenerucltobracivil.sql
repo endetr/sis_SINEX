@@ -12,11 +12,18 @@ CREATE OR REPLACE FUNCTION snx.obtenerucltobracivil(
     ROWS 1000
 AS $BODY$
 
+
 DECLARE
 	factoroc INTEGER := 0;
-	factorgrida NUMERIC := 1;
-	factorzapata NUMERIC := 1;
-	factorpilote NUMERIC := 1;
+	factorgridafirme NUMERIC := 1;
+	factorzapatafirme NUMERIC := 1;
+	factorpilotefirme NUMERIC := 1;
+	factorgridainter NUMERIC := 1;
+	factorzapatainter NUMERIC := 1;
+	factorpiloteinter NUMERIC := 1;
+	factorgridablando NUMERIC := 1;
+	factorzapatablando NUMERIC := 1;
+	factorpiloteblando NUMERIC := 1;
 	factorgridasumer NUMERIC := 1;
 	factorzapatasumer NUMERIC := 1;
 	factorpilotesumer NUMERIC := 1;
@@ -29,17 +36,51 @@ BEGIN
 	
 	factoroc := (SELECT uclt.factoroc FROM snx.tunidadconstructivalt uclt WHERE uclt.id_unidadconstructivalt = id_unidadconstructivaltint);
 	
-	IF factoroc = 1 THEN
-		factorgrida := 0.5;
-		factorzapata := 0.4;
-		factorpilote := 0.1;
+	IF id_unidadconstructivaltint = 1 OR id_unidadconstructivaltint = 5 OR id_unidadconstructivaltint = 9 THEN
+		factorgridafirme := 0.8;
+		factorzapatafirme := 0.2;
+		factorpilotefirme := 0.0;
+		
+		factorgridainter := 0.4;
+		factorzapatainter := 0.6;
+		factorpiloteinter := 0.0;
+		
+		factorgridablando := 0.0;
+		factorzapatablando := 0.4;
+		factorpiloteblando := 0.6;
+		
+		factorgridasumer := 0.0;
+		factorzapatasumer := 0.1;
+		factorpilotesumer := 0.9;
+	ELSEIF factoroc = 1 AND id_unidadconstructivaltint <> 10 THEN
+		factorgridafirme := 0.5;
+		factorzapatafirme := 0.4;
+		factorpilotefirme := 0.1;
+		
+		factorgridainter := 0.5;
+		factorzapatainter := 0.4;
+		factorpiloteinter := 0.1;
+		
+		factorgridablando := 0.5;
+		factorzapatablando := 0.4;
+		factorpiloteblando := 0.1;
+		
 		factorgridasumer := 0;
 		factorzapatasumer := 0.9;
 		factorpilotesumer := 0.1;
-	ELSEIF factoroc = 2 THEN
-		factorgrida := 0;
-		factorzapata := 0;
-		factorpilote := 1;
+	ELSEIF factoroc = 2 AND id_unidadconstructivaltint <> 10 THEN
+		factorgridafirme := 0;
+		factorzapatafirme := 0;
+		factorpilotefirme := 1;
+		
+		factorgridainter := 0;
+		factorzapatainter := 0;
+		factorpiloteinter := 1;
+		
+		factorgridablando := 0;
+		factorzapatablando := 0;
+		factorpiloteblando := 1;
+		
 		factorgridasumer := 0;
 		factorzapatasumer := 0;
 		factorpilotesumer := 0;
@@ -51,24 +92,24 @@ BEGIN
 				fest.funcionestructura,
 				tcim.tipocimentacion,	
 				CASE
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgrida * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapata * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpilote * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgrida * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapata * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpilote * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem				
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgrida * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapata * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpilote * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgrida * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapata * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpilote * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem				
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgrida * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapata * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpilote * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgrida * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapata * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem
-					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpilote * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem				
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgridafirme * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapatafirme * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpilotefirme * uclt.porcmterrenofirme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgridafirme * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapatafirme * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 7 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpilotefirme * uclt.porcmterrenofirme / 100 * ucltmate2.cantidaditem				
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgridainter * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapatainter * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpiloteinter * uclt.porcmterrenointerme / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgridainter * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapatainter * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 8 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpiloteinter * uclt.porcmterrenointerme / 100 * ucltmate2.cantidaditem				
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgridablando * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapatablando * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpiloteblando * uclt.porcmterrenoterrenoblando / 100 * ucltmate1.cantidaditem
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorgridablando * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorzapatablando * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem
+					WHEN terr.id_terrenolt = 9 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 2 AND ucltmate2.id_item = 13 THEN factorpiloteblando * uclt.porcmterrenoterrenoblando / 100 * ucltmate2.cantidaditem				
 					WHEN terr.id_terrenolt = 10 AND tcim.id_tipocimentacion = 2 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorgridasumer * uclt.porcmterrenosumer / 100 * ucltmate1.cantidaditem
 					WHEN terr.id_terrenolt = 10 AND tcim.id_tipocimentacion = 3 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorzapatasumer * uclt.porcmterrenosumer / 100 * ucltmate1.cantidaditem
 					WHEN terr.id_terrenolt = 10 AND tcim.id_tipocimentacion = 4 AND fest.id_funcionestructura = 3 AND ucltmate1.id_item = 10 THEN factorpilotesumer * uclt.porcmterrenosumer / 100 * ucltmate1.cantidaditem
@@ -172,6 +213,7 @@ BEGIN
 	SELECT * FROM ttemppbracivil;																											 
 																											 
 end;
+
 
 $BODY$;
 

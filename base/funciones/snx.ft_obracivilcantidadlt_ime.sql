@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_obracivilcantidadlt_ime(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SINEX
  FUNCION: 		snx.ft_obracivilcantidadlt_ime
@@ -70,7 +71,9 @@ BEGIN
 			id_usuario_reg,
 			id_usuario_ai,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+			id_bancoductos,
+			id_cajaempalme
           	) values(
 			'activo',
 			v_parametros.id_configuracionlt,
@@ -88,8 +91,9 @@ BEGIN
 			p_id_usuario,
 			v_parametros._id_usuario_ai,
 			null,
-			null
-							
+			null,
+			v_parametros.id_bancoductos,
+			v_parametros.id_cajaempalme				
 			
 			
 			)RETURNING id_obracivilcantidadlt into v_id_obracivilcantidadlt;
@@ -128,7 +132,9 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
+			usuario_ai = v_parametros._nombre_usuario_ai,
+			id_bancoductos = v_parametros.id_bancoductos,
+			id_cajaempalme = v_parametros.id_cajaempalme
 			where id_obracivilcantidadlt=v_parametros.id_obracivilcantidadlt;
                
 			--Definicion de la respuesta
@@ -179,6 +185,7 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
+
 
 $BODY$;
 

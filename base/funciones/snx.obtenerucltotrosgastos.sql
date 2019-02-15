@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION snx.obtenerucltotrosgastos(
     ROWS 1000
 AS $BODY$
 
+
 BEGIN
 	DROP TABLE if exists ttempotrosgastos;
 	DROP TABLE if exists ttempauxeqmaq;	
@@ -38,8 +39,9 @@ BEGIN
 				1 AS id_descripcion,
 				CAST('Ingeniería' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				CASE uclt.id_unidadconstructivalt
-					WHEN 16 THEN 1
+				CASE 
+					WHEN uclt.id_unidadconstructivalt = 16 THEN 1
+					WHEN uclt.id_unidadconstructivalt IN (9,18) AND uclt.longitud < 1 THEN 1
 					ELSE uclt.longitud 
 				END AS costobase,
 				CASE
@@ -387,6 +389,7 @@ BEGIN
 	SELECT * FROM ttempotrosgastos;																											 
 																											 
 end;
+
 
 $BODY$;
 

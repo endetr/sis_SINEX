@@ -8603,3 +8603,52 @@ ALTER TABLE ONLY snx.tunidadconstructivaseraux
 
 
 /***********************************F-SCP-JYP-CMS-1-18/01/2019****************************************/
+
+
+/***********************************I-SCP-JYP-CMS-1-15/02/2019****************************************/
+--Se crean las tablas
+CREATE TABLE snx.tbancoductos
+(
+    id_bancoductos serial NOT NULL PRIMARY KEY,
+    bancoductos character varying(100)
+)
+INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+CREATE TABLE snx.tcajaempalme
+(   
+    id_cajaempalme serial NOT NULL PRIMARY KEY,
+    cajaempalme character varying(100)
+)
+INHERITS (pxp.tbase)
+WITHOUT OIDS;	
+	
+--Se llenan con sus valores
+insert into snx.tbancoductos (bancoductos, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('No Aplica', 'activo', null, 1, now(), null, null, null);
+insert into snx.tbancoductos (bancoductos, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Banco de ductos  0,8 m', 'activo', null, 1, now(), null, null, null);
+insert into snx.tbancoductos (bancoductos, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Banco de ductos  1,1 m', 'activo', null, 1, now(), null, null, null);
+insert into snx.tbancoductos (bancoductos, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Banco de ductos  0,5 m', 'activo', null, 1, now(), null, null, null);
+
+insert into snx.tcajaempalme (cajaempalme, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('No Aplica', 'activo', null, 1, now(), null, null, null);
+insert into snx.tcajaempalme (cajaempalme, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Caja de empalme 1,02 m', 'activo', null, 1, now(), null, null, null);
+insert into snx.tcajaempalme (cajaempalme, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Caja de empalme 1,22 m', 'activo', null, 1, now(), null, null, null);
+insert into snx.tcajaempalme (cajaempalme, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Caja de empalme 0,72 m', 'activo', null, 1, now(), null, null, null);
+insert into snx.tcajaempalme (cajaempalme, estado_reg, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, fecha_mod, id_usuario_mod) values ('Caja de empalme 1,32 m', 'activo', null, 1, now(), null, null, null);	
+
+--Se crean columnas y se inician valores
+ALTER TABLE snx.tobracivilcantidadlt
+ADD COLUMN id_bancoductos INTEGER,
+ADD COLUMN id_cajaempalme INTEGER;
+
+UPDATE	snx.tobracivilcantidadlt
+SET		id_bancoductos=1, id_cajaempalme=1;
+
+--Se crea relación
+ALTER TABLE snx.tobracivilcantidadlt
+ADD CONSTRAINT fk_id_bancoductos FOREIGN KEY (id_bancoductos) REFERENCES snx.tbancoductos(id_bancoductos);
+
+ALTER TABLE snx.tobracivilcantidadlt
+ADD CONSTRAINT fk_id_cajaempalme FOREIGN KEY (id_cajaempalme) REFERENCES snx.tcajaempalme(id_cajaempalme);
+
+	
+/***********************************F-SCP-JYP-CMS-1-15/02/2019****************************************/

@@ -1165,7 +1165,7 @@ Phx.vista.Unidadconstructivalt=Ext.extend(Phx.gridInterfaz,{
 		
 	],
 	sortInfo:{
-		field: 'id_unidadconstructivalt',
+		field: 'codigo',
 		direction: 'ASC'
 	},
 	bdel:true,

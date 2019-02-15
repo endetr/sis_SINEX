@@ -48,6 +48,10 @@ class MODObracivilcantidadlt extends MODbase{
 		$this->captura('desc_terreno','varchar');
 		$this->captura('tipocimentacion','varchar');
 		$this->captura('tipocanalizacion','varchar');
+		$this->captura('id_bancoductos','int4');
+		$this->captura('bancoductos','varchar');
+		$this->captura('id_cajaempalme','int4');
+		$this->captura('cajaempalme','varchar');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -75,6 +79,8 @@ class MODObracivilcantidadlt extends MODbase{
 		$this->setParametro('id_obracivillt','id_obracivillt','int4');
 		$this->setParametro('id_funcionestructura','id_funcionestructura','int4');
 		$this->setParametro('id_tipocimentacion','id_tipocimentacion','int4');
+		$this->setParametro('id_bancoductos','id_bancoductos','int4');
+		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -103,6 +109,8 @@ class MODObracivilcantidadlt extends MODbase{
 		$this->setParametro('id_obracivillt','id_obracivillt','int4');
 		$this->setParametro('id_funcionestructura','id_funcionestructura','int4');
 		$this->setParametro('id_tipocimentacion','id_tipocimentacion','int4');
+		$this->setParametro('id_bancoductos','id_bancoductos','int4');
+		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
 
 		//Ejecuta la instruccion
 		$this->armarConsulta();

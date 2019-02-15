@@ -5112,3 +5112,39 @@ DROP SCHEMA ti02 CASCADE;
 /***********************************I-SCP-JYP-CMS-1-13/02/2019****************************************/
 DROP FUNCTION snx.obtenertrm(integer, integer);
 /***********************************F-SCP-JYP-CMS-1-13/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-16/02/2019****************************************/
+
+--Opciones en el menú
+insert into  segu.tgui
+(
+	codigo_gui, nombre, descripcion, visible, orden_logico, ruta_archivo, nivel, icono,
+	id_subsistema, clase_vista, parametros, sw_mobile, codigo_mobile, orden_mobile
+)
+values
+(
+	'BDDT', 'Bancos de Ductos', 'Bancos de Ductos', 'si', 23,
+	'sis_SINEX/vista/bancoductos/Bancoductos.php', 4, '', 10,
+	'Bancoductos', '', 'no', '', 24
+);
+insert into  segu.tgui
+(
+	codigo_gui, nombre, descripcion, visible, orden_logico, ruta_archivo, nivel, icono,
+	id_subsistema, clase_vista, parametros, sw_mobile, codigo_mobile, orden_mobile
+)
+values
+(
+	'CDEM', 'Cajas de Empalme', 'Cajas de Empalme', 'si', 24,
+	'sis_SINEX/vista/cajaempalme/Cajaempalme.php', 4, '', 10,
+	'Cajaempalme', '', 'no', '', 25
+);
+
+INSERT INTO segu.testructura_gui (id_gui, fk_id_gui, fecha_reg, estado_reg)
+SELECT	id_gui,
+		342 AS fk_id_gui,
+		now() AS fecha_reg,
+		'activo' estado_reg
+FROM 	segu.tgui 
+WHERE 	nombre IN ('Bancos de Ductos','Cajas de Empalme')
+
+/***********************************F-SCP-JYP-CMS-1-16/02/2019****************************************/

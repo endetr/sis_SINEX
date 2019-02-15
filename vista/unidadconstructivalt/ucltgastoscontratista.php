@@ -40,7 +40,7 @@ Phx.vista.ucltgastoscontratista=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Descripción',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 250,
 				maxLength:50
 			},
 				type:'TextField',
