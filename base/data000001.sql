@@ -5145,6 +5145,6 @@ SELECT	id_gui,
 		now() AS fecha_reg,
 		'activo' estado_reg
 FROM 	segu.tgui 
-WHERE 	nombre IN ('Bancos de Ductos','Cajas de Empalme')
+WHERE 	nombre IN ('Bancos de Ductos','Cajas de Empalme');
 
 /***********************************F-SCP-JYP-CMS-1-16/02/2019****************************************/
