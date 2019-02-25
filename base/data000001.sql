@@ -5148,3 +5148,15 @@ FROM 	segu.tgui
 WHERE 	nombre IN ('Bancos de Ductos','Cajas de Empalme');
 
 /***********************************F-SCP-JYP-CMS-1-16/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-25/02/2019****************************************/
+update 	snx.ttarifassb
+set 	valortarifa = 6.69
+where 	id_tarifasb = 14;
+
+update 	snx.tindiceslt
+set 	valorindice = 6.87
+where 	id_indicelt = 10;
+
+
+/***********************************F-SCP-JYP-CMS-1-25/02/2019****************************************/

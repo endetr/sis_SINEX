@@ -2,6 +2,9 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.1.1.0 - 2019-02-25
+  * Se aumenta precisión decimal en el peso y cantidades de los materiales de líneas.
+  * Se cambia los iconos de los botones de reseteo de cantidades.
 * Versión 1.1.0.0 - 2019-02-15
   * Se crean las tablas de Banco de Ductos y Cajas de Empalme.
   * Se relacionan las tablas nuevas con las cantidades de obras civiles para líneas.

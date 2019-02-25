@@ -27,7 +27,7 @@ Phx.vista.Unidadconstructivamo=Ext.extend(Phx.gridInterfaz,{
 		});
 		this.addButton('resetcant', {
 			text : 'Reset Cantidades',
-			iconCls : 'bact',
+			iconCls : 'banular',
 			disabled : false,
 			handler : this.resetcant,
 			tooltip : '<b>Reset Cantidades</b>'

@@ -339,7 +339,8 @@ Phx.vista.Materialcantidadlt=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
-				maxLength:1179650
+				maxLength:1179650,
+				decimalPrecision: 5,
 			},
 				type:'NumberField',
 				filters:{pfiltro:'mtclt.cantidadmontajelt',type:'numeric'},

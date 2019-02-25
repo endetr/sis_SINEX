@@ -28,7 +28,7 @@ Phx.vista.Unidadconstructivasb=Ext.extend(Phx.gridInterfaz,{
 		
 		this.addButton('resetcant', {
 			text : 'Reset Equipos',
-			iconCls : 'bact',
+			iconCls : 'banular',
 			disabled : false,
 			handler : this.resetcant,
 			tooltip : '<b>Reset Equipos</b>'
