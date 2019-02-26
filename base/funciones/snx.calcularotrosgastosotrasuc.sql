@@ -1,20 +1,7 @@
--- FUNCTION: snx.calcularotrosgastosotrasuc(integer, integer, numeric, integer, integer, numeric)
-
--- DROP FUNCTION snx.calcularotrosgastosotrasuc(integer, integer, numeric, integer, integer, numeric);
-
-CREATE OR REPLACE FUNCTION snx.calcularotrosgastosotrasuc(
-	id_otraucint integer,
-	numerobahiasint integer,
-	valorucint numeric,
-	intorigen integer DEFAULT 0,
-	id_revistaint integer DEFAULT 1,
-	distanciatrans numeric DEFAULT 36)
-    RETURNS TABLE(id_item integer, id_otrauc integer, otrosgastos character varying, cantidadog numeric, valorunitario numeric, valorog numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.calcularotrosgastosotrasuc(id_otraucint integer, numerobahiasint integer, valorucint numeric, intorigen integer DEFAULT 0, id_revistaint integer DEFAULT 1, distanciatrans numeric DEFAULT 36)
+ RETURNS TABLE(id_item integer, id_otrauc integer, otrosgastos character varying, cantidadog numeric, valorunitario numeric, valorog numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 DECLARE 
 	valortransporte numeric := 0;
@@ -28,7 +15,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'PRUEBAS DE EQUIPOS EN FÁBRICA'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=4 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=4 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				coalesce((SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 10),0) AS valorunitario,
@@ -39,8 +26,14 @@ BEGIN
 	SELECT		2 AS id_item,
 				id_otraucint AS id_otrauc,
 				'INSTALACIÓN DE FAENAS Y MOVILIZACIÓN DEL PERSONAL'::varchar AS otrosgastos,
-				valorucint AS cantidadog,								
-				(SELECT porceidfaenas FROM snx.ttarifaingsb WHERE numerobahias = numerobahiasint) AS valorunitario,
+				case
+					when intOrigen=9 then 0.0
+					else valorucint
+				end AS cantidadog,	
+				case
+					when intOrigen=9 then 0.0
+					else (SELECT porceidfaenas FROM snx.ttarifaingsb WHERE numerobahias = numerobahiasint) 
+				end AS valorunitario,
 				0.0 AS valorog;
 	
 	--PRUEBAS Y PUESTA EN SERVICIO
@@ -49,7 +42,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'PRUEBAS Y PUESTA EN SERVICIO'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=4 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=4 OR intOrigen=9  THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 12) AS valorunitario,
@@ -60,8 +53,14 @@ BEGIN
 	SELECT		4 AS id_item,
 				id_otraucint AS id_otrauc,
 				'INGENIERÍA'::varchar AS otrosgastos,
-				valorucint AS cantidadog,	
-				(SELECT porceingenieria FROM snx.ttarifaingsb WHERE numerobahias = numerobahiasint) AS valorunitario,
+				case
+					when intOrigen=9 then 0.0
+					else valorucint
+				end AS cantidadog,
+				case
+					when intOrigen=9 then 0.0
+					else (SELECT porceingenieria FROM snx.ttarifaingsb WHERE numerobahias = numerobahiasint) 
+				end AS valorunitario,
 				0.0 AS valorog;
 	
 	--SUPERVISIÓN DE OBRA
@@ -79,7 +78,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'GRAVAMEN ADUANERO '::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 26) AS valorunitario,
@@ -91,7 +90,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'GASTOS ADUANEROS'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 27) AS valorunitario,
@@ -103,7 +102,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'ITF'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=3 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 28) AS valorunitario,
@@ -160,7 +159,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'ADMINISTRACIÓN'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 32) AS valorunitario,
@@ -172,7 +171,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'IMPREVISTOS'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 20) AS valorunitario,
@@ -184,7 +183,7 @@ BEGIN
 				id_otraucint AS id_otrauc,
 				'UTILIDAD'::varchar AS otrosgastos,
 				CASE
-					WHEN intOrigen=1 OR intOrigen=2 THEN 0.0
+					WHEN intOrigen=1 OR intOrigen=2 OR intOrigen=9 THEN 0.0
 					ELSE valorucint
 				END AS cantidadog,
 				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 33) AS valorunitario,
@@ -266,7 +265,5 @@ BEGIN
 	
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.calcularotrosgastosotrasuc(integer, integer, numeric, integer, integer, numeric)
-    OWNER TO dbkerp_conexion;
+$function$
+;

@@ -1,17 +1,7 @@
--- FUNCTION: snx.ft_unidadconstructivamo_sel(integer, integer, character varying, character varying)
-
--- DROP FUNCTION snx.ft_unidadconstructivamo_sel(integer, integer, character varying, character varying);
-
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivamo_sel(
-	p_administrador integer,
-	p_id_usuario integer,
-	p_tabla character varying,
-	p_transaccion character varying)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivamo_sel(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -100,9 +90,9 @@ BEGIN
 						unconmo.id_usuario_mod,
 						usu1.cuenta as usr_reg,
 						usu2.cuenta as usr_mod,						
-						cast(sum(valoc.preciounitariorlp * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorlp * mooc.cantidadobra) as numeric(18,2)), 2)) as valortotalrlp,
-						cast(sum(valoc.preciounitariorcb * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorcb * mooc.cantidadobra) as numeric(18,2)), 2)) as valortotalrcb,
-						cast(sum(valoc.preciounitariorsc * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorsc * mooc.cantidadobra) as numeric(18,2)), 2)) as valortotalrsc
+						cast(sum(valoc.preciounitariorlp * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorlp * mooc.cantidadobra) as numeric(18,2)), 1)) as valortotalrlp,
+						cast(sum(valoc.preciounitariorcb * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorcb * mooc.cantidadobra) as numeric(18,2)), 1)) as valortotalrcb,
+						cast(sum(valoc.preciounitariorsc * mooc.cantidadobra) as numeric(18,2)) + (SELECT SUM(valorog) FROM snx.calcularotrosgastosotrasuc(unconmo.id_unidadconstructivamo, 1, cast(sum(valoc.preciounitariorsc * mooc.cantidadobra) as numeric(18,2)), 1)) as valortotalrsc
 						from snx.tunidadconstructivamo unconmo
 						left join segu.tusuario usu1 on usu1.id_usuario = unconmo.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = unconmo.id_usuario_mod
@@ -161,7 +151,5 @@ EXCEPTION
 			raise exception '%',v_resp;
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.ft_unidadconstructivamo_sel(integer, integer, character varying, character varying)
-    OWNER TO postgres;
+$function$
+;

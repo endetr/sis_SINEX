@@ -1,18 +1,7 @@
--- FUNCTION: snx.insertarotrasucsb(character varying, integer, integer, integer, numeric)
-
--- DROP FUNCTION snx.insertarotrasucsb(character varying, integer, integer, integer, numeric);
-
-CREATE OR REPLACE FUNCTION snx.insertarotrasucsb(
-	id_otraunidadint character varying,
-	id_ucsbvaloraroucint integer,
-	numerobahiasint integer,
-	id_revistaint integer,
-	distanciatrans numeric DEFAULT 36)
-    RETURNS void
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.insertarotrasucsb(id_otraunidadint character varying, id_ucsbvaloraroucint integer, numerobahiasint integer, id_revistaint integer, distanciatrans numeric DEFAULT 36)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 
 DECLARE
 	valototaltemp numeric := 0;
@@ -341,10 +330,36 @@ BEGIN
 				0.0 AS valorog
 		FROM	snx.tueepotros tuco
 		WHERE	tuco.id_unidadconstructivaeep = id_ucsbotro;
-	END IF;																
+	END IF;	
+
+	--Estudios y Trámites Ambientales
+	IF (SUBSTRING(id_otraunidadint,1,1) = '9') then
+		--Detalle
+		--Detalle															
+		INSERT INTO snx.tucsbvaloraroucdet(id_ucsbvalorarouc, nivel, descripcion, unidadabrev, cantidaditem, valorunitario, valortotal)
+		SELECT		id_ucsbvaloraroucint AS id_ucsbvalorarouc, 
+					3 AS nivel, 
+					items.unidadconstructivaetaitem as descripcion,
+					uni.unidadabrev AS unidadabrev,
+					items.cantidaditem AS cantidaditem,
+					items.valorunitario AS valorunitario,
+					items.cantidaditem * items.valorunitario AS valortotal	
+		FROM	 	snx.tunidadconstructivaeta uci
+		inner join	snx.tunidadconstructivaetaitem items on uci.id_unidadconstructivaeta = items.id_unidadconstructivaeta	
+		INNER JOIN	snx.tunidad uni ON items.id_unidad = uni.id_unidad
+		WHERE		'9000000' || CAST(uci.id_unidadconstructivaeta as character varying) = id_otraunidadint;
+															
+		valototaltemp := (SELECT SUM(valortotal) FROM snx.tucsbvaloraroucdet WHERE tucsbvaloraroucdet.id_ucsbvalorarouc = id_ucsbvaloraroucint AND tucsbvaloraroucdet.nivel=3);			
+		id_ucsbotro := (SELECT uccmenc.id_unidadconstructivaeta FROM snx.tunidadconstructivaeta uccmenc WHERE '9000000' || CAST(uccmenc.id_unidadconstructivaeta as character varying) = id_otraunidadint);
+											  
+		--Otros Gastos
+		INSERT INTO snx.tucsbvaloraroucog(id_ucsbvalorarouc, otrosgastos, cantidadog, valorunitario, valorog)											  
+		SELECT 	id_ucsbvaloraroucint AS id_ucsbvalorarouc, 
+				tvalores.otrosgastos, tvalores.cantidadog,
+				tvalores.valorunitario, tvalores.valorog											  
+		FROM 	snx.calcularotrosgastosotrasuc(id_ucsbotro,0,valototaltemp,9,id_revistaint,distanciatrans) tvalores;			
+	end if;
 END
 
-$BODY$;
-
-ALTER FUNCTION snx.insertarotrasucsb(character varying, integer, integer, integer, numeric)
-    OWNER TO dbkerp_conexion;
+$function$
+;

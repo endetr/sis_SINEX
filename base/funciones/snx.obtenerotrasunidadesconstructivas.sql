@@ -1,18 +1,7 @@
--- FUNCTION: snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric)
-
--- DROP FUNCTION snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric);
-
-CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(
-	id_otraunidadint character varying,
-	numerobahiasint integer,
-	id_revistaint integer,
-	distanciatrans numeric DEFAULT 36)
-    RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(id_otraunidadint character varying, numerobahiasint integer, id_revistaint integer, distanciatrans numeric DEFAULT 36)
+ RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 BEGIN
 	DROP TABLE if exists ttempotrasunidades;
@@ -162,13 +151,22 @@ BEGIN
 	LEFT JOIN	snx.tunidadconstructivacomun items ON uccmenc.id_unidadconstructivaenccomun = items.id_unidadconstructivaenccomun
 	WHERE		('8000000' || CAST(uccmenc.id_unidadconstructivaenccomun as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = ''
 	GROUP BY	uccmenc.id_unidadconstructivaenccomun, uccmenc.codigo, uccmenc.descripcion;
-						
-						
+		
+	--Estudios y Trámites Ambientales
+	INSERT INTO ttempotrasunidades
+	SELECT		CAST('9000000' || CAST(uceta.id_unidadconstructivaeta as character varying) AS character varying) AS id_otraunidad,	
+				uceta.codigo,
+				uceta.unidadconstructivaeta as descripcion,
+				CAST(uceta.codigo || ' - ' || uceta.unidadconstructivaeta AS character varying) AS codigo_descripcion,
+				coalesce(SUM(items.cantidaditem * items.valorunitario),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uceta.id_unidadconstructivaeta,0,coalesce(SUM(items.cantidaditem * items.valorunitario),0),9)) AS valortotal
+	FROM 		snx.tunidadconstructivaeta uceta
+	LEFT JOIN 	snx.tunidadconstructivaetaitem items on uceta.id_unidadconstructivaeta = items.id_unidadconstructivaeta
+	WHERE		('9000000' || CAST(uceta.id_unidadconstructivaeta as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = ''
+	GROUP BY	uceta.id_unidadconstructivaeta, uceta.codigo, uceta.unidadconstructivaeta;
+
 	RETURN QUERY
 	SELECT * FROM ttempotrasunidades;
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric)
-    OWNER TO dbkerp_conexion;
+$function$
+;

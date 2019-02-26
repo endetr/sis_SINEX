@@ -8652,3 +8652,36 @@ ADD CONSTRAINT fk_id_cajaempalme FOREIGN KEY (id_cajaempalme) REFERENCES snx.tca
 
 	
 /***********************************F-SCP-JYP-CMS-1-15/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-26/02/2019****************************************/
+
+--Tablas nuevas
+CREATE TABLE snx.tunidadconstructivaeta
+(
+    id_unidadconstructivaeta serial NOT NULL PRIMARY KEY,
+    codigo character varying(50),
+    unidadconstructivaeta character varying(100)
+)
+INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+CREATE TABLE snx.tunidadconstructivaetaitem
+(
+	id_unidadconstructivaetaitem serial NOT NULL PRIMARY KEY,
+	id_unidadconstructivaeta int,
+	unidadconstructivaetaitem character varying(1000),
+	id_unidad int,
+	cantidaditem numeric(18,5),
+	valorunitario numeric(18,2)
+)
+INHERITS (pxp.tbase)
+WITHOUT OIDS;
+
+--Se crea relación
+ALTER TABLE snx.tunidadconstructivaetaitem
+ADD CONSTRAINT fk_id_unidadconstructivaeta FOREIGN KEY (id_unidadconstructivaeta) REFERENCES snx.tunidadconstructivaeta(id_unidadconstructivaeta),
+ADD CONSTRAINT fk_id_unidad FOREIGN KEY (id_unidad) REFERENCES snx.tunidad(id_unidad);
+
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-26/02/2019****************************************/

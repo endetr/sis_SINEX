@@ -1,21 +1,21 @@
 <?php
 /**
 *@package pXP
-*@file gen-Unidadconstructivaseraux.php
+*@file gen-Unidadconstructivaetaitem.php
 *@author  (admin)
-*@date 11-10-2018 19:42:10
+*@date 25-02-2019 15:32:16
 *@description Archivo con la interfaz de usuario que permite la ejecucion de todas las funcionalidades del sistema
 */
 
 header("content-type: text/javascript; charset=UTF-8");
 ?>
 <script>
-Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
+Phx.vista.Unidadconstructivaetaitem=Ext.extend(Phx.gridInterfaz,{
 
 	constructor:function(config){
 		this.maestro=config.maestro;
     	//llama al constructor de la clase padre
-		Phx.vista.Unidadconstructivaseraux.superclass.constructor.call(this,config);
+		Phx.vista.Unidadconstructivaetaitem.superclass.constructor.call(this,config);
 		this.init();
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
@@ -26,7 +26,7 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'id_unidadconstructivaseraux'
+					name: 'id_unidadconstructivaetaitem'
 			},
 			type:'Field',
 			form:true 
@@ -36,22 +36,22 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 			config:{
 					labelSeparator:'',
 					inputType:'hidden',
-					name: 'unidadconstructivaencseraux'
+					name: 'id_unidadconstructivaeta'
 			},
 			type:'Field',
 			form:true 
-		},
+		},		
 		{
 			config:{
-				name: 'unidadconstructivaseraux',
-				fieldLabel: ' Descripción',
-				allowBlank: false,
+				name: 'unidadconstructivaetaitem',
+				fieldLabel: 'Descripción',
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 400,
-				maxLength:500
+				maxLength:1000
 			},
 				type:'TextField',
-				filters:{pfiltro:'ucsaux.unidadconstructivaseraux',type:'string'},
+				filters:{pfiltro:'ucbetai.unidadconstructivaetaitem',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:true
@@ -101,45 +101,50 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
-				name: 'cantidadseraux',
-				fieldLabel: ' Cantidad',
-				allowBlank: false,
+				name: 'cantidaditem',
+				fieldLabel: 'Cantidad',
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:1179653,
 				decimalPrecision: 5
 			},
 				type:'NumberField',
-				filters:{pfiltro:'ucsaux.cantidadseraux',type:'numeric'},
+				filters:{pfiltro:'ucbetai.cantidaditem',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:true
 		},
 		{
 			config:{
-				name: 'precio',
+				name: 'valorunitario',
 				fieldLabel: 'Valor Unitario',
-				allowBlank: false,
+				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
 				maxLength:1179650
 			},
 				type:'NumberField',
-				filters:{pfiltro:'ucsaux.precio',type:'numeric'},
+				filters:{pfiltro:'ucbetai.valorunitario',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:true
-		},	
+		},
 		{
 			config:{
-				name: 'valortotalseraux',
-				fieldLabel: 'Total',				
+				name: 'valortotaletaitem',
+				fieldLabel: 'Valor Total',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1179650
 			},
-				type:'Field',
+				type:'NumberField',
+				filters:{pfiltro:'ucbetai.valorunitario',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:false
-		},	
+		},
 		{
 			config:{
 				name: 'estado_reg',
@@ -150,25 +155,9 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 				maxLength:10
 			},
 				type:'TextField',
-				filters:{pfiltro:'ucsaux.estado_reg',type:'string'},
+				filters:{pfiltro:'ucbetai.estado_reg',type:'string'},
 				id_grupo:1,
 				grid:true,
-				form:false
-		},
-		
-		{
-			config:{
-				name: 'id_usuario_ai',
-				fieldLabel: '',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:4
-			},
-				type:'Field',
-				filters:{pfiltro:'ucsaux.id_usuario_ai',type:'numeric'},
-				id_grupo:1,
-				grid:false,
 				form:false
 		},
 		{
@@ -197,7 +186,7 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
-				filters:{pfiltro:'ucsaux.fecha_reg',type:'date'},
+				filters:{pfiltro:'ucbetai.fecha_reg',type:'date'},
 				id_grupo:1,
 				grid:true,
 				form:false
@@ -212,9 +201,24 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 				maxLength:300
 			},
 				type:'TextField',
-				filters:{pfiltro:'ucsaux.usuario_ai',type:'string'},
+				filters:{pfiltro:'ucbetai.usuario_ai',type:'string'},
 				id_grupo:1,
 				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'id_usuario_ai',
+				fieldLabel: 'Funcionaro AI',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:4
+			},
+				type:'Field',
+				filters:{pfiltro:'ucbetai.id_usuario_ai',type:'numeric'},
+				id_grupo:1,
+				grid:false,
 				form:false
 		},
 		{
@@ -243,40 +247,39 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 							renderer:function (value,p,record){return value?value.dateFormat('d/m/Y H:i:s'):''}
 			},
 				type:'DateField',
-				filters:{pfiltro:'ucsaux.fecha_mod',type:'date'},
+				filters:{pfiltro:'ucbetai.fecha_mod',type:'date'},
 				id_grupo:1,
 				grid:true,
 				form:false
 		}
 	],
 	tam_pag:50,	
-	title:'Servicios Auxiliares',
-	ActSave:'../../sis_SINEX/control/Unidadconstructivaseraux/insertarUnidadconstructivaseraux',
-	ActDel:'../../sis_SINEX/control/Unidadconstructivaseraux/eliminarUnidadconstructivaseraux',
-	ActList:'../../sis_SINEX/control/Unidadconstructivaseraux/listarUnidadconstructivaseraux',
-	id_store:'id_unidadconstructivaseraux',
+	title:'Ítems',
+	ActSave:'../../sis_SINEX/control/Unidadconstructivaetaitem/insertarUnidadconstructivaetaitem',
+	ActDel:'../../sis_SINEX/control/Unidadconstructivaetaitem/eliminarUnidadconstructivaetaitem',
+	ActList:'../../sis_SINEX/control/Unidadconstructivaetaitem/listarUnidadconstructivaetaitem',
+	id_store:'id_unidadconstructivaetaitem',
 	fields: [
-		{name:'id_unidadconstructivaseraux', type: 'numeric'},
-		{name:'unidadconstructivaencseraux', type: 'numeric'},
+		{name:'id_unidadconstructivaetaitem', type: 'numeric'},
+		{name:'id_unidadconstructivaeta', type: 'numeric'},
 		{name:'id_unidad', type: 'numeric'},
-		{name:'cantidadseraux', type: 'numeric'},
-		{name:'precio', type: 'numeric'},
+		{name:'valorunitario', type: 'numeric'},
 		{name:'estado_reg', type: 'string'},
-		{name:'unidadconstructivaseraux', type: 'string'},
-		{name:'id_usuario_ai', type: 'numeric'},
+		{name:'cantidaditem', type: 'numeric'},
+		{name:'unidadconstructivaetaitem', type: 'string'},
 		{name:'id_usuario_reg', type: 'numeric'},
 		{name:'fecha_reg', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usuario_ai', type: 'string'},
+		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'fecha_mod', type: 'date',dateFormat:'Y-m-d H:i:s.u'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
 		{name:'desc_unidadabrev', type: 'string'},
-		{name:'valortotalseraux', type: 'numeric'},		
-		
+		{name:'valortotaletaitem', type: 'numeric'},
 	],
 	sortInfo:{
-		field: 'id_unidadconstructivaseraux',
+		field: 'id_unidadconstructivaetaitem',
 		direction: 'ASC'
 	},
 	bdel:true,
@@ -284,14 +287,14 @@ Phx.vista.Unidadconstructivaseraux=Ext.extend(Phx.gridInterfaz,{
 	
 	onReloadPage:function(m){
 		this.maestro=m;
-		this.store.baseParams={unidadconstructivaencseraux:this.maestro.unidadconstructivaencseraux};
+		this.store.baseParams={id_unidadconstructivaeta:this.maestro.id_unidadconstructivaeta};
 		this.load({params:{start:0, limit:50}})
 	},
 	loadValoresIniciales:function()
 	{
-		Phx.vista.Unidadconstructivaseraux.superclass.loadValoresIniciales.call(this);
-		this.getComponente('unidadconstructivaencseraux').setValue(this.maestro.unidadconstructivaencseraux);
-	},
+		Phx.vista.otrosgastos.superclass.loadValoresIniciales.call(this);
+		this.getComponente('id_unidadconstructivaeta').setValue(this.maestro.id_unidadconstructivaeta);
+	}
 	
 	}
 )

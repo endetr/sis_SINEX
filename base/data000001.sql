@@ -5160,3 +5160,225 @@ where 	id_indicelt = 10;
 
 
 /***********************************F-SCP-JYP-CMS-1-25/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-26/02/2019****************************************/
+update snx.tmateriallt set peso = 1.03 where id_materiallt = 228;
+update snx.tmateriallt set peso = 1.74 where id_materiallt = 227;
+update snx.tmateriallt set peso = 0.77 where id_materiallt = 235;
+update snx.tmateriallt set peso = 1.05 where id_materiallt = 226;
+update snx.tmateriallt set peso = 1.63 where id_materiallt = 231;
+update snx.tmateriallt set peso = 0.82 where id_materiallt = 234;
+update snx.tmateriallt set peso = 1.07 where id_materiallt = 232;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 236;
+update snx.tmateriallt set peso = 1.6 where id_materiallt = 230;
+update snx.tmateriallt set peso = 1.24 where id_materiallt = 233;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 263;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 265;
+update snx.tmateriallt set peso = 0.03 where id_materiallt = 266;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 264;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 258;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 259;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 260;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 261;
+update snx.tmateriallt set peso = 0 where id_materiallt = 257;
+update snx.tmateriallt set peso = 0.03 where id_materiallt = 262;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 256;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 267;
+update snx.tmateriallt set peso = 0 where id_materiallt = 339;
+update snx.tmateriallt set peso = 0 where id_materiallt = 293;
+update snx.tmateriallt set peso = 0 where id_materiallt = 244;
+update snx.tmateriallt set peso = 0 where id_materiallt = 243;
+update snx.tmateriallt set peso = 0 where id_materiallt = 251;
+update snx.tmateriallt set peso = 0 where id_materiallt = 242;
+update snx.tmateriallt set peso = 0 where id_materiallt = 247;
+update snx.tmateriallt set peso = 0 where id_materiallt = 250;
+update snx.tmateriallt set peso = 0 where id_materiallt = 248;
+update snx.tmateriallt set peso = 0 where id_materiallt = 252;
+update snx.tmateriallt set peso = 0 where id_materiallt = 246;
+update snx.tmateriallt set peso = 0 where id_materiallt = 249;
+update snx.tmateriallt set peso = 0 where id_materiallt = 253;
+update snx.tmateriallt set peso = 0 where id_materiallt = 245;
+update snx.tmateriallt set peso = 0 where id_materiallt = 283;
+update snx.tmateriallt set peso = 0 where id_materiallt = 343;
+update snx.tmateriallt set peso = 0 where id_materiallt = 239;
+update snx.tmateriallt set peso = 0 where id_materiallt = 238;
+update snx.tmateriallt set peso = 0.41 where id_materiallt = 300;
+update snx.tmateriallt set peso = 0.00031 where id_materiallt = 299;
+update snx.tmateriallt set peso = 3.8 where id_materiallt = 369;
+update snx.tmateriallt set peso = 0.00193 where id_materiallt = 298;
+update snx.tmateriallt set peso = 0.00031 where id_materiallt = 297;
+update snx.tmateriallt set peso = 0.31 where id_materiallt = 368;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 348;
+update snx.tmateriallt set peso = 16 where id_materiallt = 347;
+update snx.tmateriallt set peso = 24 where id_materiallt = 392;
+update snx.tmateriallt set peso = 28 where id_materiallt = 393;
+update snx.tmateriallt set peso = 11.92 where id_materiallt = 344;
+update snx.tmateriallt set peso = 13.5 where id_materiallt = 345;
+update snx.tmateriallt set peso = 13.5 where id_materiallt = 346;
+update snx.tmateriallt set peso = 22 where id_materiallt = 391;
+update snx.tmateriallt set peso = 13.5 where id_materiallt = 390;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 237;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 336;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 337;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 373;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 408;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 409;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 370;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 371;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 372;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 407;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 406;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 377;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 412;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 413;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 374;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 376;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 375;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 411;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 410;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 356;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 338;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 292;
+update snx.tmateriallt set peso = 0 where id_materiallt = 301;
+update snx.tmateriallt set peso = 0 where id_materiallt = 303;
+update snx.tmateriallt set peso = 0 where id_materiallt = 273;
+update snx.tmateriallt set peso = 0 where id_materiallt = 306;
+update snx.tmateriallt set peso = 0 where id_materiallt = 307;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 340;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 341;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 295;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 342;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 296;
+update snx.tmateriallt set peso = 0 where id_materiallt = 255;
+update snx.tmateriallt set peso = 0 where id_materiallt = 254;
+update snx.tmateriallt set peso = 0 where id_materiallt = 282;
+update snx.tmateriallt set peso = 1.41 where id_materiallt = 312;
+update snx.tmateriallt set peso = 0.89 where id_materiallt = 310;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 285;
+update snx.tmateriallt set peso = 0.03 where id_materiallt = 294;
+update snx.tmateriallt set peso = 0.73 where id_materiallt = 313;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 355;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 396;
+update snx.tmateriallt set peso = 0.09 where id_materiallt = 397;
+update snx.tmateriallt set peso = 0.04 where id_materiallt = 352;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 353;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 354;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 395;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 394;
+update snx.tmateriallt set peso = 13.6 where id_materiallt = 321;
+update snx.tmateriallt set peso = 12.4 where id_materiallt = 318;
+update snx.tmateriallt set peso = 4.9 where id_materiallt = 319;
+update snx.tmateriallt set peso = 7.9 where id_materiallt = 320;
+update snx.tmateriallt set peso = 3.9 where id_materiallt = 327;
+update snx.tmateriallt set peso = 7.6 where id_materiallt = 322;
+update snx.tmateriallt set peso = 20.9 where id_materiallt = 329;
+update snx.tmateriallt set peso = 3.9 where id_materiallt = 324;
+update snx.tmateriallt set peso = 2.5 where id_materiallt = 326;
+update snx.tmateriallt set peso = 2.5 where id_materiallt = 325;
+update snx.tmateriallt set peso = 6 where id_materiallt = 323;
+update snx.tmateriallt set peso = 20.9 where id_materiallt = 328;
+update snx.tmateriallt set peso = 13.71 where id_materiallt = 335;
+update snx.tmateriallt set peso = 7.17 where id_materiallt = 331;
+update snx.tmateriallt set peso = 4.73 where id_materiallt = 334;
+update snx.tmateriallt set peso = 4.17 where id_materiallt = 330;
+update snx.tmateriallt set peso = 11.7 where id_materiallt = 333;
+update snx.tmateriallt set peso = 2.98 where id_materiallt = 332;
+update snx.tmateriallt set peso = 0 where id_materiallt = 382;
+update snx.tmateriallt set peso = 0 where id_materiallt = 289;
+update snx.tmateriallt set peso = 0 where id_materiallt = 281;
+update snx.tmateriallt set peso = 0 where id_materiallt = 291;
+update snx.tmateriallt set peso = 0 where id_materiallt = 290;
+update snx.tmateriallt set peso = 0 where id_materiallt = 269;
+update snx.tmateriallt set peso = 0 where id_materiallt = 350;
+update snx.tmateriallt set peso = 0 where id_materiallt = 270;
+update snx.tmateriallt set peso = 0 where id_materiallt = 351;
+update snx.tmateriallt set peso = 0 where id_materiallt = 271;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 272;
+update snx.tmateriallt set peso = 0 where id_materiallt = 349;
+update snx.tmateriallt set peso = 0 where id_materiallt = 268;
+update snx.tmateriallt set peso = 0 where id_materiallt = 274;
+update snx.tmateriallt set peso = 0 where id_materiallt = 275;
+update snx.tmateriallt set peso = 0 where id_materiallt = 276;
+update snx.tmateriallt set peso = 0 where id_materiallt = 277;
+update snx.tmateriallt set peso = 0 where id_materiallt = 278;
+update snx.tmateriallt set peso = 0 where id_materiallt = 279;
+update snx.tmateriallt set peso = 0 where id_materiallt = 284;
+update snx.tmateriallt set peso = 0 where id_materiallt = 280;
+update snx.tmateriallt set peso = 4.1 where id_materiallt = 315;
+update snx.tmateriallt set peso = 4.71 where id_materiallt = 316;
+update snx.tmateriallt set peso = 6.8 where id_materiallt = 317;
+update snx.tmateriallt set peso = 0 where id_materiallt = 365;
+update snx.tmateriallt set peso = 0 where id_materiallt = 240;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 241;
+update snx.tmateriallt set peso = 0.05 where id_materiallt = 367;
+update snx.tmateriallt set peso = 0 where id_materiallt = 366;
+update snx.tmateriallt set peso = 1.6 where id_materiallt = 229;
+update snx.tmateriallt set peso = 0 where id_materiallt = 302;
+update snx.tmateriallt set peso = 0.4 where id_materiallt = 360;
+update snx.tmateriallt set peso = 0.4 where id_materiallt = 400;
+update snx.tmateriallt set peso = 0.4 where id_materiallt = 401;
+update snx.tmateriallt set peso = 0.1 where id_materiallt = 357;
+update snx.tmateriallt set peso = 0.11 where id_materiallt = 359;
+update snx.tmateriallt set peso = 0.4 where id_materiallt = 399;
+update snx.tmateriallt set peso = 0.11 where id_materiallt = 358;
+update snx.tmateriallt set peso = 0.11 where id_materiallt = 398;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 364;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 404;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 405;
+update snx.tmateriallt set peso = 0.05 where id_materiallt = 361;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 363;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 403;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 402;
+update snx.tmateriallt set peso = 0.08 where id_materiallt = 362;
+update snx.tmateriallt set peso = 0 where id_materiallt = 378;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 379;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 380;
+update snx.tmateriallt set peso = 0 where id_materiallt = 381;
+update snx.tmateriallt set peso = 0 where id_materiallt = 286;
+update snx.tmateriallt set peso = 0 where id_materiallt = 304;
+update snx.tmateriallt set peso = 0 where id_materiallt = 305;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 308;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 309;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 311;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 314;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 287;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 288;
+
+--Opciones en el menú
+update 	segu.tgui
+set 	orden_logico = 10
+where	id_gui = 367;
+
+insert into  segu.tgui
+(
+	codigo_gui, nombre, descripcion, visible, orden_logico, ruta_archivo, nivel, icono,
+	id_subsistema, clase_vista, parametros, sw_mobile, codigo_mobile, orden_mobile
+)
+values
+(
+	'UCSBETA', 'Estudios y Trámites Ambientales', 'Estudios y Trámites Ambientales', 'si', 9,
+	'sis_SINEX/vista/unidadconstructivaeta/Unidadconstructivaeta.php', 4, '', 10,
+	'Unidadconstructivaeta', '', 'no', '', 9
+);
+
+INSERT INTO segu.testructura_gui (id_gui, fk_id_gui, fecha_reg, estado_reg)
+SELECT	id_gui,
+		347 AS fk_id_gui,
+		now() AS fecha_reg,
+		'activo' estado_reg
+FROM 	segu.tgui 
+WHERE 	nombre = 'Estudios y Trámites Ambientales';
+
+--Valores tablas nuevas
+INSERT INTO snx.tunidadconstructivaeta 
+(id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,codigo,unidadconstructivaeta) 
+VALUES 
+(1,NULL,'2019-02-25 13:47:11.689',NULL,'activo',NULL,'NULL','UUCC ETA 001','Estudios y Trámites Ambientales');
+
+INSERT INTO snx.tunidadconstructivaetaitem 
+(id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_unidadconstructivaeta,unidadconstructivaetaitem,id_unidad,cantidaditem,valorunitario) 
+VALUES 
+(1,1,'2019-02-25 13:49:46.133','2019-02-25 14:25:28.844','activo',NULL,'NULL',1,'Elaboración PMA y Elaboración de Permisos y/o Autorizaciones Ambientales',17,1.00000,0.00)
+,(1,1,'2019-02-25 13:50:01.341','2019-02-25 14:25:34.568','activo',NULL,'NULL',1,'Evaluación Permisos y/o Autorizaciones Ambientales',17,1.00000,0.00)
+,(1,1,'2019-02-25 13:50:53.079','2019-02-25 14:25:43.295','activo',NULL,'NULL',1,'Area y Compra de terreno requerido',16,1.00000,0.00);
+/***********************************F-SCP-JYP-CMS-2-26/02/2019****************************************/
