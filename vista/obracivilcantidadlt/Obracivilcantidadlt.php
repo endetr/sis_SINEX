@@ -296,22 +296,22 @@ Phx.vista.Obracivilcantidadlt=Ext.extend(Phx.gridInterfaz,{
 				allowBlank: true,
 				emptyText: 'Elija una opción...',
 				store: new Ext.data.JsonStore({
-					url: '../../sis_SINEX/control/Terreno/listarTerreno',
-					id: 'id_terreno',
+					url: '../../sis_SINEX/control/Terrenolt/listarTerrenolt',
+					id: 'id_terrenolt',
 					root: 'datos',
 					sortInfo: {
-						field: 'terreno',
+						field: 'terrenolt',
 						direction: 'ASC'
 					},
 					totalProperty: 'total',
-					fields: ['id_terreno', 'terreno'],
+					fields: ['id_terrenolt', 'terrenolt'],
 					remoteSort: true,
 					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
 				}),
-				valueField: 'id_terreno',
-				displayField: 'terreno',
-				gdisplayField: 'desc_terreno',
-				hiddenName: 'id_terreno',
+				valueField: 'id_terrenolt',
+				displayField: 'terrenolt',
+				gdisplayField: 'terrenolt',
+				hiddenName: 'id_terrenolt',
 				forceSelection: true,
 				typeAhead: false,
 				triggerAction: 'all',
@@ -323,7 +323,7 @@ Phx.vista.Obracivilcantidadlt=Ext.extend(Phx.gridInterfaz,{
 				gwidth: 150,
 				minChars: 2,
 				renderer : function(value, p, record) {
-					return String.format('{0}', record.data['desc_terreno']);
+					return String.format('{0}', record.data['terrenolt']);
 				}
 			},
 			type: 'ComboBox',

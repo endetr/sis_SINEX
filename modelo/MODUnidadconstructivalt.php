@@ -83,7 +83,11 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->captura('id_revista','int4');
 		$this->captura('desc_revista','varchar');	
 		$this->captura('desc_hilosguarda','varchar');
-		$this->captura('descripcionfull','varchar');			
+		$this->captura('descripcionfull','varchar');		
+		$this->captura('id_bancoductos','int4');
+		$this->captura('bancoductos','varchar');
+		$this->captura('id_cajaempalme','int4');
+		$this->captura('cajaempalme','varchar');			
 				
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -164,7 +168,11 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->captura('desc_revista','varchar');	
 		$this->captura('desc_hilosguarda','varchar');
 		$this->captura('descripcionfull','varchar');			
-				
+		$this->captura('id_bancoductos','int4');
+		$this->captura('bancoductos','varchar');
+		$this->captura('id_cajaempalme','int4');
+		$this->captura('cajaempalme','varchar');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -259,6 +267,8 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->setParametro('id_nivelcontaminacionlt','id_nivelcontaminacionlt','int4');
 		$this->setParametro('id_areaprotegida','id_areaprotegida','int4');
 		$this->setParametro('id_revista','id_revista','int4');
+		$this->setParametro('id_bancoductos','id_bancoductos','int4');
+		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -309,7 +319,8 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->setParametro('id_nivelcontaminacionlt','id_nivelcontaminacionlt','int4');
 		$this->setParametro('id_areaprotegida','id_areaprotegida','int4');
 		$this->setParametro('id_revista','id_revista','int4');
-		
+		$this->setParametro('id_bancoductos','id_bancoductos','int4');
+		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

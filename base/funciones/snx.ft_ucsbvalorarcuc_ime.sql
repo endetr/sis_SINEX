@@ -1,17 +1,7 @@
--- FUNCTION: snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying)
-
--- DROP FUNCTION snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying);
-
-CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarcuc_ime(
-	p_administrador integer,
-	p_id_usuario integer,
-	p_tabla character varying,
-	p_transaccion character varying)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarcuc_ime(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
 
 /**************************************************************************
  SISTEMA:		SPVPT
@@ -81,7 +71,7 @@ BEGIN
 			SET		potencia = v_parametros.potencia
 			FROM 	snx.tucsbmaquinaria ucsbm			
 			WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
-					tmaquinaria.id_tipopreciomaquinaria = 2 AND
+					tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
 					ucsbm.cantidadmaq > 0;
 					
 			--Actualizar valores UCSB
@@ -344,7 +334,7 @@ BEGIN
 			SET		potencia = v_parametros.potencia
 			FROM 	snx.tucsbmaquinaria ucsbm			
 			WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
-					tmaquinaria.id_tipopreciomaquinaria = 2 AND
+					tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
 					ucsbm.cantidadmaq > 0;
 																   
 			--Actualizar valores UCSB
@@ -615,7 +605,5 @@ EXCEPTION
 				        
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying)
-    OWNER TO postgres;
+$function$
+;

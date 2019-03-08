@@ -820,7 +820,92 @@ Phx.vista.Unidadconstructivalt=Ext.extend(Phx.gridInterfaz,{
 			grid: false,
 			form: true
 		},	
-		
+		{
+			config: {
+				name: 'id_bancoductos',
+				fieldLabel: 'Banco de Ductos',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_SINEX/control/Bancoductos/listarBancoductos',
+					id: 'id_bancoductos',
+					root: 'datos',
+					sortInfo: {
+						field: 'bancoductos',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_bancoductos', 'bancoductos'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+				}),
+				valueField: 'id_bancoductos',
+				displayField: 'bancoductos',
+				gdisplayField: 'bancoductos',
+				hiddenName: 'id_bancoductos',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['bancoductos']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'movtip.nombre',type: 'string'},
+			grid: true,
+			form: true
+		},
+		{
+			config: {
+				name: 'id_cajaempalme',
+				fieldLabel: 'Caja de Empalme',
+				allowBlank: true,
+				emptyText: 'Elija una opción...',
+				store: new Ext.data.JsonStore({
+					url: '../../sis_SINEX/control/Cajaempalme/listarCajaempalme',
+					id: 'id_cajaempalme',
+					root: 'datos',
+					sortInfo: {
+						field: 'cajaempalme',
+						direction: 'ASC'
+					},
+					totalProperty: 'total',
+					fields: ['id_cajaempalme', 'cajaempalme'],
+					remoteSort: true,
+					baseParams: {par_filtro: 'movtip.nombre#movtip.codigo'}
+				}),
+				valueField: 'id_cajaempalme',
+				displayField: 'cajaempalme',
+				gdisplayField: 'cajaempalme',
+				hiddenName: 'id_cajaempalme',
+				forceSelection: true,
+				typeAhead: false,
+				triggerAction: 'all',
+				lazyRender: true,
+				mode: 'remote',
+				pageSize: 15,
+				queryDelay: 1000,
+				anchor: '100%',
+				gwidth: 150,
+				minChars: 2,
+				renderer : function(value, p, record) {
+					return String.format('{0}', record.data['cajaempalme']);
+				}
+			},
+			type: 'ComboBox',
+			id_grupo: 0,
+			filters: {pfiltro: 'movtip.nombre',type: 'string'},
+			grid: true,
+			form: true
+		},
 		{
 			config:{
 				name: 'numddp',
@@ -1161,8 +1246,11 @@ Phx.vista.Unidadconstructivalt=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_revista', type: 'numeric'},	
 		{name:'desc_revista', type: 'string'},
 		{name:'desc_hilosguarda', type: 'string'},
-		{name:'descripcionfull', type: 'string'},
-		
+		{name:'descripcionfull', type: 'string'},		
+		{name:'id_bancoductos', type: 'numeric'},
+		{name:'bancoductos', type: 'string'},	
+		{name:'id_cajaempalme', type: 'numeric'},
+		{name:'cajaempalme', type: 'string'},
 	],
 	sortInfo:{
 		field: 'codigo',

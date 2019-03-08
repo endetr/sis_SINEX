@@ -5090,7 +5090,7 @@ INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb, id_equipo, cantidadequ
 SELECT snx.ft_ucsbequipo_reset();
 
 --Se actualiza las unidades constuctivas
-SELECT snx.calcularprecioucsb();
+SELECT snx.calcularprecioucsball();
 /***********************************F-SCP-JYP-CMS-1-18/01/2019****************************************/
 
 
@@ -5382,3 +5382,9970 @@ VALUES
 ,(1,1,'2019-02-25 13:50:01.341','2019-02-25 14:25:34.568','activo',NULL,'NULL',1,'Evaluación Permisos y/o Autorizaciones Ambientales',17,1.00000,0.00)
 ,(1,1,'2019-02-25 13:50:53.079','2019-02-25 14:25:43.295','activo',NULL,'NULL',1,'Area y Compra de terreno requerido',16,1.00000,0.00);
 /***********************************F-SCP-JYP-CMS-2-26/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-28/02/2019****************************************/
+--Se inserta nueva obra civil con su APU
+begin;
+	do $$
+	declare 
+		id_obracivilmoeint integer;
+	
+	begin
+		--Se inserta nueva obra civil
+		insert into snx.tobracivilmoe
+		(
+			porccargasocial, id_unidad, porcimpuestos, porcimpmanoobra, estado_reg,
+			porcgastosga, porcutilidad, obracivilmoe, strtransporte, porcherramientas,
+			id_usuario_ai, id_usuario_reg, usuario_ai, fecha_reg, id_usuario_mod, 	fecha_mod
+		) values
+		(
+			71.18, 11, 3.09, 14.94, 'activo', 15.00, 10.00, 'RELLENO EN ROCA',
+			'No', 5.00, null, 1, 1, now(), null, null
+		)RETURNING id_obracivilmoe into id_obracivilmoeint;
+		
+		--Se inserta Materiales
+		insert into snx.tocmaterialmoe
+		(
+			estado_reg, cantidadmaterialmoe, id_materialmoe, id_obracivilmoe, fecha_reg, usuario_ai,
+			id_usuario_reg, id_usuario_ai, id_usuario_mod, fecha_mod 
+		) values
+		(
+			'activo', 1.20000, 234, id_obracivilmoeint, now(), null, 1, 1, null, null
+		);
+		
+		--Se inserta mano de obra
+		insert into snx.tocmanoobramoe
+		(
+			estado_reg, id_manoobramoe, cantidadmanoobramoe, id_obracivilmoe, id_usuario_reg,
+			usuario_ai, fecha_reg, id_usuario_ai, id_usuario_mod, fecha_mod 
+		) values
+		(
+			'activo', 9, 0.10000, id_obracivilmoeint, 1, null, now(), 1, null, null
+		),
+		(
+			'activo', 5, 1.23000, id_obracivilmoeint, 1, null, now(), 1, null, null
+		);
+		
+		--Se inserta Maquinaria
+		insert into snx.tocmaquinariamoe
+		(
+			estado_reg, id_maquinariamoe, cantidadmaquinariamoe, id_obracivilmoe, id_usuario_reg,
+			usuario_ai, fecha_reg, id_usuario_ai, id_usuario_mod, fecha_mod
+		) values
+		(
+		'activo', 51, 0.50000, id_obracivilmoeint, 1, null, now(), null, null, null
+		);
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-28/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-28/02/2019****************************************/
+begin;
+	do $$
+	declare 
+		id_obracivilltint integer;
+	
+	begin
+		--Nueva opción en banco de ductos
+		INSERT INTO snx.tbancoductos 
+		(id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,bancoductos) 
+		VALUES 
+		(1,NULL,'2019-02-14 13:05:55.198',NULL,'activo',NULL,NULL,'Banco trapezoidal 1,32');
+		
+		--Obra civil para LT
+		INSERT INTO snx.tobracivillt 
+		(id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,obracivillt,id_unidad,peso,id_factorindexacion) 
+		VALUES 
+		(1,1,'2019-02-26 11:46:58.562','2019-02-26 13:29:18.453','activo',NULL,'NULL','RELLENO EN ROCA',11,0,5) returning id_obracivillt into id_obracivilltint;
+	
+		--Se organizan nombres
+		update	snx.tobracivillt
+		set	obracivillt = 'EXCAVACION DE 0-1,5m TERR. SEMI-DURO'
+		where id_obracivillt=1;
+		update	snx.tobracivillt
+		set	obracivillt = 'Hormigón simple zapata "R210"'
+		where id_obracivillt=2;
+		update	snx.tobracivillt
+		set	obracivillt = 'Acero estructural'
+		where id_obracivillt=3;
+		update	snx.tobracivillt
+		set	obracivillt = 'Relleno y compactado de tierra (mat d /prestamo)'
+		where id_obracivillt=4;
+
+		--Cantidades obra civil LT
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:32:26.659', NULL, 'activo', NULL, 'NULL', 18790, id_obracivilltint, 2, 2, 7, 1, 4, NULL, 1, 2, 414.0000, 2, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:33:27.326', NULL, 'activo', NULL, 'NULL', 18791, id_obracivilltint, 2, 2, 7, 1, 4, NULL, 1, 2, 690.0000, 3, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:35:22.426', NULL, 'activo', NULL, 'NULL', 18792, id_obracivilltint, 2, 2, 7, 1, 4, NULL, 1, 2, 7.3800, 1, 2);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, 1, '2019-02-26 13:37:04.957', '2019-02-26 13:49:29.930', 'activo', NULL, 'NULL', 18793, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 4, 11.3500, 1, 3);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:37:51.220', NULL, 'activo', NULL, 'NULL', 18794, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 4, 7.3800, 1, 2);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:39:12.899', NULL, 'activo', NULL, 'NULL', 18795, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 4, 0.0000, 1, 4);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:40:12.697', NULL, 'activo', NULL, 'NULL', 18796, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 4, 17.8800, 1, 5);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, 1, '2019-02-26 13:40:56.519', '2019-02-26 14:47:07.808', 'activo', NULL, 'NULL', 18797, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 2, 414.0000, 2, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:45:01.134', NULL, 'activo', NULL, 'NULL', 18798, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 2, 690.0000, 3, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 13:45:36.808', NULL, 'activo', NULL, 'NULL', 18799, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 2, 0.0000, 4, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:07:02.509', NULL, 'activo', NULL, 'NULL', 18800, 2, 2, 2, 7, 1, 4, 11, 1, 2, 147.7800, 2, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:07:37.198', NULL, 'activo', NULL, 'NULL', 18801, 2, 2, 2, 7, 1, 4, 11, 1, 2, 147.7800, 3, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:08:19.613', NULL, 'activo', NULL, 'NULL', 18802, 2, 2, 2, 7, 1, 4, 11, 1, 2, 147.7800, 4, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:13:23.558', NULL, 'activo', NULL, 'NULL', 18803, 2, 2, 2, 7, 1, 4, 11, 1, 4, 5.4200, 1, 2);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:14:17.613', NULL, 'activo', NULL, 'NULL', 18804, 2, 2, 2, 7, 1, 4, 11, 1, 4, 5.4200, 1, 3);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:14:58.669', NULL, 'activo', NULL, 'NULL', 18805, 2, 2, 2, 7, 1, 4, 11, 1, 4, 5.4200, 1, 4);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:16:00.775', NULL, 'activo', NULL, 'NULL', 18806, 2, 2, 2, 7, 1, 4, 11, 1, 4, 5.4200, 1, 3);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:23:15.679', NULL, 'activo', NULL, 'NULL', 18807, 4, 2, 2, 7, 1, 4, 11, 1, 2, 487.5000, 2, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:23:48.312', NULL, 'activo', NULL, 'NULL', 18808, 4, 2, 2, 7, 1, 4, 11, 1, 2, 625.5000, 3, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:24:36.887', NULL, 'activo', NULL, 'NULL', 18809, 4, 2, 2, 7, 1, 4, 11, 1, 2, 487.5000, 4, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:25:17.417', NULL, 'activo', NULL, 'NULL', 18810, 4, 2, 2, 7, 1, 4, 11, 1, 4, 6.8600, 1, 2);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:25:51.781', NULL, 'activo', NULL, 'NULL', 18811, 4, 2, 2, 7, 1, 4, 11, 1, 4, 5.4900, 1, 3);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:26:42.638', NULL, 'activo', NULL, 'NULL', 18812, 4, 2, 2, 7, 1, 4, 11, 1, 4, 6.6400, 1, 4);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:42:31.161', NULL, 'activo', NULL, 'NULL', 18813, 4, 2, 2, 7, 1, 4, 11, 1, 4, 10.6000, 1, 5);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:43:27.066', NULL, 'activo', NULL, 'NULL', 18814, 3, 2, 2, 7, 1, 4, 11, 1, 4, 223.1600, 1, 2);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:44:00.449', NULL, 'activo', NULL, 'NULL', 18815, 3, 2, 2, 7, 1, 4, 11, 1, 4, 223.1600, 1, 3);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:44:43.180', NULL, 'activo', NULL, 'NULL', 18816, 3, 2, 2, 7, 1, 4, 11, 1, 4, 223.1600, 1, 4);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:45:13.445', NULL, 'activo', NULL, 'NULL', 18817, 3, 2, 2, 7, 1, 4, 11, 1, 4, 223.1600, 1, 5);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:48:06.213', NULL, 'activo', NULL, 'NULL', 18818, id_obracivilltint, 2, 2, 7, 1, 4, 11, 1, 2, 2160.0000, 5, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:49:07.018', NULL, 'activo', NULL, 'NULL', 18819, 2, 2, 2, 7, 1, 4, 11, 1, 2, 147.7800, 5, 1);
+		INSERT INTO snx.tobracivilcantidadlt
+		(id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, id_obracivilcantidadlt, id_obracivillt, id_tipolinea, id_tensionservicio, id_tipoestructura, id_configuracionlt, id_funcionestructura, id_terreno, id_tipocimentacion, id_tipocanalizacion, cantidadobracivillt, id_bancoductos, id_cajaempalme)
+		VALUES(1, NULL, '2019-02-26 14:49:41.684', NULL, 'activo', NULL, 'NULL', 18820, 4, 2, 2, 7, 1, 4, 11, 1, 2, 1755.9000, 5, 1);
+
+		
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-2-28/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-01/03/2019****************************************/
+begin;
+	do $$
+	declare 
+		id_materiallt_new int;
+		id_unidadconstructivalt_old int;
+		id_unidadconstructivalt_new int;		
+		id_item_new int;
+	begin
+		
+		id_unidadconstructivalt_old := (select id_unidadconstructivalt from snx.tunidadconstructivalt uclt	 where uclt.codigo = 'UUCC L 16');
+	
+		--Nuevo material para líneas
+		insert into snx.tmateriallt
+		(
+			id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai, materiallt,
+			id_unidad, peso, id_factorindexacion, id_ambitoprecio, id_tipolinea, cargarotura 
+		) values
+		(
+			1, null, now(), now(), 'activo', null, null, 'Separador New Jersey', 12, 2.40,	4,	2,	2, null				
+		)
+		returning id_materiallt into id_materiallt_new;
+		
+		--Se le inserta un precio al material
+		insert into snx.tmaterialpreciolt
+		(
+			id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai,
+			id_materiallt, proyecto, fechaprecio, id_moneda, valormateriallt		
+		) values
+		(
+			1, null, now(), now(), 'activo', null, null, id_materiallt_new, 'SINEX', '2018-09-19 00:00:00',	1, 56.85
+		);
+		
+		
+		--Nueva UUCC
+		insert into snx.tunidadconstructivalt
+		(
+			codigo, descripcion, id_tipolinea, id_tensionservicio, id_tipoestructura, id_tipoconductor, conductorfase, id_configuracionlt, id_clasificacionaltura,
+			id_pararrayolinea, distanciatransporte, estructurapasocantidad, estructurapasopeso, estructuraamarrecantidad, estructuraamarrepeso, porcmterrenofirme,
+			porcmterrenointerme, porcmterrenoterrenoblando, porcmterrenosumer, porcvegetamaleza, porcvegetamatorral, porcvegetaforestacion, porcvegetabosque,
+			porcterrenoplano, porcterrenoondulado, porcterrenocerros, longitud, id_nivelcontaminacionlt, id_areaprotegida, factoroc, id_revista, id_hilosguarda,
+			distanciatransporteext, id_bancoductos, id_cajaempalme, id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai
+		)
+		select		'UUCC L 18' as codigo,
+					'km - 1 subconductor/fase - Banco de ductos Caso especial (Litio-Salar)' as descripcion,
+					id_tipolinea,
+					id_tensionservicio,
+					id_tipoestructura,
+					id_tipoconductor,
+					conductorfase,
+					id_configuracionlt,
+					id_clasificacionaltura,
+					id_pararrayolinea,
+					distanciatransporte,
+					estructurapasocantidad,
+					estructurapasopeso,
+					estructuraamarrecantidad,
+					estructuraamarrepeso,
+					porcmterrenofirme,
+					porcmterrenointerme,
+					porcmterrenoterrenoblando,
+					porcmterrenosumer,
+					porcvegetamaleza,
+					porcvegetamatorral,
+					porcvegetaforestacion,
+					porcvegetabosque,
+					porcterrenoplano,
+					porcterrenoondulado,
+					porcterrenocerros,
+					longitud,
+					id_nivelcontaminacionlt,
+					id_areaprotegida,
+					factoroc,
+					id_revista,
+					id_hilosguarda,
+					distanciatransporteext,
+					2 AS id_bancoductos,
+					2 AS id_cajaempalme,
+					id_usuario_reg,
+					id_usuario_mod,
+					fecha_reg,
+					fecha_mod,
+					estado_reg,
+					id_usuario_ai,
+					usuario_ai
+		from 		snx.tunidadconstructivalt uclt	
+		where		uclt.id_unidadconstructivalt = id_unidadconstructivalt_old
+		returning 	id_unidadconstructivalt into id_unidadconstructivalt_new;
+	
+		--Configuración de equipos y materiales
+		insert into	snx.tunidadconstructivalteqmate
+		(
+			id_unidadconstructivalt, id_item, id_codigo, id_puestatierra, id_aislador, id_extralt, id_usuario_reg,
+			id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai
+		)
+		select		id_unidadconstructivalt_new as id_unidadconstructivalt,
+					id_item,
+					id_codigo,
+					id_puestatierra,
+					id_aislador,
+					id_extralt,
+					id_usuario_reg,
+					id_usuario_mod,
+					fecha_reg,
+					fecha_mod,
+					estado_reg,
+					id_usuario_ai,
+					usuario_ai
+		from		snx.tunidadconstructivalteqmate ucltem
+		where		ucltem.id_unidadconstructivalt = id_unidadconstructivalt_old;
+	
+		--Configuración de montaje
+		insert into snx.tunidadconstructivaltmontaje
+		(
+			id_unidadconstructivalt, id_item, id_codigo, id_usuario_reg, id_usuario_mod, fecha_reg,
+			fecha_mod, estado_reg, id_usuario_ai, usuario_ai
+		)
+		select		id_unidadconstructivalt_new as id_unidadconstructivalt,
+					id_item,
+					id_codigo,
+					id_usuario_reg,
+					id_usuario_mod,
+					fecha_reg,
+					fecha_mod,
+					estado_reg,
+					id_usuario_ai,
+					usuario_ai
+		from		snx.tunidadconstructivaltmontaje ucltmon
+		where		ucltmon.id_unidadconstructivalt = id_unidadconstructivalt_old;
+	
+		--Nuevo item para equipos y maquinaria
+		insert into snx.tucltmaestraitem
+		(	
+			id_usuario_reg, id_usuario_mod, fecha_reg, fecha_mod, estado_reg,
+			id_usuario_ai, usuario_ai, item, id_grupo, id_unidad
+		) values		
+		(
+			1, null, now(), now(), 'activo', null, null, 'Barrera de protección', 10, 12
+		)
+		returning id_item into id_item_new;
+		
+		
+		--Se asocia a la línea
+		insert into	snx.tunidadconstructivalteqmate
+		(
+			id_unidadconstructivalt, id_item, id_codigo, id_puestatierra, id_aislador, id_extralt, id_usuario_reg,
+			id_usuario_mod, fecha_reg, fecha_mod, estado_reg, id_usuario_ai, usuario_ai
+		) values
+		(
+			id_unidadconstructivalt_new, id_item_new, id_materiallt_new, 6,	6, 3, 1, null, now(), now(), 'activo', null, null
+		);
+	
+		delete from snx.tobracivilcantidadlt where id_terreno is null;
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-2-01/03/2019****************************************/
+
+
+/***********************************I-SCP-JYP-CMS-2-06/03/2019****************************************/
+
+delete from snx.ttarifassb
+where id_tarifasb in (2, 5, 6, 7);
+
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 414;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 268;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 233;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 234;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 229;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 230;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 231;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 232;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 235;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 236;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 237;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 238;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 239;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 240;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 241;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 269;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 270;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 271;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 272;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 382;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 298;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 257;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 258;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 259;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 260;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 246;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 247;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 261;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 248;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 249;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 250;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 251;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 252;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 253;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 254;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 255;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 256;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 263;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 264;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 265;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 266;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 267;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 273;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 274;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 275;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 367;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 368;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 369;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 328;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 329;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 309;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 304;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 302;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 226;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 301;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 303;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 308;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 288;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 299;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 333;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 227;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 228;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 262;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 282;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 283;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 284;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 285;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 286;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 287;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 334;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 289;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 290;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 291;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 292;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 293;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 294;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 295;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 296;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 300;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 311;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 310;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 307;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 305;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 332;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 330;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 331;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 335;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 306;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 318;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 319;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 320;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 321;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 322;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 323;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 276;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 277;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 317;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 324;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 325;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 326;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 327;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 314;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 312;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 313;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 339;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 315;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 336;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 316;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 340;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 338;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 297;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 341;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 337;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 278;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 279;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 280;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 281;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 350;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 351;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 406;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 407;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 408;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 343;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 410;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 392;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 395;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 390;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 396;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 243;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 244;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 245;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 342;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 345;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 346;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 347;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 348;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 411;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 412;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 413;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 352;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 353;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 354;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 355;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 356;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 397;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 398;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 409;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 344;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 242;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 357;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 359;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 365;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 361;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 362;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 363;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 364;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 360;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 391;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 366;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 349;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 400;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 401;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 402;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 358;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 404;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 405;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 403;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 399;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 393;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 394;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 378;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 379;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 380;
+update snx.tmateriallt set id_ambitoprecio = 2 where id_materiallt = 381;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 370;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 371;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 372;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 373;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 374;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 375;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 376;
+update snx.tmateriallt set id_ambitoprecio = 1 where id_materiallt = 377;
+
+update  snx.tmaterialcantidadlt
+set		id_funcionestructura = 1
+where   id_materialcantidadlt in (738776, 741752);
+
+update  snx.tmaterialcantidadlt
+set		id_funcionestructura = 3
+where   id_materialcantidadlt = 743239;
+
+--Cantidades de equipos en subestaciones
+delete from snx.tucsbequipotemp;
+
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(2,1035,3.00000)
+,(2,1030,1.00000)
+,(2,1031,2.00000)
+,(2,1029,1.00000)
+,(2,1034,3.00000)
+,(2,1028,0.00000)
+,(2,1027,2.00000)
+,(2,1037,0.00000)
+,(2,1033,3.00000)
+,(2,1032,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(9,1035,6.00000)
+,(9,1030,1.00000)
+,(9,1031,2.00000)
+,(9,1029,1.00000)
+,(9,1034,3.00000)
+,(9,1028,0.00000)
+,(9,1027,2.00000)
+,(9,1037,0.00000)
+,(9,1033,3.00000)
+,(9,1032,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(10,1013,2.00000)
+,(10,1008,1.00000)
+,(10,1009,2.00000)
+,(10,1007,1.00000)
+,(10,1012,3.00000)
+,(10,1006,0.00000)
+,(10,1005,2.00000)
+,(10,1015,0.00000)
+,(10,1011,3.00000)
+,(10,1010,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(11,1013,4.00000)
+,(11,1008,0.00000)
+,(11,1009,2.00000)
+,(11,1007,1.00000)
+,(11,1012,0.00000)
+,(11,1006,0.00000)
+,(11,1005,2.00000)
+,(11,1015,0.00000)
+,(11,1011,3.00000)
+,(11,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(12,1013,5.00000)
+,(12,1008,1.00000)
+,(12,1009,2.00000)
+,(12,1007,1.00000)
+,(12,1012,3.00000)
+,(12,1006,0.00000)
+,(12,1005,2.00000)
+,(12,1015,0.00000)
+,(12,1011,3.00000)
+,(12,1010,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(13,1013,5.00000)
+,(13,1008,1.00000)
+,(13,1009,2.00000)
+,(13,1007,1.00000)
+,(13,1012,3.00000)
+,(13,1006,0.00000)
+,(13,1005,2.00000)
+,(13,1015,0.00000)
+,(13,1011,3.00000)
+,(13,1010,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(14,1010,3.00000)
+,(14,1011,0.00000)
+,(14,1015,0.00000)
+,(14,1005,0.00000)
+,(14,1006,0.00000)
+,(14,1012,0.00000)
+,(14,1007,1.00000)
+,(14,1009,2.00000)
+,(14,1008,0.00000)
+,(14,1013,5.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(15,1008,1.00000)
+,(15,1009,2.00000)
+,(15,1007,1.00000)
+,(15,1012,3.00000)
+,(15,1006,0.00000)
+,(15,1005,2.00000)
+,(15,1013,9.00000)
+,(15,1015,0.00000)
+,(15,1011,3.00000)
+,(15,1010,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(16,1013,9.00000)
+,(16,1008,1.00000)
+,(16,1009,2.00000)
+,(16,1007,1.00000)
+,(16,1012,3.00000)
+,(16,1006,0.00000)
+,(16,1005,2.00000)
+,(16,1015,0.00000)
+,(16,1011,3.00000)
+,(16,1010,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(17,1035,4.00000)
+,(17,1030,1.00000)
+,(17,1031,2.00000)
+,(17,1029,1.00000)
+,(17,1034,3.00000)
+,(17,1028,0.00000)
+,(17,1027,2.00000)
+,(17,1037,0.00000)
+,(17,1033,3.00000)
+,(17,1032,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(18,1035,4.00000)
+,(18,1030,1.00000)
+,(18,1031,2.00000)
+,(18,1029,1.00000)
+,(18,1034,3.00000)
+,(18,1028,0.00000)
+,(18,1027,2.00000)
+,(18,1037,0.00000)
+,(18,1033,3.00000)
+,(18,1032,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(19,1035,0.00000)
+,(19,1030,0.00000)
+,(19,1031,2.00000)
+,(19,1029,1.00000)
+,(19,1034,0.00000)
+,(19,1028,0.00000)
+,(19,1027,1.00000)
+,(19,1037,0.00000)
+,(19,1033,3.00000)
+,(19,1032,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(20,1013,3.00000)
+,(20,1008,0.00000)
+,(20,1009,1.00000)
+,(20,1007,1.00000)
+,(20,1012,3.00000)
+,(20,1006,0.00000)
+,(20,1005,1.00000)
+,(20,1015,0.00000)
+,(20,1011,0.00000)
+,(20,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(21,1013,3.00000)
+,(21,1008,0.00000)
+,(21,1009,1.00000)
+,(21,1007,0.00000)
+,(21,1012,3.00000)
+,(21,1006,0.00000)
+,(21,1005,1.00000)
+,(21,1015,0.00000)
+,(21,1011,0.00000)
+,(21,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(22,1015,0.00000)
+,(22,1013,0.00000)
+,(22,1008,0.00000)
+,(22,1009,0.00000)
+,(22,1007,0.00000)
+,(22,1012,0.00000)
+,(22,1006,2.00000)
+,(22,1005,0.00000)
+,(22,1011,0.00000)
+,(22,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(23,1010,0.00000)
+,(23,1011,0.00000)
+,(23,1015,0.00000)
+,(23,1013,0.00000)
+,(23,1005,0.00000)
+,(23,1006,4.00000)
+,(23,1012,0.00000)
+,(23,1007,0.00000)
+,(23,1009,0.00000)
+,(23,1008,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(24,1010,0.00000)
+,(24,1011,0.00000)
+,(24,1015,0.00000)
+,(24,1005,0.00000)
+,(24,1006,6.00000)
+,(24,1012,0.00000)
+,(24,1007,0.00000)
+,(24,1009,0.00000)
+,(24,1008,0.00000)
+,(24,1013,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(25,1013,48.00000)
+,(25,1010,0.00000)
+,(25,1011,0.00000)
+,(25,1015,0.00000)
+,(25,1005,0.00000)
+,(25,1006,0.00000)
+,(25,1012,0.00000)
+,(25,1007,0.00000)
+,(25,1009,0.00000)
+,(25,1008,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(26,1010,0.00000)
+,(26,1011,0.00000)
+,(26,1015,0.00000)
+,(26,1005,0.00000)
+,(26,1006,0.00000)
+,(26,1012,0.00000)
+,(26,1013,54.00000)
+,(26,1007,0.00000)
+,(26,1009,0.00000)
+,(26,1008,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(27,1010,0.00000)
+,(27,1013,102.00000)
+,(27,1008,0.00000)
+,(27,1009,0.00000)
+,(27,1007,0.00000)
+,(27,1012,0.00000)
+,(27,1006,0.00000)
+,(27,1005,0.00000)
+,(27,1015,0.00000)
+,(27,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(28,1028,0.00000)
+,(28,1035,0.00000)
+,(28,1030,0.00000)
+,(28,1031,0.00000)
+,(28,1029,0.00000)
+,(28,1034,0.00000)
+,(28,1027,0.00000)
+,(28,1037,0.00000)
+,(28,1033,0.00000)
+,(30,975,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(30,976,2.00000)
+,(30,974,1.00000)
+,(30,979,3.00000)
+,(30,973,0.00000)
+,(30,972,2.00000)
+,(30,982,0.00000)
+,(30,978,3.00000)
+,(30,977,3.00000)
+,(30,980,3.00000)
+,(31,975,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(31,976,2.00000)
+,(31,974,1.00000)
+,(31,979,3.00000)
+,(31,973,0.00000)
+,(31,972,2.00000)
+,(31,982,0.00000)
+,(31,978,3.00000)
+,(31,977,3.00000)
+,(31,980,6.00000)
+,(32,980,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(32,975,1.00000)
+,(32,976,2.00000)
+,(32,974,1.00000)
+,(32,979,0.00000)
+,(32,973,0.00000)
+,(32,972,2.00000)
+,(32,982,0.00000)
+,(32,978,3.00000)
+,(32,977,3.00000)
+,(33,977,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(33,978,3.00000)
+,(33,982,0.00000)
+,(33,972,2.00000)
+,(33,973,0.00000)
+,(33,979,0.00000)
+,(33,974,1.00000)
+,(33,976,2.00000)
+,(33,975,0.00000)
+,(33,980,4.00000)
+,(34,980,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(34,977,3.00000)
+,(34,975,1.00000)
+,(34,976,2.00000)
+,(34,974,1.00000)
+,(34,979,3.00000)
+,(34,973,0.00000)
+,(34,972,2.00000)
+,(34,982,0.00000)
+,(34,978,3.00000)
+,(35,999,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(35,1000,3.00000)
+,(35,1004,0.00000)
+,(35,994,2.00000)
+,(35,995,0.00000)
+,(35,1001,3.00000)
+,(35,996,1.00000)
+,(35,998,2.00000)
+,(35,997,1.00000)
+,(35,1002,3.00000)
+,(36,991,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(36,988,0.00000)
+,(36,989,0.00000)
+,(36,993,0.00000)
+,(36,983,0.00000)
+,(36,984,0.00000)
+,(36,990,0.00000)
+,(36,985,1.00000)
+,(36,987,2.00000)
+,(36,986,0.00000)
+,(37,980,6.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(37,977,3.00000)
+,(37,978,3.00000)
+,(37,982,0.00000)
+,(37,972,2.00000)
+,(37,973,0.00000)
+,(37,979,3.00000)
+,(37,974,1.00000)
+,(37,976,2.00000)
+,(37,975,1.00000)
+,(38,977,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(38,978,3.00000)
+,(38,982,0.00000)
+,(38,972,2.00000)
+,(38,973,0.00000)
+,(38,979,3.00000)
+,(38,974,1.00000)
+,(38,976,2.00000)
+,(38,975,1.00000)
+,(38,980,6.00000)
+,(39,980,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(39,975,1.00000)
+,(39,976,2.00000)
+,(39,974,1.00000)
+,(39,979,3.00000)
+,(39,973,0.00000)
+,(39,972,2.00000)
+,(39,982,0.00000)
+,(39,978,3.00000)
+,(39,977,3.00000)
+,(40,977,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(40,978,3.00000)
+,(40,982,0.00000)
+,(40,972,2.00000)
+,(40,973,0.00000)
+,(40,979,3.00000)
+,(40,974,1.00000)
+,(40,976,2.00000)
+,(40,975,1.00000)
+,(40,980,4.00000)
+,(41,975,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(41,976,2.00000)
+,(41,974,1.00000)
+,(41,979,0.00000)
+,(41,973,0.00000)
+,(41,972,1.00000)
+,(41,980,0.00000)
+,(41,982,0.00000)
+,(41,978,3.00000)
+,(41,977,0.00000)
+,(42,977,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(42,980,3.00000)
+,(42,975,0.00000)
+,(42,976,1.00000)
+,(42,974,1.00000)
+,(42,979,3.00000)
+,(42,973,0.00000)
+,(42,972,1.00000)
+,(42,982,0.00000)
+,(42,978,0.00000)
+,(50,971,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(50,969,3.00000)
+,(50,964,1.00000)
+,(50,965,2.00000)
+,(50,963,1.00000)
+,(50,968,3.00000)
+,(50,962,0.00000)
+,(50,961,2.00000)
+,(50,967,3.00000)
+,(50,966,3.00000)
+,(51,969,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(51,964,1.00000)
+,(51,965,2.00000)
+,(51,963,1.00000)
+,(51,968,3.00000)
+,(51,962,0.00000)
+,(51,961,2.00000)
+,(51,971,0.00000)
+,(51,967,3.00000)
+,(51,966,3.00000)
+,(52,964,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(52,965,2.00000)
+,(52,963,1.00000)
+,(52,968,3.00000)
+,(52,962,0.00000)
+,(52,961,2.00000)
+,(52,969,6.00000)
+,(52,971,0.00000)
+,(52,967,3.00000)
+,(52,966,3.00000)
+,(53,969,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(53,964,1.00000)
+,(53,965,2.00000)
+,(53,963,1.00000)
+,(53,968,3.00000)
+,(53,962,0.00000)
+,(53,961,2.00000)
+,(53,971,0.00000)
+,(53,967,3.00000)
+,(53,966,3.00000)
+,(54,966,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(54,967,3.00000)
+,(54,971,0.00000)
+,(54,961,2.00000)
+,(54,962,0.00000)
+,(54,968,0.00000)
+,(54,963,1.00000)
+,(54,965,2.00000)
+,(54,964,0.00000)
+,(54,969,4.00000)
+,(55,976,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(55,975,1.00000)
+,(55,977,3.00000)
+,(55,978,3.00000)
+,(55,982,0.00000)
+,(55,980,3.00000)
+,(55,972,2.00000)
+,(55,973,0.00000)
+,(55,979,3.00000)
+,(55,974,1.00000)
+,(56,969,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(56,964,1.00000)
+,(56,965,2.00000)
+,(56,963,1.00000)
+,(56,968,3.00000)
+,(56,962,0.00000)
+,(56,961,2.00000)
+,(56,971,0.00000)
+,(56,967,3.00000)
+,(56,966,3.00000)
+,(57,969,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(57,964,0.00000)
+,(57,965,2.00000)
+,(57,963,1.00000)
+,(57,968,0.00000)
+,(57,962,0.00000)
+,(57,961,2.00000)
+,(57,966,0.00000)
+,(57,971,0.00000)
+,(57,967,0.00000)
+,(58,969,6.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(58,964,1.00000)
+,(58,965,2.00000)
+,(58,963,1.00000)
+,(58,968,3.00000)
+,(58,962,0.00000)
+,(58,961,2.00000)
+,(58,971,0.00000)
+,(58,967,3.00000)
+,(58,966,3.00000)
+,(59,969,6.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(59,964,1.00000)
+,(59,965,2.00000)
+,(59,963,1.00000)
+,(59,968,3.00000)
+,(59,962,0.00000)
+,(59,961,2.00000)
+,(59,971,0.00000)
+,(59,967,3.00000)
+,(59,966,3.00000)
+,(60,969,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(60,964,1.00000)
+,(60,965,2.00000)
+,(60,963,1.00000)
+,(60,968,3.00000)
+,(60,962,0.00000)
+,(60,961,2.00000)
+,(60,971,0.00000)
+,(60,967,3.00000)
+,(60,966,3.00000)
+,(61,969,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(61,964,0.00000)
+,(61,965,2.00000)
+,(61,963,1.00000)
+,(61,968,0.00000)
+,(61,962,0.00000)
+,(61,961,1.00000)
+,(61,971,0.00000)
+,(61,967,3.00000)
+,(61,966,0.00000)
+,(62,969,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(62,964,1.00000)
+,(62,965,2.00000)
+,(62,963,1.00000)
+,(62,968,3.00000)
+,(62,962,0.00000)
+,(62,961,2.00000)
+,(62,971,0.00000)
+,(62,967,3.00000)
+,(62,966,3.00000)
+,(63,966,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(63,967,0.00000)
+,(63,971,0.00000)
+,(63,961,1.00000)
+,(63,962,0.00000)
+,(63,968,3.00000)
+,(63,963,1.00000)
+,(63,965,1.00000)
+,(63,964,0.00000)
+,(63,969,3.00000)
+,(64,964,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(64,965,0.00000)
+,(64,963,0.00000)
+,(64,968,0.00000)
+,(64,962,2.00000)
+,(64,961,0.00000)
+,(64,971,0.00000)
+,(64,967,0.00000)
+,(64,966,0.00000)
+,(64,969,0.00000)
+,(65,966,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(65,967,0.00000)
+,(65,971,0.00000)
+,(65,961,0.00000)
+,(65,962,4.00000)
+,(65,968,0.00000)
+,(65,963,0.00000)
+,(65,965,0.00000)
+,(65,964,0.00000)
+,(65,969,0.00000)
+,(66,966,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(66,967,0.00000)
+,(66,971,0.00000)
+,(66,961,0.00000)
+,(66,962,6.00000)
+,(66,968,0.00000)
+,(66,963,0.00000)
+,(66,965,0.00000)
+,(66,964,0.00000)
+,(66,969,0.00000)
+,(67,967,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(67,971,0.00000)
+,(67,961,0.00000)
+,(67,962,0.00000)
+,(67,968,0.00000)
+,(67,963,0.00000)
+,(67,965,0.00000)
+,(67,964,0.00000)
+,(67,969,6.00000)
+,(67,966,0.00000)
+,(68,969,18.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(68,964,0.00000)
+,(68,965,0.00000)
+,(68,963,0.00000)
+,(68,968,0.00000)
+,(68,962,0.00000)
+,(68,961,0.00000)
+,(68,971,0.00000)
+,(68,967,0.00000)
+,(68,966,0.00000)
+,(69,964,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(69,965,0.00000)
+,(69,963,0.00000)
+,(69,968,0.00000)
+,(69,962,0.00000)
+,(69,961,0.00000)
+,(69,971,0.00000)
+,(69,966,0.00000)
+,(69,967,0.00000)
+,(69,969,24.00000)
+,(70,965,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(70,967,0.00000)
+,(70,971,0.00000)
+,(70,961,0.00000)
+,(70,962,0.00000)
+,(70,968,0.00000)
+,(70,963,0.00000)
+,(70,964,0.00000)
+,(70,969,0.00000)
+,(71,1013,0.00000)
+,(71,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(71,1011,0.00000)
+,(71,1015,0.00000)
+,(71,1005,0.00000)
+,(71,1006,0.00000)
+,(71,1012,0.00000)
+,(71,1007,0.00000)
+,(71,1009,0.00000)
+,(71,1008,0.00000)
+,(72,1030,0.00000)
+,(72,1031,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(72,1029,0.00000)
+,(72,1034,0.00000)
+,(72,1028,0.00000)
+,(72,1027,0.00000)
+,(72,1037,0.00000)
+,(72,1033,0.00000)
+,(72,1032,0.00000)
+,(72,1035,0.00000)
+,(73,1008,0.00000)
+,(73,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(73,1007,0.00000)
+,(73,1012,0.00000)
+,(73,1006,0.00000)
+,(73,1005,0.00000)
+,(73,1013,0.00000)
+,(73,1015,0.00000)
+,(73,1011,0.00000)
+,(73,1010,0.00000)
+,(74,1008,0.00000)
+,(74,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(74,1007,0.00000)
+,(74,1012,0.00000)
+,(74,1006,0.00000)
+,(74,1005,0.00000)
+,(74,1013,0.00000)
+,(74,1015,0.00000)
+,(74,1011,0.00000)
+,(74,1010,0.00000)
+,(75,1013,0.00000)
+,(75,1008,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(75,1009,0.00000)
+,(75,1007,0.00000)
+,(75,1012,0.00000)
+,(75,1006,0.00000)
+,(75,1005,0.00000)
+,(75,1015,0.00000)
+,(75,1011,0.00000)
+,(75,1010,0.00000)
+,(76,977,0.00000)
+,(76,978,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(76,982,0.00000)
+,(76,980,0.00000)
+,(76,972,0.00000)
+,(76,973,0.00000)
+,(76,979,0.00000)
+,(76,974,0.00000)
+,(76,976,0.00000)
+,(76,975,0.00000)
+,(77,980,0.00000)
+,(77,975,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(77,974,0.00000)
+,(77,979,0.00000)
+,(77,973,0.00000)
+,(77,972,0.00000)
+,(77,982,0.00000)
+,(77,978,0.00000)
+,(77,977,0.00000)
+,(77,976,0.00000)
+,(78,980,0.00000)
+,(78,975,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(78,976,0.00000)
+,(78,974,0.00000)
+,(78,979,0.00000)
+,(78,973,0.00000)
+,(78,972,0.00000)
+,(78,982,0.00000)
+,(78,978,0.00000)
+,(78,977,0.00000)
+,(79,1010,0.00000)
+,(79,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(79,1015,0.00000)
+,(79,1005,0.00000)
+,(79,1006,0.00000)
+,(79,1012,0.00000)
+,(79,1007,0.00000)
+,(79,1009,0.00000)
+,(79,1008,0.00000)
+,(79,1013,0.00000)
+,(80,1008,0.00000)
+,(80,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(80,1015,0.00000)
+,(80,1005,0.00000)
+,(80,1006,0.00000)
+,(80,1012,0.00000)
+,(80,1007,0.00000)
+,(80,1009,0.00000)
+,(80,1010,0.00000)
+,(80,1013,0.00000)
+,(81,1010,0.00000)
+,(81,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(81,1015,0.00000)
+,(81,1005,0.00000)
+,(81,1006,0.00000)
+,(81,1012,0.00000)
+,(81,1007,0.00000)
+,(81,1009,0.00000)
+,(81,1008,0.00000)
+,(81,1013,0.00000)
+,(82,1008,0.00000)
+,(82,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(82,1007,0.00000)
+,(82,1012,0.00000)
+,(82,1006,0.00000)
+,(82,1005,0.00000)
+,(82,1013,0.00000)
+,(82,1015,0.00000)
+,(82,1011,0.00000)
+,(82,1010,0.00000)
+,(83,1010,0.00000)
+,(83,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(83,1015,0.00000)
+,(83,1005,0.00000)
+,(83,1006,0.00000)
+,(83,1012,0.00000)
+,(83,1007,0.00000)
+,(83,1009,0.00000)
+,(83,1008,0.00000)
+,(83,1013,0.00000)
+,(84,969,0.00000)
+,(84,964,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(84,965,0.00000)
+,(84,963,0.00000)
+,(84,968,0.00000)
+,(84,962,0.00000)
+,(84,961,0.00000)
+,(84,971,0.00000)
+,(84,967,0.00000)
+,(84,966,0.00000)
+,(85,967,0.00000)
+,(85,971,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(85,966,0.00000)
+,(85,961,0.00000)
+,(85,962,0.00000)
+,(85,968,0.00000)
+,(85,963,0.00000)
+,(85,965,0.00000)
+,(85,964,0.00000)
+,(85,969,0.00000)
+,(86,1054,0.00000)
+,(86,1055,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(86,1059,0.00000)
+,(86,1049,0.00000)
+,(86,1050,0.00000)
+,(86,1056,0.00000)
+,(86,1057,0.00000)
+,(86,1051,0.00000)
+,(86,1053,0.00000)
+,(86,1052,0.00000)
+,(87,1049,0.00000)
+,(87,1057,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(87,1052,0.00000)
+,(87,1053,0.00000)
+,(87,1051,0.00000)
+,(87,1056,0.00000)
+,(87,1050,0.00000)
+,(87,1059,0.00000)
+,(87,1055,0.00000)
+,(87,1054,0.00000)
+,(88,1013,0.00000)
+,(88,1010,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(88,1011,0.00000)
+,(88,1015,0.00000)
+,(88,1005,0.00000)
+,(88,1006,0.00000)
+,(88,1012,0.00000)
+,(88,1007,0.00000)
+,(88,1009,0.00000)
+,(88,1008,0.00000)
+,(89,1057,6.00000)
+,(89,1052,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(89,1053,2.00000)
+,(89,1051,1.00000)
+,(89,1056,3.00000)
+,(89,1050,0.00000)
+,(89,1049,2.00000)
+,(89,1059,0.00000)
+,(89,1055,3.00000)
+,(89,1054,3.00000)
+,(90,1057,6.00000)
+,(90,1052,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(90,1053,2.00000)
+,(90,1051,1.00000)
+,(90,1056,3.00000)
+,(90,1050,0.00000)
+,(90,1049,2.00000)
+,(90,1059,0.00000)
+,(90,1055,3.00000)
+,(90,1054,3.00000)
+,(91,1054,0.00000)
+,(91,1055,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(91,1059,0.00000)
+,(91,1049,0.00000)
+,(91,1050,0.00000)
+,(91,1056,0.00000)
+,(91,1057,0.00000)
+,(91,1051,1.00000)
+,(91,1053,2.00000)
+,(91,1052,0.00000)
+,(92,1051,0.00000)
+,(92,1054,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(92,1055,0.00000)
+,(92,1059,0.00000)
+,(92,1049,0.00000)
+,(92,1050,0.00000)
+,(92,1056,0.00000)
+,(92,1053,0.00000)
+,(92,1052,0.00000)
+,(92,1057,0.00000)
+,(93,1054,0.00000)
+,(93,1055,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(93,1059,0.00000)
+,(93,1049,1.00000)
+,(93,1050,0.00000)
+,(93,1056,3.00000)
+,(93,1051,1.00000)
+,(93,1053,1.00000)
+,(93,1052,0.00000)
+,(93,1057,3.00000)
+,(94,1052,0.00000)
+,(94,1053,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(94,1051,0.00000)
+,(94,1056,3.00000)
+,(94,1050,0.00000)
+,(94,1049,1.00000)
+,(94,1059,0.00000)
+,(94,1055,0.00000)
+,(94,1054,0.00000)
+,(94,1057,3.00000)
+,(95,1057,0.00000)
+,(95,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(95,1053,0.00000)
+,(95,1051,0.00000)
+,(95,1056,0.00000)
+,(95,1050,0.00000)
+,(95,1049,0.00000)
+,(95,1059,0.00000)
+,(95,1055,0.00000)
+,(95,1054,0.00000)
+,(96,1051,1.00000)
+,(96,1054,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(96,1055,0.00000)
+,(96,1059,0.00000)
+,(96,1049,0.00000)
+,(96,1050,0.00000)
+,(96,1056,1.00000)
+,(96,1053,0.00000)
+,(96,1052,0.00000)
+,(96,1057,0.00000)
+,(97,1052,1.00000)
+,(97,1053,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(97,1051,1.00000)
+,(97,1056,3.00000)
+,(97,1050,0.00000)
+,(97,1049,3.00000)
+,(97,1059,0.00000)
+,(97,1055,3.00000)
+,(97,1054,3.00000)
+,(97,1057,12.00000)
+,(98,1054,3.00000)
+,(98,1057,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(98,1052,1.00000)
+,(98,1053,2.00000)
+,(98,1051,1.00000)
+,(98,1056,3.00000)
+,(98,1050,0.00000)
+,(98,1049,3.00000)
+,(98,1059,0.00000)
+,(98,1055,3.00000)
+,(99,1057,6.00000)
+,(99,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(99,1053,2.00000)
+,(99,1051,1.00000)
+,(99,1056,0.00000)
+,(99,1050,0.00000)
+,(99,1049,0.00000)
+,(99,1059,0.00000)
+,(99,1055,3.00000)
+,(99,1054,0.00000)
+,(100,1057,14.00000)
+,(100,1052,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(100,1053,3.00000)
+,(100,1051,1.00000)
+,(100,1056,3.00000)
+,(100,1050,0.00000)
+,(100,1049,3.00000)
+,(100,1059,0.00000)
+,(100,1055,3.00000)
+,(100,1054,3.00000)
+,(101,1057,10.00000)
+,(101,1052,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(101,1053,3.00000)
+,(101,1051,1.00000)
+,(101,1056,3.00000)
+,(101,1050,0.00000)
+,(101,1049,3.00000)
+,(101,1054,3.00000)
+,(101,1059,0.00000)
+,(101,1055,3.00000)
+,(102,1054,0.00000)
+,(102,1055,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(102,1059,0.00000)
+,(102,1049,3.00000)
+,(102,1050,0.00000)
+,(102,1056,0.00000)
+,(102,1051,1.00000)
+,(102,1053,2.00000)
+,(102,1052,0.00000)
+,(102,1057,17.00000)
+,(103,1057,14.00000)
+,(103,1054,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(103,1055,0.00000)
+,(103,1059,0.00000)
+,(103,1049,0.00000)
+,(103,1050,8.00000)
+,(103,1056,6.00000)
+,(103,1051,0.00000)
+,(103,1053,0.00000)
+,(103,1052,0.00000)
+,(104,1057,26.00000)
+,(104,1054,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(104,1055,0.00000)
+,(104,1059,0.00000)
+,(104,1049,0.00000)
+,(104,1050,12.00000)
+,(104,1056,6.00000)
+,(104,1051,0.00000)
+,(104,1053,0.00000)
+,(104,1052,0.00000)
+,(105,1052,0.00000)
+,(105,1054,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(105,1055,0.00000)
+,(105,1059,0.00000)
+,(105,1057,0.00000)
+,(105,1049,0.00000)
+,(105,1050,2.00000)
+,(105,1056,0.00000)
+,(105,1051,0.00000)
+,(105,1053,0.00000)
+,(106,1057,0.00000)
+,(106,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(106,1053,0.00000)
+,(106,1051,0.00000)
+,(106,1056,0.00000)
+,(106,1050,4.00000)
+,(106,1049,0.00000)
+,(106,1059,0.00000)
+,(106,1055,0.00000)
+,(106,1054,0.00000)
+,(107,1057,0.00000)
+,(107,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(107,1053,0.00000)
+,(107,1051,0.00000)
+,(107,1056,0.00000)
+,(107,1050,6.00000)
+,(107,1049,0.00000)
+,(107,1059,0.00000)
+,(107,1055,0.00000)
+,(107,1054,0.00000)
+,(108,1057,16.00000)
+,(108,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(108,1053,0.00000)
+,(108,1051,0.00000)
+,(108,1056,0.00000)
+,(108,1050,0.00000)
+,(108,1049,0.00000)
+,(108,1059,0.00000)
+,(108,1055,0.00000)
+,(108,1054,0.00000)
+,(109,1057,19.00000)
+,(109,1054,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(109,1055,0.00000)
+,(109,1059,0.00000)
+,(109,1049,0.00000)
+,(109,1050,0.00000)
+,(109,1056,0.00000)
+,(109,1051,0.00000)
+,(109,1053,0.00000)
+,(109,1052,0.00000)
+,(110,1055,0.00000)
+,(110,1059,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(110,1049,0.00000)
+,(110,1050,0.00000)
+,(110,1056,0.00000)
+,(110,1051,0.00000)
+,(110,1053,0.00000)
+,(110,1052,0.00000)
+,(110,1057,35.00000)
+,(110,1054,0.00000)
+,(111,1057,0.00000)
+,(111,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(111,1053,0.00000)
+,(111,1051,0.00000)
+,(111,1056,0.00000)
+,(111,1050,0.00000)
+,(111,1049,0.00000)
+,(111,1059,0.00000)
+,(111,1055,0.00000)
+,(112,977,0.00000)
+,(112,978,0.00000)
+,(112,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(112,972,0.00000)
+,(112,973,0.00000)
+,(112,979,0.00000)
+,(112,974,0.00000)
+,(112,976,0.00000)
+,(112,975,0.00000)
+,(112,980,0.00000)
+,(113,1008,0.00000)
+,(113,1009,0.00000)
+,(113,1007,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(113,1012,0.00000)
+,(113,1006,0.00000)
+,(113,1005,0.00000)
+,(113,1015,0.00000)
+,(113,1011,0.00000)
+,(113,1010,0.00000)
+,(113,1013,0.00000)
+,(114,1013,0.00000)
+,(114,1008,0.00000)
+,(114,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(114,1007,0.00000)
+,(114,1012,0.00000)
+,(114,1006,0.00000)
+,(114,1005,0.00000)
+,(114,1015,0.00000)
+,(114,1011,0.00000)
+,(114,1010,0.00000)
+,(115,1010,3.00000)
+,(115,1011,3.00000)
+,(115,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(115,1005,2.00000)
+,(115,1006,0.00000)
+,(115,1012,3.00000)
+,(115,1007,1.00000)
+,(115,1009,3.00000)
+,(115,1008,1.00000)
+,(115,1013,11.00000)
+,(116,1009,3.00000)
+,(116,1007,1.00000)
+,(116,1012,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(116,1006,0.00000)
+,(116,1005,2.00000)
+,(116,1013,20.00000)
+,(116,1015,0.00000)
+,(116,1011,3.00000)
+,(116,1010,3.00000)
+,(116,1008,1.00000)
+,(117,1013,11.00000)
+,(117,1008,1.00000)
+,(117,1009,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(117,1007,1.00000)
+,(117,1012,3.00000)
+,(117,1006,0.00000)
+,(117,1005,2.00000)
+,(117,1015,0.00000)
+,(117,1011,3.00000)
+,(117,1010,3.00000)
+,(118,1010,3.00000)
+,(118,1011,3.00000)
+,(118,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(118,1005,2.00000)
+,(118,1006,0.00000)
+,(118,1012,3.00000)
+,(118,1007,1.00000)
+,(118,1009,4.00000)
+,(118,1008,1.00000)
+,(118,1013,20.00000)
+,(119,1010,0.00000)
+,(119,1011,6.00000)
+,(119,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(119,1013,4.00000)
+,(119,1005,0.00000)
+,(119,1006,0.00000)
+,(119,1012,0.00000)
+,(119,1007,1.00000)
+,(119,1009,2.00000)
+,(119,1008,0.00000)
+,(120,1015,0.00000)
+,(120,1013,3.00000)
+,(120,1008,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(120,1009,1.00000)
+,(120,1007,1.00000)
+,(120,1012,3.00000)
+,(120,1006,0.00000)
+,(120,1005,1.00000)
+,(120,1011,0.00000)
+,(120,1010,0.00000)
+,(121,1057,0.00000)
+,(121,1054,0.00000)
+,(121,1055,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(121,1059,0.00000)
+,(121,1049,0.00000)
+,(121,1050,0.00000)
+,(121,1056,0.00000)
+,(121,1051,0.00000)
+,(121,1053,0.00000)
+,(121,1052,0.00000)
+,(122,1057,3.00000)
+,(122,1052,0.00000)
+,(122,1053,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(122,1051,0.00000)
+,(122,1056,3.00000)
+,(122,1050,0.00000)
+,(122,1049,0.00000)
+,(122,1059,0.00000)
+,(122,1055,0.00000)
+,(122,1054,0.00000)
+,(123,980,0.00000)
+,(123,977,0.00000)
+,(123,978,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(123,982,0.00000)
+,(123,972,0.00000)
+,(123,973,0.00000)
+,(123,979,0.00000)
+,(123,974,0.00000)
+,(123,976,0.00000)
+,(123,975,0.00000)
+,(124,982,0.00000)
+,(124,975,0.00000)
+,(124,976,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(124,974,0.00000)
+,(124,979,0.00000)
+,(124,973,0.00000)
+,(124,972,0.00000)
+,(124,980,0.00000)
+,(124,978,0.00000)
+,(124,977,0.00000)
+,(125,980,0.00000)
+,(125,975,0.00000)
+,(125,976,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(125,974,0.00000)
+,(125,979,0.00000)
+,(125,973,0.00000)
+,(125,972,0.00000)
+,(125,982,0.00000)
+,(125,978,0.00000)
+,(125,977,0.00000)
+,(126,980,0.00000)
+,(126,975,0.00000)
+,(126,976,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(126,974,0.00000)
+,(126,979,0.00000)
+,(126,973,0.00000)
+,(126,972,0.00000)
+,(126,982,0.00000)
+,(126,978,0.00000)
+,(126,977,0.00000)
+,(127,980,0.00000)
+,(127,977,0.00000)
+,(127,978,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(127,982,0.00000)
+,(127,972,0.00000)
+,(127,973,0.00000)
+,(127,979,0.00000)
+,(127,974,0.00000)
+,(127,976,0.00000)
+,(127,975,0.00000)
+,(128,978,0.00000)
+,(128,982,0.00000)
+,(128,977,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(128,972,0.00000)
+,(128,973,0.00000)
+,(128,979,0.00000)
+,(128,974,0.00000)
+,(128,976,0.00000)
+,(128,975,0.00000)
+,(128,980,0.00000)
+,(129,1013,0.00000)
+,(129,1008,0.00000)
+,(129,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(129,1007,0.00000)
+,(129,1012,0.00000)
+,(129,1006,0.00000)
+,(129,1005,0.00000)
+,(129,1015,0.00000)
+,(129,1011,0.00000)
+,(129,1010,0.00000)
+,(130,1010,0.00000)
+,(130,1011,0.00000)
+,(130,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(130,1005,0.00000)
+,(130,1006,0.00000)
+,(130,1012,0.00000)
+,(130,1007,0.00000)
+,(130,1009,0.00000)
+,(130,1008,0.00000)
+,(130,1013,0.00000)
+,(131,1010,0.00000)
+,(131,1011,0.00000)
+,(131,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(131,1005,0.00000)
+,(131,1006,0.00000)
+,(131,1012,0.00000)
+,(131,1007,0.00000)
+,(131,1009,0.00000)
+,(131,1008,0.00000)
+,(131,1013,0.00000)
+,(132,1008,0.00000)
+,(132,1009,0.00000)
+,(132,1007,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(132,1012,3.00000)
+,(132,1006,0.00000)
+,(132,1005,0.00000)
+,(132,1015,0.00000)
+,(132,1011,0.00000)
+,(132,1010,0.00000)
+,(132,1013,3.00000)
+,(133,1013,0.00000)
+,(133,1008,0.00000)
+,(133,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(133,1007,0.00000)
+,(133,1012,0.00000)
+,(133,1006,0.00000)
+,(133,1005,0.00000)
+,(133,1015,0.00000)
+,(133,1011,0.00000)
+,(133,1010,0.00000)
+,(134,1013,3.00000)
+,(134,1010,0.00000)
+,(134,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(134,1015,0.00000)
+,(134,1005,0.00000)
+,(134,1006,0.00000)
+,(134,1012,3.00000)
+,(134,1007,0.00000)
+,(134,1009,0.00000)
+,(134,1008,0.00000)
+,(135,1008,0.00000)
+,(135,1013,0.00000)
+,(135,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(135,1007,0.00000)
+,(135,1012,0.00000)
+,(135,1006,0.00000)
+,(135,1005,0.00000)
+,(135,1015,0.00000)
+,(135,1011,0.00000)
+,(135,1010,0.00000)
+,(136,1008,0.00000)
+,(136,1009,0.00000)
+,(136,1007,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(136,1012,0.00000)
+,(136,1006,0.00000)
+,(136,1005,0.00000)
+,(136,1015,0.00000)
+,(136,1011,0.00000)
+,(136,1010,0.00000)
+,(136,1013,0.00000)
+,(137,1006,0.00000)
+,(137,1008,0.00000)
+,(137,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(137,1007,0.00000)
+,(137,1012,0.00000)
+,(137,1013,0.00000)
+,(137,1005,0.00000)
+,(137,1015,0.00000)
+,(137,1011,0.00000)
+,(137,1010,0.00000)
+,(138,1013,0.00000)
+,(138,1008,0.00000)
+,(138,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(138,1007,0.00000)
+,(138,1012,0.00000)
+,(138,1006,0.00000)
+,(138,1005,0.00000)
+,(138,1015,0.00000)
+,(138,1011,0.00000)
+,(138,1010,0.00000)
+,(139,1013,0.00000)
+,(139,1008,0.00000)
+,(139,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(139,1007,0.00000)
+,(139,1012,0.00000)
+,(139,1006,0.00000)
+,(139,1005,0.00000)
+,(139,1015,0.00000)
+,(139,1011,0.00000)
+,(139,1010,0.00000)
+,(140,1013,0.00000)
+,(140,1008,0.00000)
+,(140,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(140,1007,0.00000)
+,(140,1012,0.00000)
+,(140,1006,0.00000)
+,(140,1005,0.00000)
+,(140,1015,0.00000)
+,(140,1011,0.00000)
+,(140,1010,0.00000)
+,(141,1013,0.00000)
+,(141,1008,0.00000)
+,(141,1009,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(141,1007,0.00000)
+,(141,1012,0.00000)
+,(141,1006,0.00000)
+,(141,1005,0.00000)
+,(141,1015,0.00000)
+,(141,1011,0.00000)
+,(141,1010,0.00000)
+,(142,1057,0.00000)
+,(142,1054,0.00000)
+,(142,1055,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(142,1059,0.00000)
+,(142,1049,0.00000)
+,(142,1050,0.00000)
+,(142,1056,0.00000)
+,(142,1051,0.00000)
+,(142,1053,0.00000)
+,(142,1052,0.00000)
+,(143,1054,0.00000)
+,(143,1057,0.00000)
+,(143,1052,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(143,1053,0.00000)
+,(143,1051,0.00000)
+,(143,1056,0.00000)
+,(143,1050,0.00000)
+,(143,1049,0.00000)
+,(143,1059,0.00000)
+,(143,1055,0.00000)
+,(144,980,0.00000)
+,(144,977,0.00000)
+,(144,978,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(144,982,0.00000)
+,(144,972,0.00000)
+,(144,973,0.00000)
+,(144,979,0.00000)
+,(144,974,0.00000)
+,(144,976,0.00000)
+,(144,975,0.00000)
+,(145,969,4.00000)
+,(145,964,0.00000)
+,(145,965,2.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(145,963,1.00000)
+,(145,968,0.00000)
+,(145,962,0.00000)
+,(145,961,0.00000)
+,(145,971,0.00000)
+,(145,967,6.00000)
+,(145,966,0.00000)
+,(146,969,12.00000)
+,(146,966,3.00000)
+,(146,967,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(146,971,0.00000)
+,(146,961,2.00000)
+,(146,962,0.00000)
+,(146,968,3.00000)
+,(146,963,1.00000)
+,(146,965,4.00000)
+,(146,964,1.00000)
+,(147,1013,0.00000)
+,(147,1010,0.00000)
+,(147,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(147,1015,0.00000)
+,(147,1005,0.00000)
+,(147,1006,0.00000)
+,(147,1012,0.00000)
+,(147,1007,0.00000)
+,(147,1009,0.00000)
+,(147,1008,0.00000)
+,(148,980,0.00000)
+,(148,975,0.00000)
+,(148,976,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(148,974,0.00000)
+,(148,979,0.00000)
+,(148,973,0.00000)
+,(148,972,0.00000)
+,(148,982,0.00000)
+,(148,978,0.00000)
+,(148,977,0.00000)
+,(149,1010,0.00000)
+,(149,1011,0.00000)
+,(149,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(149,1005,0.00000)
+,(149,1006,0.00000)
+,(149,1012,0.00000)
+,(149,1007,0.00000)
+,(149,1009,0.00000)
+,(149,1008,0.00000)
+,(149,1013,0.00000)
+,(150,1013,0.00000)
+,(150,1010,0.00000)
+,(150,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(150,1015,0.00000)
+,(150,1005,0.00000)
+,(150,1006,0.00000)
+,(150,1012,0.00000)
+,(150,1007,0.00000)
+,(150,1009,0.00000)
+,(150,1008,0.00000)
+,(151,1010,0.00000)
+,(151,1011,0.00000)
+,(151,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(151,1005,0.00000)
+,(151,1006,0.00000)
+,(151,1012,0.00000)
+,(151,1007,0.00000)
+,(151,1009,0.00000)
+,(151,1008,0.00000)
+,(151,1013,0.00000)
+,(152,1013,0.00000)
+,(152,1010,0.00000)
+,(152,1011,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(152,1015,0.00000)
+,(152,1005,0.00000)
+,(152,1006,0.00000)
+,(152,1012,0.00000)
+,(152,1007,0.00000)
+,(152,1009,0.00000)
+,(152,1008,0.00000)
+,(153,969,6.00000)
+,(153,964,1.00000)
+,(153,965,4.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(153,963,1.00000)
+,(153,968,3.00000)
+,(153,962,0.00000)
+,(153,961,2.00000)
+,(153,971,0.00000)
+,(153,967,3.00000)
+,(153,966,3.00000)
+,(154,964,1.00000)
+,(154,965,3.00000)
+,(154,963,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(154,968,3.00000)
+,(154,969,6.00000)
+,(154,962,0.00000)
+,(154,961,2.00000)
+,(154,971,0.00000)
+,(154,967,3.00000)
+,(154,966,3.00000)
+,(155,969,12.00000)
+,(155,964,1.00000)
+,(155,965,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(155,963,1.00000)
+,(155,968,3.00000)
+,(155,962,0.00000)
+,(155,961,2.00000)
+,(155,971,0.00000)
+,(155,967,3.00000)
+,(155,966,3.00000)
+,(156,1057,3.00000)
+,(156,1052,0.00000)
+,(156,1053,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(156,1051,1.00000)
+,(156,1056,3.00000)
+,(156,1050,0.00000)
+,(156,1049,1.00000)
+,(156,1059,0.00000)
+,(156,1055,0.00000)
+,(156,1054,0.00000)
+,(157,1057,3.00000)
+,(157,1054,3.00000)
+,(157,1055,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(157,1059,0.00000)
+,(157,1049,1.00000)
+,(157,1050,0.00000)
+,(157,1056,3.00000)
+,(157,1051,1.00000)
+,(157,1053,1.00000)
+,(157,1052,0.00000)
+,(158,1054,0.00000)
+,(158,1055,0.00000)
+,(158,1059,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(158,1049,1.00000)
+,(158,1050,0.00000)
+,(158,1056,3.00000)
+,(158,1051,0.00000)
+,(158,1053,2.00000)
+,(158,1052,0.00000)
+,(158,1057,3.00000)
+,(159,980,6.00000)
+,(159,975,1.00000)
+,(159,976,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(159,974,1.00000)
+,(159,979,3.00000)
+,(159,973,0.00000)
+,(159,972,2.00000)
+,(159,982,0.00000)
+,(159,978,3.00000)
+,(159,977,3.00000)
+,(160,979,3.00000)
+,(160,977,3.00000)
+,(160,978,3.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(160,982,0.00000)
+,(160,972,2.00000)
+,(160,973,0.00000)
+,(160,974,1.00000)
+,(160,976,3.00000)
+,(160,975,1.00000)
+,(160,980,12.00000)
+,(161,975,1.00000)
+,(161,976,4.00000)
+,(161,974,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(161,979,3.00000)
+,(161,973,0.00000)
+,(161,972,2.00000)
+,(161,980,6.00000)
+,(161,982,0.00000)
+,(161,978,3.00000)
+,(161,977,3.00000)
+,(162,977,3.00000)
+,(162,978,3.00000)
+,(162,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(162,972,2.00000)
+,(162,973,0.00000)
+,(162,979,3.00000)
+,(162,974,1.00000)
+,(162,976,4.00000)
+,(162,975,1.00000)
+,(162,980,12.00000)
+,(163,977,0.00000)
+,(163,978,6.00000)
+,(163,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(163,972,0.00000)
+,(163,973,0.00000)
+,(163,980,4.00000)
+,(163,979,0.00000)
+,(163,974,1.00000)
+,(163,976,2.00000)
+,(163,975,0.00000)
+,(164,982,0.00000)
+,(164,980,3.00000)
+,(164,975,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(164,976,1.00000)
+,(164,974,1.00000)
+,(164,979,3.00000)
+,(164,973,0.00000)
+,(164,972,1.00000)
+,(164,978,0.00000)
+,(164,977,0.00000)
+,(165,977,0.00000)
+,(165,978,0.00000)
+,(165,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(165,972,1.00000)
+,(165,973,0.00000)
+,(165,979,3.00000)
+,(165,974,0.00000)
+,(165,976,1.00000)
+,(165,975,0.00000)
+,(165,980,3.00000)
+,(170,1010,3.00000)
+,(170,1011,0.00000)
+,(170,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(170,1005,1.00000)
+,(170,1006,0.00000)
+,(170,1012,3.00000)
+,(170,1007,1.00000)
+,(170,1009,2.00000)
+,(170,1008,0.00000)
+,(170,1013,3.00000)
+,(171,1010,0.00000)
+,(171,1011,0.00000)
+,(171,1015,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(171,1005,1.00000)
+,(171,1006,0.00000)
+,(171,1012,3.00000)
+,(171,1007,0.00000)
+,(171,1009,2.00000)
+,(171,1008,0.00000)
+,(171,1013,3.00000)
+,(172,999,3.00000)
+,(172,1002,3.00000)
+,(172,997,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(172,998,2.00000)
+,(172,996,1.00000)
+,(172,1001,3.00000)
+,(172,995,0.00000)
+,(172,994,1.00000)
+,(172,1004,0.00000)
+,(172,1000,0.00000)
+,(173,997,0.00000)
+,(173,1002,3.00000)
+,(173,999,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(173,1000,0.00000)
+,(173,1004,0.00000)
+,(173,994,1.00000)
+,(173,995,0.00000)
+,(173,1001,3.00000)
+,(173,996,0.00000)
+,(173,998,2.00000)
+,(174,991,0.00000)
+,(174,990,0.00000)
+,(174,989,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(174,988,0.00000)
+,(174,987,0.00000)
+,(174,986,0.00000)
+,(174,985,0.00000)
+,(174,984,0.00000)
+,(174,983,0.00000)
+,(174,993,0.00000)
+,(43,975,0.00000)
+,(43,980,0.00000)
+,(43,976,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(43,974,0.00000)
+,(43,979,0.00000)
+,(43,972,0.00000)
+,(43,982,0.00000)
+,(43,978,0.00000)
+,(43,977,0.00000)
+,(45,980,0.00000)
+,(45,977,0.00000)
+,(45,978,0.00000)
+,(45,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(45,972,0.00000)
+,(45,979,0.00000)
+,(45,974,0.00000)
+,(45,976,0.00000)
+,(45,975,0.00000)
+,(46,978,0.00000)
+,(46,982,0.00000)
+,(46,972,0.00000)
+,(46,973,0.00000)
+,(46,979,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(46,974,0.00000)
+,(46,976,0.00000)
+,(46,975,0.00000)
+,(46,977,0.00000)
+,(47,977,0.00000)
+,(47,975,0.00000)
+,(47,976,0.00000)
+,(47,974,0.00000)
+,(47,979,0.00000)
+,(47,973,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(47,972,0.00000)
+,(47,982,0.00000)
+,(47,978,0.00000)
+,(48,977,0.00000)
+,(48,978,0.00000)
+,(48,982,0.00000)
+,(48,972,0.00000)
+,(48,973,0.00000)
+,(48,979,0.00000)
+,(48,974,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(48,976,0.00000)
+,(48,975,0.00000)
+,(49,980,0.00000)
+,(49,975,0.00000)
+,(49,976,0.00000)
+,(49,974,0.00000)
+,(49,979,0.00000)
+,(49,973,0.00000)
+,(49,972,0.00000)
+,(49,982,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(49,978,0.00000)
+,(46,980,6.00000)
+,(47,980,18.00000)
+,(48,980,24.00000)
+,(43,973,2.00000)
+,(45,973,6.00000)
+,(44,980,0.00000)
+,(44,972,0.00000)
+,(44,974,0.00000)
+,(44,975,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(44,976,0.00000)
+,(44,977,0.00000)
+,(44,978,0.00000)
+,(44,979,0.00000)
+,(44,982,0.00000)
+,(44,973,4.00000)
+,(1,1035,3.00000)
+,(1,1030,1.00000)
+,(1,1031,2.00000)
+,(1,1029,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(1,1034,3.00000)
+,(1,1028,0.00000)
+,(1,1027,2.00000)
+,(1,1037,0.00000)
+,(1,1033,3.00000)
+,(1,1032,3.00000)
+,(29,1002,3.00000)
+,(29,997,1.00000)
+,(29,998,2.00000)
+,(29,996,1.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(29,1001,3.00000)
+,(29,995,0.00000)
+,(29,994,2.00000)
+,(29,1004,0.00000)
+,(29,1000,3.00000)
+,(29,999,3.00000)
+,(2,1061,0.00000)
+,(2,1089,0.00000)
+,(2,1070,0.00000)
+,(2,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(2,1065,0.00000)
+,(2,1066,0.00000)
+,(2,1062,0.00000)
+,(2,1063,0.00000)
+,(2,1088,0.00000)
+,(2,1060,0.00000)
+,(2,1074,0.00000)
+,(2,1075,0.00000)
+,(2,1077,0.00000)
+,(2,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(2,1073,0.00000)
+,(2,1076,0.00000)
+,(2,1085,0.00000)
+,(2,1086,0.00000)
+,(2,1087,0.00000)
+,(2,1080,0.00000)
+,(2,1093,0.00000)
+,(9,1061,0.00000)
+,(9,1089,0.00000)
+,(9,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(9,1064,0.00000)
+,(9,1065,0.00000)
+,(9,1066,0.00000)
+,(9,1062,0.00000)
+,(9,1063,0.00000)
+,(9,1088,0.00000)
+,(9,1060,0.00000)
+,(9,1074,0.00000)
+,(9,1075,0.00000)
+,(9,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(9,1078,0.00000)
+,(9,1073,0.00000)
+,(9,1076,0.00000)
+,(9,1085,0.00000)
+,(9,1086,0.00000)
+,(9,1087,0.00000)
+,(9,1080,0.00000)
+,(9,1093,0.00000)
+,(10,1061,0.00000)
+,(10,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(10,1070,0.00000)
+,(10,1064,0.00000)
+,(10,1065,0.00000)
+,(10,1066,0.00000)
+,(10,1062,0.00000)
+,(10,1063,0.00000)
+,(10,1088,0.00000)
+,(10,1060,0.00000)
+,(10,1074,0.00000)
+,(10,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(10,1077,0.00000)
+,(10,1078,0.00000)
+,(10,1073,0.00000)
+,(10,1076,0.00000)
+,(10,1085,0.00000)
+,(10,1086,0.00000)
+,(10,1087,0.00000)
+,(10,1080,0.00000)
+,(10,1093,0.00000)
+,(11,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(11,1089,0.00000)
+,(11,1070,0.00000)
+,(11,1064,0.00000)
+,(11,1065,0.00000)
+,(11,1066,0.00000)
+,(11,1062,0.00000)
+,(11,1063,0.00000)
+,(11,1088,0.00000)
+,(11,1060,0.00000)
+,(11,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(11,1075,0.00000)
+,(11,1077,0.00000)
+,(11,1078,0.00000)
+,(11,1073,0.00000)
+,(11,1076,0.00000)
+,(11,1085,0.00000)
+,(11,1086,0.00000)
+,(11,1087,0.00000)
+,(11,1080,0.00000)
+,(11,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(12,1061,0.00000)
+,(12,1089,0.00000)
+,(12,1070,0.00000)
+,(12,1064,0.00000)
+,(12,1065,0.00000)
+,(12,1066,0.00000)
+,(12,1062,0.00000)
+,(12,1063,0.00000)
+,(12,1088,0.00000)
+,(12,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(12,1074,0.00000)
+,(12,1075,0.00000)
+,(12,1077,0.00000)
+,(12,1078,0.00000)
+,(12,1073,0.00000)
+,(12,1076,0.00000)
+,(12,1085,0.00000)
+,(12,1086,0.00000)
+,(12,1087,0.00000)
+,(12,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(12,1093,0.00000)
+,(13,1061,0.00000)
+,(13,1089,0.00000)
+,(13,1070,0.00000)
+,(13,1064,0.00000)
+,(13,1065,0.00000)
+,(13,1066,0.00000)
+,(13,1062,0.00000)
+,(13,1063,0.00000)
+,(13,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(13,1060,0.00000)
+,(13,1074,0.00000)
+,(13,1075,0.00000)
+,(13,1077,0.00000)
+,(13,1078,0.00000)
+,(13,1073,0.00000)
+,(13,1076,0.00000)
+,(13,1085,0.00000)
+,(13,1086,0.00000)
+,(13,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(13,1080,0.00000)
+,(13,1093,0.00000)
+,(14,1060,0.00000)
+,(14,1093,0.00000)
+,(14,1080,0.00000)
+,(14,1087,0.00000)
+,(14,1086,0.00000)
+,(14,1085,0.00000)
+,(14,1076,0.00000)
+,(14,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(14,1078,0.00000)
+,(14,1077,0.00000)
+,(14,1075,0.00000)
+,(14,1074,0.00000)
+,(14,1088,0.00000)
+,(14,1063,0.00000)
+,(14,1062,0.00000)
+,(14,1066,0.00000)
+,(14,1065,0.00000)
+,(14,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(14,1070,0.00000)
+,(14,1089,0.00000)
+,(14,1061,0.00000)
+,(15,1061,0.00000)
+,(15,1089,0.00000)
+,(15,1070,0.00000)
+,(15,1064,0.00000)
+,(15,1065,0.00000)
+,(15,1066,0.00000)
+,(15,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(15,1063,0.00000)
+,(15,1088,0.00000)
+,(15,1060,0.00000)
+,(15,1074,0.00000)
+,(15,1075,0.00000)
+,(15,1077,0.00000)
+,(15,1078,0.00000)
+,(15,1073,0.00000)
+,(15,1076,0.00000)
+,(15,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(15,1086,0.00000)
+,(15,1087,0.00000)
+,(15,1080,0.00000)
+,(15,1093,0.00000)
+,(16,1061,0.00000)
+,(16,1089,0.00000)
+,(16,1070,0.00000)
+,(16,1064,0.00000)
+,(16,1065,0.00000)
+,(16,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(16,1062,0.00000)
+,(16,1063,0.00000)
+,(16,1088,0.00000)
+,(16,1060,0.00000)
+,(16,1074,0.00000)
+,(16,1075,0.00000)
+,(16,1077,0.00000)
+,(16,1078,0.00000)
+,(16,1073,0.00000)
+,(16,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(16,1085,0.00000)
+,(16,1086,0.00000)
+,(16,1087,0.00000)
+,(16,1080,0.00000)
+,(16,1093,0.00000)
+,(17,1061,0.00000)
+,(17,1089,0.00000)
+,(17,1070,0.00000)
+,(17,1064,0.00000)
+,(17,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(17,1066,0.00000)
+,(17,1062,0.00000)
+,(17,1063,0.00000)
+,(17,1088,0.00000)
+,(17,1060,0.00000)
+,(17,1074,0.00000)
+,(17,1075,0.00000)
+,(17,1077,0.00000)
+,(17,1078,0.00000)
+,(17,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(17,1076,0.00000)
+,(17,1085,0.00000)
+,(17,1086,0.00000)
+,(17,1087,0.00000)
+,(17,1080,0.00000)
+,(17,1093,0.00000)
+,(18,1088,0.00000)
+,(18,1061,0.00000)
+,(18,1089,0.00000)
+,(18,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(18,1064,0.00000)
+,(18,1065,0.00000)
+,(18,1066,0.00000)
+,(18,1062,0.00000)
+,(18,1063,0.00000)
+,(18,1060,0.00000)
+,(18,1074,0.00000)
+,(18,1075,0.00000)
+,(18,1077,0.00000)
+,(18,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(18,1073,0.00000)
+,(18,1076,0.00000)
+,(18,1085,0.00000)
+,(18,1086,0.00000)
+,(18,1087,0.00000)
+,(18,1080,0.00000)
+,(18,1093,0.00000)
+,(19,1061,0.00000)
+,(19,1089,0.00000)
+,(19,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(19,1064,0.00000)
+,(19,1065,0.00000)
+,(19,1066,0.00000)
+,(19,1062,0.00000)
+,(19,1063,0.00000)
+,(19,1088,0.00000)
+,(19,1060,0.00000)
+,(19,1074,0.00000)
+,(19,1075,0.00000)
+,(19,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(19,1078,0.00000)
+,(19,1073,0.00000)
+,(19,1076,0.00000)
+,(19,1085,0.00000)
+,(19,1086,0.00000)
+,(19,1087,0.00000)
+,(19,1080,0.00000)
+,(19,1093,0.00000)
+,(20,1061,0.00000)
+,(20,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(20,1070,0.00000)
+,(20,1064,0.00000)
+,(20,1065,0.00000)
+,(20,1066,0.00000)
+,(20,1062,0.00000)
+,(20,1063,0.00000)
+,(20,1088,0.00000)
+,(20,1060,0.00000)
+,(20,1074,0.00000)
+,(20,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(20,1077,0.00000)
+,(20,1078,0.00000)
+,(20,1073,0.00000)
+,(20,1076,0.00000)
+,(20,1085,0.00000)
+,(20,1086,0.00000)
+,(20,1087,0.00000)
+,(20,1080,0.00000)
+,(20,1093,0.00000)
+,(21,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(21,1089,0.00000)
+,(21,1070,0.00000)
+,(21,1064,0.00000)
+,(21,1065,0.00000)
+,(21,1066,0.00000)
+,(21,1062,0.00000)
+,(21,1063,0.00000)
+,(21,1093,0.00000)
+,(21,1088,0.00000)
+,(21,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(21,1074,0.00000)
+,(21,1075,0.00000)
+,(21,1077,0.00000)
+,(21,1078,0.00000)
+,(21,1073,0.00000)
+,(21,1076,0.00000)
+,(21,1085,0.00000)
+,(21,1086,0.00000)
+,(21,1087,0.00000)
+,(21,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(22,1061,0.00000)
+,(22,1089,0.00000)
+,(22,1070,0.00000)
+,(22,1064,0.00000)
+,(22,1065,0.00000)
+,(22,1066,0.00000)
+,(22,1062,0.00000)
+,(22,1063,0.00000)
+,(22,1088,0.00000)
+,(22,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(22,1074,0.00000)
+,(22,1075,0.00000)
+,(22,1077,0.00000)
+,(22,1078,0.00000)
+,(22,1073,0.00000)
+,(22,1076,0.00000)
+,(22,1085,0.00000)
+,(22,1086,0.00000)
+,(22,1087,0.00000)
+,(22,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(22,1093,0.00000)
+,(23,1093,0.00000)
+,(23,1080,0.00000)
+,(23,1087,0.00000)
+,(23,1086,0.00000)
+,(23,1085,0.00000)
+,(23,1076,0.00000)
+,(23,1073,0.00000)
+,(23,1078,0.00000)
+,(23,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(23,1075,0.00000)
+,(23,1074,0.00000)
+,(23,1060,0.00000)
+,(23,1088,0.00000)
+,(23,1063,0.00000)
+,(23,1062,0.00000)
+,(23,1066,0.00000)
+,(23,1065,0.00000)
+,(23,1064,0.00000)
+,(23,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(23,1089,0.00000)
+,(23,1061,0.00000)
+,(24,1070,0.00000)
+,(24,1093,0.00000)
+,(24,1080,0.00000)
+,(24,1087,0.00000)
+,(24,1086,0.00000)
+,(24,1085,0.00000)
+,(24,1076,0.00000)
+,(24,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(24,1078,0.00000)
+,(24,1077,0.00000)
+,(24,1075,0.00000)
+,(24,1074,0.00000)
+,(24,1060,0.00000)
+,(24,1088,0.00000)
+,(24,1063,0.00000)
+,(24,1062,0.00000)
+,(24,1066,0.00000)
+,(24,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(24,1064,0.00000)
+,(24,1089,0.00000)
+,(24,1061,0.00000)
+,(25,1093,0.00000)
+,(25,1080,0.00000)
+,(25,1087,0.00000)
+,(25,1086,0.00000)
+,(25,1085,0.00000)
+,(25,1076,0.00000)
+,(25,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(25,1078,0.00000)
+,(25,1077,0.00000)
+,(25,1075,0.00000)
+,(25,1074,0.00000)
+,(25,1060,0.00000)
+,(25,1088,0.00000)
+,(25,1063,0.00000)
+,(25,1062,0.00000)
+,(25,1066,0.00000)
+,(25,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(25,1064,0.00000)
+,(25,1070,0.00000)
+,(25,1089,0.00000)
+,(25,1061,0.00000)
+,(26,1061,0.00000)
+,(26,1093,0.00000)
+,(26,1080,0.00000)
+,(26,1087,0.00000)
+,(26,1086,0.00000)
+,(26,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(26,1076,0.00000)
+,(26,1073,0.00000)
+,(26,1078,0.00000)
+,(26,1077,0.00000)
+,(26,1075,0.00000)
+,(26,1074,0.00000)
+,(26,1060,0.00000)
+,(26,1088,0.00000)
+,(26,1063,0.00000)
+,(26,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(26,1066,0.00000)
+,(26,1065,0.00000)
+,(26,1064,0.00000)
+,(26,1070,0.00000)
+,(26,1089,0.00000)
+,(27,1061,0.00000)
+,(27,1093,0.00000)
+,(27,1089,0.00000)
+,(27,1070,0.00000)
+,(27,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(27,1065,0.00000)
+,(27,1066,0.00000)
+,(27,1062,0.00000)
+,(27,1063,0.00000)
+,(27,1088,0.00000)
+,(27,1060,0.00000)
+,(27,1074,0.00000)
+,(27,1075,0.00000)
+,(27,1077,0.00000)
+,(27,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(27,1073,0.00000)
+,(27,1076,0.00000)
+,(27,1085,0.00000)
+,(27,1086,0.00000)
+,(27,1087,0.00000)
+,(27,1080,0.00000)
+,(28,1061,0.00000)
+,(28,1089,0.00000)
+,(28,1070,0.00000)
+,(28,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(28,1065,0.00000)
+,(28,1066,0.00000)
+,(28,1062,0.00000)
+,(28,1063,0.00000)
+,(28,1088,0.00000)
+,(28,1060,0.00000)
+,(28,1074,0.00000)
+,(28,1075,0.00000)
+,(28,1077,0.00000)
+,(28,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(28,1073,0.00000)
+,(28,1076,0.00000)
+,(28,1085,0.00000)
+,(28,1086,0.00000)
+,(28,1087,0.00000)
+,(28,1080,0.00000)
+,(28,1093,0.00000)
+,(30,1093,0.00000)
+,(30,1061,0.00000)
+,(30,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(30,1070,0.00000)
+,(30,1064,0.00000)
+,(30,1065,0.00000)
+,(30,1066,0.00000)
+,(30,1062,0.00000)
+,(30,1063,0.00000)
+,(30,1088,0.00000)
+,(30,1060,0.00000)
+,(30,1074,0.00000)
+,(30,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(30,1077,0.00000)
+,(30,1078,0.00000)
+,(30,1073,0.00000)
+,(30,1076,0.00000)
+,(30,1085,0.00000)
+,(30,1086,0.00000)
+,(30,1087,0.00000)
+,(30,1080,0.00000)
+,(31,1061,0.00000)
+,(31,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(31,1070,0.00000)
+,(31,1064,0.00000)
+,(31,1065,0.00000)
+,(31,1066,0.00000)
+,(31,1062,0.00000)
+,(31,1063,0.00000)
+,(31,1088,0.00000)
+,(31,1060,0.00000)
+,(31,1074,0.00000)
+,(31,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(31,1077,0.00000)
+,(31,1078,0.00000)
+,(31,1073,0.00000)
+,(31,1076,0.00000)
+,(31,1085,0.00000)
+,(31,1086,0.00000)
+,(31,1087,0.00000)
+,(31,1080,0.00000)
+,(31,1093,0.00000)
+,(32,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(32,1061,0.00000)
+,(32,1089,0.00000)
+,(32,1070,0.00000)
+,(32,1064,0.00000)
+,(32,1065,0.00000)
+,(32,1066,0.00000)
+,(32,1062,0.00000)
+,(32,1063,0.00000)
+,(32,1088,0.00000)
+,(32,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(32,1074,0.00000)
+,(32,1075,0.00000)
+,(32,1077,0.00000)
+,(32,1078,0.00000)
+,(32,1073,0.00000)
+,(32,1076,0.00000)
+,(32,1093,0.00000)
+,(32,1086,0.00000)
+,(32,1087,0.00000)
+,(32,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(33,1060,0.00000)
+,(33,1093,0.00000)
+,(33,1080,0.00000)
+,(33,1087,0.00000)
+,(33,1086,0.00000)
+,(33,1085,0.00000)
+,(33,1076,0.00000)
+,(33,1073,0.00000)
+,(33,1078,0.00000)
+,(33,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(33,1075,0.00000)
+,(33,1074,0.00000)
+,(33,1088,0.00000)
+,(33,1063,0.00000)
+,(33,1062,0.00000)
+,(33,1066,0.00000)
+,(33,1065,0.00000)
+,(33,1064,0.00000)
+,(33,1070,0.00000)
+,(33,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(33,1061,0.00000)
+,(34,1093,0.00000)
+,(34,1061,0.00000)
+,(34,1089,0.00000)
+,(34,1070,0.00000)
+,(34,1064,0.00000)
+,(34,1065,0.00000)
+,(34,1066,0.00000)
+,(34,1062,0.00000)
+,(34,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(34,1088,0.00000)
+,(34,1060,0.00000)
+,(34,1074,0.00000)
+,(34,1075,0.00000)
+,(34,1077,0.00000)
+,(34,1078,0.00000)
+,(34,1073,0.00000)
+,(34,1076,0.00000)
+,(34,1085,0.00000)
+,(34,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(34,1087,0.00000)
+,(34,1080,0.00000)
+,(35,1061,0.00000)
+,(35,1093,0.00000)
+,(35,1080,0.00000)
+,(35,1087,0.00000)
+,(35,1086,0.00000)
+,(35,1085,0.00000)
+,(35,1076,0.00000)
+,(35,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(35,1078,0.00000)
+,(35,1077,0.00000)
+,(35,1075,0.00000)
+,(35,1074,0.00000)
+,(35,1060,0.00000)
+,(35,1088,0.00000)
+,(35,1063,0.00000)
+,(35,1062,0.00000)
+,(35,1066,0.00000)
+,(35,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(35,1064,0.00000)
+,(35,1070,0.00000)
+,(35,1089,0.00000)
+,(36,1093,0.00000)
+,(36,1080,0.00000)
+,(36,1087,0.00000)
+,(36,1086,0.00000)
+,(36,1085,0.00000)
+,(36,1076,0.00000)
+,(36,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(36,1078,0.00000)
+,(36,1077,0.00000)
+,(36,1075,0.00000)
+,(36,1074,0.00000)
+,(36,1060,0.00000)
+,(36,1088,0.00000)
+,(36,1063,0.00000)
+,(36,1062,0.00000)
+,(36,1066,0.00000)
+,(36,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(36,1064,0.00000)
+,(36,1070,0.00000)
+,(36,1089,0.00000)
+,(36,1061,0.00000)
+,(37,1093,0.00000)
+,(37,1080,0.00000)
+,(37,1087,0.00000)
+,(37,1086,0.00000)
+,(37,1085,0.00000)
+,(37,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(37,1073,0.00000)
+,(37,1078,0.00000)
+,(37,1077,0.00000)
+,(37,1075,0.00000)
+,(37,1074,0.00000)
+,(37,1060,0.00000)
+,(37,1088,0.00000)
+,(37,1063,0.00000)
+,(37,1062,0.00000)
+,(37,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(37,1065,0.00000)
+,(37,1064,0.00000)
+,(37,1070,0.00000)
+,(37,1089,0.00000)
+,(37,1061,0.00000)
+,(38,1080,0.00000)
+,(38,1093,0.00000)
+,(38,1087,0.00000)
+,(38,1086,0.00000)
+,(38,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(38,1076,0.00000)
+,(38,1073,0.00000)
+,(38,1078,0.00000)
+,(38,1077,0.00000)
+,(38,1075,0.00000)
+,(38,1074,0.00000)
+,(38,1060,0.00000)
+,(38,1088,0.00000)
+,(38,1063,0.00000)
+,(38,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(38,1066,0.00000)
+,(38,1065,0.00000)
+,(38,1064,0.00000)
+,(38,1070,0.00000)
+,(38,1089,0.00000)
+,(38,1061,0.00000)
+,(39,1093,0.00000)
+,(39,1061,0.00000)
+,(39,1089,0.00000)
+,(39,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(39,1064,0.00000)
+,(39,1065,0.00000)
+,(39,1066,0.00000)
+,(39,1062,0.00000)
+,(39,1063,0.00000)
+,(39,1088,0.00000)
+,(39,1060,0.00000)
+,(39,1074,0.00000)
+,(39,1075,0.00000)
+,(39,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(39,1078,0.00000)
+,(39,1073,0.00000)
+,(39,1076,0.00000)
+,(39,1085,0.00000)
+,(39,1086,0.00000)
+,(39,1087,0.00000)
+,(39,1080,0.00000)
+,(40,1061,0.00000)
+,(40,1093,0.00000)
+,(40,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(40,1087,0.00000)
+,(40,1086,0.00000)
+,(40,1085,0.00000)
+,(40,1076,0.00000)
+,(40,1073,0.00000)
+,(40,1078,0.00000)
+,(40,1077,0.00000)
+,(40,1075,0.00000)
+,(40,1074,0.00000)
+,(40,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(40,1088,0.00000)
+,(40,1063,0.00000)
+,(40,1062,0.00000)
+,(40,1066,0.00000)
+,(40,1065,0.00000)
+,(40,1064,0.00000)
+,(40,1070,0.00000)
+,(40,1089,0.00000)
+,(41,1061,0.00000)
+,(41,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(41,1070,0.00000)
+,(41,1064,0.00000)
+,(41,1065,0.00000)
+,(41,1066,0.00000)
+,(41,1062,0.00000)
+,(41,1063,0.00000)
+,(41,1088,0.00000)
+,(41,1060,0.00000)
+,(41,1074,0.00000)
+,(41,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(41,1077,0.00000)
+,(41,1078,0.00000)
+,(41,1073,0.00000)
+,(41,1076,0.00000)
+,(41,1085,0.00000)
+,(41,1086,0.00000)
+,(41,1087,0.00000)
+,(41,1080,0.00000)
+,(41,1093,0.00000)
+,(42,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(42,1089,0.00000)
+,(42,1070,0.00000)
+,(42,1064,0.00000)
+,(42,1065,0.00000)
+,(42,1066,0.00000)
+,(42,1062,0.00000)
+,(42,1063,0.00000)
+,(42,1088,0.00000)
+,(42,1060,0.00000)
+,(42,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(42,1075,0.00000)
+,(42,1077,0.00000)
+,(42,1078,0.00000)
+,(42,1073,0.00000)
+,(42,1076,0.00000)
+,(42,1085,0.00000)
+,(42,1086,0.00000)
+,(42,1087,0.00000)
+,(42,1080,0.00000)
+,(42,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(50,1061,0.00000)
+,(50,1089,0.00000)
+,(50,1070,0.00000)
+,(50,1064,0.00000)
+,(50,1065,0.00000)
+,(50,1066,0.00000)
+,(50,1062,0.00000)
+,(50,1063,0.00000)
+,(50,1088,0.00000)
+,(50,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(50,1074,0.00000)
+,(50,1075,0.00000)
+,(50,1077,0.00000)
+,(50,1078,0.00000)
+,(50,1073,0.00000)
+,(50,1076,0.00000)
+,(50,1085,0.00000)
+,(50,1086,0.00000)
+,(50,1087,0.00000)
+,(50,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(50,1093,0.00000)
+,(51,1062,0.00000)
+,(51,1061,0.00000)
+,(51,1089,0.00000)
+,(51,1070,0.00000)
+,(51,1064,0.00000)
+,(51,1065,0.00000)
+,(51,1066,0.00000)
+,(51,1063,0.00000)
+,(51,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(51,1060,0.00000)
+,(51,1074,0.00000)
+,(51,1075,0.00000)
+,(51,1077,0.00000)
+,(51,1078,0.00000)
+,(51,1073,0.00000)
+,(51,1076,0.00000)
+,(51,1085,0.00000)
+,(51,1086,0.00000)
+,(51,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(51,1093,0.00000)
+,(51,1080,0.00000)
+,(52,1093,0.00000)
+,(52,1061,0.00000)
+,(52,1089,0.00000)
+,(52,1070,0.00000)
+,(52,1064,0.00000)
+,(52,1065,0.00000)
+,(52,1066,0.00000)
+,(52,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(52,1063,0.00000)
+,(52,1088,0.00000)
+,(52,1060,0.00000)
+,(52,1074,0.00000)
+,(52,1075,0.00000)
+,(52,1077,0.00000)
+,(52,1078,0.00000)
+,(52,1073,0.00000)
+,(52,1076,0.00000)
+,(52,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(52,1086,0.00000)
+,(52,1087,0.00000)
+,(52,1080,0.00000)
+,(53,1063,0.00000)
+,(53,1061,0.00000)
+,(53,1089,0.00000)
+,(53,1070,0.00000)
+,(53,1064,0.00000)
+,(53,1065,0.00000)
+,(53,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(53,1062,0.00000)
+,(53,1088,0.00000)
+,(53,1060,0.00000)
+,(53,1074,0.00000)
+,(53,1075,0.00000)
+,(53,1077,0.00000)
+,(53,1078,0.00000)
+,(53,1073,0.00000)
+,(53,1076,0.00000)
+,(53,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(53,1086,0.00000)
+,(53,1087,0.00000)
+,(53,1080,0.00000)
+,(53,1093,0.00000)
+,(54,1074,0.00000)
+,(54,1093,0.00000)
+,(54,1080,0.00000)
+,(54,1087,0.00000)
+,(54,1086,0.00000)
+,(54,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(54,1076,0.00000)
+,(54,1073,0.00000)
+,(54,1078,0.00000)
+,(54,1077,0.00000)
+,(54,1075,0.00000)
+,(54,1060,0.00000)
+,(54,1088,0.00000)
+,(54,1063,0.00000)
+,(54,1062,0.00000)
+,(54,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(54,1065,0.00000)
+,(54,1064,0.00000)
+,(54,1070,0.00000)
+,(54,1089,0.00000)
+,(54,1061,0.00000)
+,(55,1093,0.00000)
+,(55,1080,0.00000)
+,(55,1087,0.00000)
+,(55,1086,0.00000)
+,(55,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(55,1076,0.00000)
+,(55,1073,0.00000)
+,(55,1078,0.00000)
+,(55,1077,0.00000)
+,(55,1061,0.00000)
+,(55,1075,0.00000)
+,(55,1074,0.00000)
+,(55,1060,0.00000)
+,(55,1088,0.00000)
+,(55,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(55,1062,0.00000)
+,(55,1066,0.00000)
+,(55,1065,0.00000)
+,(55,1064,0.00000)
+,(55,1070,0.00000)
+,(55,1089,0.00000)
+,(56,1065,0.00000)
+,(56,1061,0.00000)
+,(56,1089,0.00000)
+,(56,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(56,1064,0.00000)
+,(56,1066,0.00000)
+,(56,1062,0.00000)
+,(56,1063,0.00000)
+,(56,1088,0.00000)
+,(56,1060,0.00000)
+,(56,1074,0.00000)
+,(56,1075,0.00000)
+,(56,1077,0.00000)
+,(56,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(56,1073,0.00000)
+,(56,1076,0.00000)
+,(56,1085,0.00000)
+,(56,1086,0.00000)
+,(56,1087,0.00000)
+,(56,1080,0.00000)
+,(56,1093,0.00000)
+,(57,1061,0.00000)
+,(57,1089,0.00000)
+,(57,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(57,1064,0.00000)
+,(57,1065,0.00000)
+,(57,1066,0.00000)
+,(57,1062,0.00000)
+,(57,1063,0.00000)
+,(57,1093,0.00000)
+,(57,1088,0.00000)
+,(57,1060,0.00000)
+,(57,1074,0.00000)
+,(57,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(57,1077,0.00000)
+,(57,1078,0.00000)
+,(57,1073,0.00000)
+,(57,1076,0.00000)
+,(57,1085,0.00000)
+,(57,1086,0.00000)
+,(57,1087,0.00000)
+,(57,1080,0.00000)
+,(58,1061,0.00000)
+,(58,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(58,1070,0.00000)
+,(58,1064,0.00000)
+,(58,1065,0.00000)
+,(58,1066,0.00000)
+,(58,1062,0.00000)
+,(58,1063,0.00000)
+,(58,1088,0.00000)
+,(58,1060,0.00000)
+,(58,1074,0.00000)
+,(58,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(58,1077,0.00000)
+,(58,1078,0.00000)
+,(58,1073,0.00000)
+,(58,1076,0.00000)
+,(58,1085,0.00000)
+,(58,1086,0.00000)
+,(58,1087,0.00000)
+,(58,1080,0.00000)
+,(58,1093,0.00000)
+,(59,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(59,1089,0.00000)
+,(59,1070,0.00000)
+,(59,1064,0.00000)
+,(59,1065,0.00000)
+,(59,1066,0.00000)
+,(59,1062,0.00000)
+,(59,1063,0.00000)
+,(59,1088,0.00000)
+,(59,1060,0.00000)
+,(59,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(59,1075,0.00000)
+,(59,1077,0.00000)
+,(59,1078,0.00000)
+,(59,1073,0.00000)
+,(59,1076,0.00000)
+,(59,1085,0.00000)
+,(59,1086,0.00000)
+,(59,1087,0.00000)
+,(59,1080,0.00000)
+,(59,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(60,1085,0.00000)
+,(60,1061,0.00000)
+,(60,1089,0.00000)
+,(60,1070,0.00000)
+,(60,1064,0.00000)
+,(60,1065,0.00000)
+,(60,1066,0.00000)
+,(60,1062,0.00000)
+,(60,1063,0.00000)
+,(60,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(60,1060,0.00000)
+,(60,1074,0.00000)
+,(60,1075,0.00000)
+,(60,1077,0.00000)
+,(60,1078,0.00000)
+,(60,1073,0.00000)
+,(60,1076,0.00000)
+,(60,1086,0.00000)
+,(60,1087,0.00000)
+,(60,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(60,1093,0.00000)
+,(61,1061,0.00000)
+,(61,1089,0.00000)
+,(61,1070,0.00000)
+,(61,1064,0.00000)
+,(61,1065,0.00000)
+,(61,1066,0.00000)
+,(61,1062,0.00000)
+,(61,1063,0.00000)
+,(61,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(61,1060,0.00000)
+,(61,1074,0.00000)
+,(61,1075,0.00000)
+,(61,1077,0.00000)
+,(61,1078,0.00000)
+,(61,1073,0.00000)
+,(61,1076,0.00000)
+,(61,1085,0.00000)
+,(61,1086,0.00000)
+,(61,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(61,1080,0.00000)
+,(61,1093,0.00000)
+,(62,1093,0.00000)
+,(62,1061,0.00000)
+,(62,1089,0.00000)
+,(62,1070,0.00000)
+,(62,1064,0.00000)
+,(62,1065,0.00000)
+,(62,1066,0.00000)
+,(62,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(62,1063,0.00000)
+,(62,1088,0.00000)
+,(62,1060,0.00000)
+,(62,1074,0.00000)
+,(62,1075,0.00000)
+,(62,1077,0.00000)
+,(62,1078,0.00000)
+,(62,1073,0.00000)
+,(62,1076,0.00000)
+,(62,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(62,1086,0.00000)
+,(62,1087,0.00000)
+,(62,1080,0.00000)
+,(63,1088,0.00000)
+,(63,1093,0.00000)
+,(63,1080,0.00000)
+,(63,1087,0.00000)
+,(63,1086,0.00000)
+,(63,1085,0.00000)
+,(63,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(63,1073,0.00000)
+,(63,1078,0.00000)
+,(63,1077,0.00000)
+,(63,1075,0.00000)
+,(63,1074,0.00000)
+,(63,1060,0.00000)
+,(63,1063,0.00000)
+,(63,1062,0.00000)
+,(63,1066,0.00000)
+,(63,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(63,1064,0.00000)
+,(63,1070,0.00000)
+,(63,1089,0.00000)
+,(63,1061,0.00000)
+,(64,1089,0.00000)
+,(64,1070,0.00000)
+,(64,1064,0.00000)
+,(64,1065,0.00000)
+,(64,1066,0.00000)
+,(64,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(64,1063,0.00000)
+,(64,1088,0.00000)
+,(64,1060,0.00000)
+,(64,1074,0.00000)
+,(64,1075,0.00000)
+,(64,1077,0.00000)
+,(64,1078,0.00000)
+,(64,1093,0.00000)
+,(64,1073,0.00000)
+,(64,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(64,1085,0.00000)
+,(64,1086,0.00000)
+,(64,1087,0.00000)
+,(64,1080,0.00000)
+,(64,1061,0.00000)
+,(65,1093,0.00000)
+,(65,1080,0.00000)
+,(65,1087,0.00000)
+,(65,1086,0.00000)
+,(65,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(65,1076,0.00000)
+,(65,1073,0.00000)
+,(65,1078,0.00000)
+,(65,1077,0.00000)
+,(65,1075,0.00000)
+,(65,1074,0.00000)
+,(65,1060,0.00000)
+,(65,1088,0.00000)
+,(65,1063,0.00000)
+,(65,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(65,1066,0.00000)
+,(65,1065,0.00000)
+,(65,1064,0.00000)
+,(65,1070,0.00000)
+,(65,1089,0.00000)
+,(65,1061,0.00000)
+,(66,1063,0.00000)
+,(66,1093,0.00000)
+,(66,1080,0.00000)
+,(66,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(66,1086,0.00000)
+,(66,1085,0.00000)
+,(66,1076,0.00000)
+,(66,1073,0.00000)
+,(66,1078,0.00000)
+,(66,1077,0.00000)
+,(66,1075,0.00000)
+,(66,1074,0.00000)
+,(66,1060,0.00000)
+,(66,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(66,1062,0.00000)
+,(66,1066,0.00000)
+,(66,1065,0.00000)
+,(66,1064,0.00000)
+,(66,1070,0.00000)
+,(66,1089,0.00000)
+,(66,1061,0.00000)
+,(67,1093,0.00000)
+,(67,1080,0.00000)
+,(67,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(67,1086,0.00000)
+,(67,1085,0.00000)
+,(67,1076,0.00000)
+,(67,1073,0.00000)
+,(67,1078,0.00000)
+,(67,1077,0.00000)
+,(67,1075,0.00000)
+,(67,1074,0.00000)
+,(67,1060,0.00000)
+,(67,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(67,1063,0.00000)
+,(67,1062,0.00000)
+,(67,1066,0.00000)
+,(67,1065,0.00000)
+,(67,1064,0.00000)
+,(67,1070,0.00000)
+,(67,1089,0.00000)
+,(67,1061,0.00000)
+,(68,1064,0.00000)
+,(68,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(68,1089,0.00000)
+,(68,1070,0.00000)
+,(68,1065,0.00000)
+,(68,1066,0.00000)
+,(68,1062,0.00000)
+,(68,1063,0.00000)
+,(68,1088,0.00000)
+,(68,1060,0.00000)
+,(68,1074,0.00000)
+,(68,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(68,1077,0.00000)
+,(68,1078,0.00000)
+,(68,1073,0.00000)
+,(68,1076,0.00000)
+,(68,1085,0.00000)
+,(68,1086,0.00000)
+,(68,1087,0.00000)
+,(68,1080,0.00000)
+,(68,1093,0.00000)
+,(69,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(69,1089,0.00000)
+,(69,1070,0.00000)
+,(69,1064,0.00000)
+,(69,1065,0.00000)
+,(69,1066,0.00000)
+,(69,1062,0.00000)
+,(69,1063,0.00000)
+,(69,1088,0.00000)
+,(69,1060,0.00000)
+,(69,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(69,1075,0.00000)
+,(69,1077,0.00000)
+,(69,1078,0.00000)
+,(69,1073,0.00000)
+,(69,1076,0.00000)
+,(69,1085,0.00000)
+,(69,1086,0.00000)
+,(69,1087,0.00000)
+,(69,1080,0.00000)
+,(69,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(70,1093,0.00000)
+,(70,1080,0.00000)
+,(70,1087,0.00000)
+,(70,1086,0.00000)
+,(70,1085,0.00000)
+,(70,1076,0.00000)
+,(70,1073,0.00000)
+,(70,1078,0.00000)
+,(70,1077,0.00000)
+,(70,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(70,1074,0.00000)
+,(70,1060,0.00000)
+,(70,1088,0.00000)
+,(70,1063,0.00000)
+,(70,1062,0.00000)
+,(70,1066,0.00000)
+,(70,1065,0.00000)
+,(70,1064,0.00000)
+,(70,1070,0.00000)
+,(70,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(70,1061,0.00000)
+,(71,1080,0.00000)
+,(71,1087,0.00000)
+,(71,1086,0.00000)
+,(71,1085,0.00000)
+,(71,1076,0.00000)
+,(71,1073,0.00000)
+,(71,1078,0.00000)
+,(71,1077,0.00000)
+,(71,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(71,1074,0.00000)
+,(71,1060,0.00000)
+,(71,1088,0.00000)
+,(71,1063,0.00000)
+,(71,1062,0.00000)
+,(71,1066,0.00000)
+,(71,1065,0.00000)
+,(71,1064,0.00000)
+,(71,1070,0.00000)
+,(71,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(71,1061,0.00000)
+,(71,1093,0.00000)
+,(72,1061,0.00000)
+,(72,1089,0.00000)
+,(72,1070,0.00000)
+,(72,1064,0.00000)
+,(72,1065,0.00000)
+,(72,1066,0.00000)
+,(72,1062,0.00000)
+,(72,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(72,1088,0.00000)
+,(72,1060,0.00000)
+,(72,1074,0.00000)
+,(72,1075,0.00000)
+,(72,1077,0.00000)
+,(72,1078,0.00000)
+,(72,1073,0.00000)
+,(72,1076,0.00000)
+,(72,1085,0.00000)
+,(72,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(72,1087,0.00000)
+,(72,1080,0.00000)
+,(72,1093,0.00000)
+,(73,1061,0.00000)
+,(73,1089,0.00000)
+,(73,1070,0.00000)
+,(73,1064,0.00000)
+,(73,1065,0.00000)
+,(73,1066,0.00000)
+,(73,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(73,1063,0.00000)
+,(73,1088,0.00000)
+,(73,1060,0.00000)
+,(73,1074,0.00000)
+,(73,1075,0.00000)
+,(73,1077,0.00000)
+,(73,1078,0.00000)
+,(73,1073,0.00000)
+,(73,1076,0.00000)
+,(73,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(73,1086,0.00000)
+,(73,1087,0.00000)
+,(73,1080,0.00000)
+,(73,1093,0.00000)
+,(74,1076,0.00000)
+,(74,1061,0.00000)
+,(74,1089,0.00000)
+,(74,1070,0.00000)
+,(74,1064,0.00000)
+,(74,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(74,1066,0.00000)
+,(74,1062,0.00000)
+,(74,1063,0.00000)
+,(74,1088,0.00000)
+,(74,1060,0.00000)
+,(74,1074,0.00000)
+,(74,1075,0.00000)
+,(74,1077,0.00000)
+,(74,1078,0.00000)
+,(74,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(74,1085,0.00000)
+,(74,1086,0.00000)
+,(74,1087,0.00000)
+,(74,1080,0.00000)
+,(74,1093,0.00000)
+,(75,1061,0.00000)
+,(75,1089,0.00000)
+,(75,1070,0.00000)
+,(75,1064,0.00000)
+,(75,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(75,1066,0.00000)
+,(75,1062,0.00000)
+,(75,1063,0.00000)
+,(75,1088,0.00000)
+,(75,1060,0.00000)
+,(75,1074,0.00000)
+,(75,1075,0.00000)
+,(75,1077,0.00000)
+,(75,1078,0.00000)
+,(75,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(75,1076,0.00000)
+,(75,1085,0.00000)
+,(75,1086,0.00000)
+,(75,1087,0.00000)
+,(75,1080,0.00000)
+,(75,1093,0.00000)
+,(76,1066,0.00000)
+,(76,1093,0.00000)
+,(76,1080,0.00000)
+,(76,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(76,1086,0.00000)
+,(76,1085,0.00000)
+,(76,1076,0.00000)
+,(76,1073,0.00000)
+,(76,1078,0.00000)
+,(76,1077,0.00000)
+,(76,1075,0.00000)
+,(76,1074,0.00000)
+,(76,1060,0.00000)
+,(76,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(76,1063,0.00000)
+,(76,1062,0.00000)
+,(76,1065,0.00000)
+,(76,1064,0.00000)
+,(76,1070,0.00000)
+,(76,1089,0.00000)
+,(76,1061,0.00000)
+,(77,1089,0.00000)
+,(77,1070,0.00000)
+,(77,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(77,1065,0.00000)
+,(77,1066,0.00000)
+,(77,1062,0.00000)
+,(77,1063,0.00000)
+,(77,1088,0.00000)
+,(77,1060,0.00000)
+,(77,1074,0.00000)
+,(77,1075,0.00000)
+,(77,1077,0.00000)
+,(77,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(77,1073,0.00000)
+,(77,1076,0.00000)
+,(77,1085,0.00000)
+,(77,1086,0.00000)
+,(77,1087,0.00000)
+,(77,1080,0.00000)
+,(77,1093,0.00000)
+,(77,1061,0.00000)
+,(78,1073,0.00000)
+,(78,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(78,1089,0.00000)
+,(78,1070,0.00000)
+,(78,1064,0.00000)
+,(78,1065,0.00000)
+,(78,1066,0.00000)
+,(78,1062,0.00000)
+,(78,1063,0.00000)
+,(78,1088,0.00000)
+,(78,1060,0.00000)
+,(78,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(78,1075,0.00000)
+,(78,1077,0.00000)
+,(78,1078,0.00000)
+,(78,1076,0.00000)
+,(78,1085,0.00000)
+,(78,1086,0.00000)
+,(78,1087,0.00000)
+,(78,1080,0.00000)
+,(78,1093,0.00000)
+,(79,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(79,1087,0.00000)
+,(79,1086,0.00000)
+,(79,1085,0.00000)
+,(79,1076,0.00000)
+,(79,1073,0.00000)
+,(79,1078,0.00000)
+,(79,1077,0.00000)
+,(79,1075,0.00000)
+,(79,1074,0.00000)
+,(79,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(79,1088,0.00000)
+,(79,1063,0.00000)
+,(79,1062,0.00000)
+,(79,1066,0.00000)
+,(79,1065,0.00000)
+,(79,1064,0.00000)
+,(79,1070,0.00000)
+,(79,1089,0.00000)
+,(79,1061,0.00000)
+,(79,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(80,1080,0.00000)
+,(80,1087,0.00000)
+,(80,1086,0.00000)
+,(80,1085,0.00000)
+,(80,1076,0.00000)
+,(80,1073,0.00000)
+,(80,1078,0.00000)
+,(80,1077,0.00000)
+,(80,1075,0.00000)
+,(80,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(80,1060,0.00000)
+,(80,1088,0.00000)
+,(80,1063,0.00000)
+,(80,1062,0.00000)
+,(80,1066,0.00000)
+,(80,1065,0.00000)
+,(80,1064,0.00000)
+,(80,1070,0.00000)
+,(80,1089,0.00000)
+,(80,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(80,1093,0.00000)
+,(81,1093,0.00000)
+,(81,1080,0.00000)
+,(81,1087,0.00000)
+,(81,1086,0.00000)
+,(81,1085,0.00000)
+,(81,1076,0.00000)
+,(81,1073,0.00000)
+,(81,1078,0.00000)
+,(81,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(81,1075,0.00000)
+,(81,1074,0.00000)
+,(81,1060,0.00000)
+,(81,1088,0.00000)
+,(81,1063,0.00000)
+,(81,1062,0.00000)
+,(81,1066,0.00000)
+,(81,1065,0.00000)
+,(81,1064,0.00000)
+,(81,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(81,1089,0.00000)
+,(81,1061,0.00000)
+,(82,1076,0.00000)
+,(82,1061,0.00000)
+,(82,1089,0.00000)
+,(82,1070,0.00000)
+,(82,1064,0.00000)
+,(82,1065,0.00000)
+,(82,1066,0.00000)
+,(82,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(82,1063,0.00000)
+,(82,1088,0.00000)
+,(82,1060,0.00000)
+,(82,1074,0.00000)
+,(82,1075,0.00000)
+,(82,1077,0.00000)
+,(82,1078,0.00000)
+,(82,1073,0.00000)
+,(82,1085,0.00000)
+,(82,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(82,1087,0.00000)
+,(82,1080,0.00000)
+,(82,1093,0.00000)
+,(83,1093,0.00000)
+,(83,1080,0.00000)
+,(83,1087,0.00000)
+,(83,1086,0.00000)
+,(83,1085,0.00000)
+,(83,1076,0.00000)
+,(83,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(83,1078,0.00000)
+,(83,1077,0.00000)
+,(83,1075,0.00000)
+,(83,1074,0.00000)
+,(83,1060,0.00000)
+,(83,1088,0.00000)
+,(83,1063,0.00000)
+,(83,1062,0.00000)
+,(83,1066,0.00000)
+,(83,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(83,1064,0.00000)
+,(83,1070,0.00000)
+,(83,1089,0.00000)
+,(83,1061,0.00000)
+,(84,1061,0.00000)
+,(84,1089,0.00000)
+,(84,1070,0.00000)
+,(84,1064,0.00000)
+,(84,1065,0.00000)
+,(84,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(84,1062,0.00000)
+,(84,1063,0.00000)
+,(84,1088,0.00000)
+,(84,1060,0.00000)
+,(84,1074,0.00000)
+,(84,1075,0.00000)
+,(84,1077,0.00000)
+,(84,1078,0.00000)
+,(84,1073,0.00000)
+,(84,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(84,1085,0.00000)
+,(84,1086,0.00000)
+,(84,1087,0.00000)
+,(84,1080,0.00000)
+,(84,1093,0.00000)
+,(85,1088,0.00000)
+,(85,1080,0.00000)
+,(85,1087,0.00000)
+,(85,1086,0.00000)
+,(85,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(85,1076,0.00000)
+,(85,1073,0.00000)
+,(85,1078,0.00000)
+,(85,1077,0.00000)
+,(85,1075,0.00000)
+,(85,1074,0.00000)
+,(85,1060,0.00000)
+,(85,1063,0.00000)
+,(85,1062,0.00000)
+,(85,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(85,1065,0.00000)
+,(85,1064,0.00000)
+,(85,1070,0.00000)
+,(85,1089,0.00000)
+,(85,1061,0.00000)
+,(85,1093,0.00000)
+,(86,1093,0.00000)
+,(86,1080,0.00000)
+,(86,1087,0.00000)
+,(86,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(86,1061,0.00000)
+,(86,1085,0.00000)
+,(86,1076,0.00000)
+,(86,1073,0.00000)
+,(86,1078,0.00000)
+,(86,1077,0.00000)
+,(86,1075,0.00000)
+,(86,1074,0.00000)
+,(86,1060,0.00000)
+,(86,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(86,1063,0.00000)
+,(86,1062,0.00000)
+,(86,1066,0.00000)
+,(86,1065,0.00000)
+,(86,1064,0.00000)
+,(86,1070,0.00000)
+,(86,1089,0.00000)
+,(87,1061,0.00000)
+,(87,1089,0.00000)
+,(87,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(87,1064,0.00000)
+,(87,1065,0.00000)
+,(87,1066,0.00000)
+,(87,1062,0.00000)
+,(87,1063,0.00000)
+,(87,1088,0.00000)
+,(87,1060,0.00000)
+,(87,1074,0.00000)
+,(87,1075,0.00000)
+,(87,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(87,1078,0.00000)
+,(87,1073,0.00000)
+,(87,1076,0.00000)
+,(87,1085,0.00000)
+,(87,1086,0.00000)
+,(87,1087,0.00000)
+,(87,1080,0.00000)
+,(87,1093,0.00000)
+,(88,1061,0.00000)
+,(88,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(88,1080,0.00000)
+,(88,1087,0.00000)
+,(88,1086,0.00000)
+,(88,1085,0.00000)
+,(88,1076,0.00000)
+,(88,1073,0.00000)
+,(88,1078,0.00000)
+,(88,1077,0.00000)
+,(88,1075,0.00000)
+,(88,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(88,1060,0.00000)
+,(88,1088,0.00000)
+,(88,1063,0.00000)
+,(88,1062,0.00000)
+,(88,1066,0.00000)
+,(88,1065,0.00000)
+,(88,1064,0.00000)
+,(88,1070,0.00000)
+,(88,1089,0.00000)
+,(89,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(89,1089,0.00000)
+,(89,1070,0.00000)
+,(89,1064,0.00000)
+,(89,1065,0.00000)
+,(89,1066,0.00000)
+,(89,1062,0.00000)
+,(89,1063,0.00000)
+,(89,1088,0.00000)
+,(89,1060,0.00000)
+,(89,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(89,1075,0.00000)
+,(89,1077,0.00000)
+,(89,1078,0.00000)
+,(89,1073,0.00000)
+,(89,1076,0.00000)
+,(89,1085,0.00000)
+,(89,1086,0.00000)
+,(89,1087,0.00000)
+,(89,1080,0.00000)
+,(89,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(90,1089,0.00000)
+,(90,1061,0.00000)
+,(90,1070,0.00000)
+,(90,1064,0.00000)
+,(90,1065,0.00000)
+,(90,1066,0.00000)
+,(90,1062,0.00000)
+,(90,1063,0.00000)
+,(90,1088,0.00000)
+,(90,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(90,1074,0.00000)
+,(90,1075,0.00000)
+,(90,1077,0.00000)
+,(90,1078,0.00000)
+,(90,1073,0.00000)
+,(90,1076,0.00000)
+,(90,1085,0.00000)
+,(90,1086,0.00000)
+,(90,1087,0.00000)
+,(90,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(90,1093,0.00000)
+,(91,1080,0.00000)
+,(91,1087,0.00000)
+,(91,1086,0.00000)
+,(91,1085,0.00000)
+,(91,1076,0.00000)
+,(91,1073,0.00000)
+,(91,1078,0.00000)
+,(91,1077,0.00000)
+,(91,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(91,1074,0.00000)
+,(91,1060,0.00000)
+,(91,1088,0.00000)
+,(91,1063,0.00000)
+,(91,1062,0.00000)
+,(91,1066,0.00000)
+,(91,1065,0.00000)
+,(91,1064,0.00000)
+,(91,1070,0.00000)
+,(91,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(91,1089,0.00000)
+,(91,1061,0.00000)
+,(92,1080,0.00000)
+,(92,1087,0.00000)
+,(92,1086,0.00000)
+,(92,1085,0.00000)
+,(92,1093,0.00000)
+,(92,1076,0.00000)
+,(92,1073,0.00000)
+,(92,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(92,1077,0.00000)
+,(92,1075,0.00000)
+,(92,1074,0.00000)
+,(92,1060,0.00000)
+,(92,1088,0.00000)
+,(92,1063,0.00000)
+,(92,1062,0.00000)
+,(92,1066,0.00000)
+,(92,1065,0.00000)
+,(92,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(92,1070,0.00000)
+,(92,1089,0.00000)
+,(92,1061,0.00000)
+,(93,1093,0.00000)
+,(93,1080,0.00000)
+,(93,1087,0.00000)
+,(93,1086,0.00000)
+,(93,1085,0.00000)
+,(93,1076,0.00000)
+,(93,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(93,1078,0.00000)
+,(93,1077,0.00000)
+,(93,1075,0.00000)
+,(93,1074,0.00000)
+,(93,1060,0.00000)
+,(93,1088,0.00000)
+,(93,1063,0.00000)
+,(93,1062,0.00000)
+,(93,1066,0.00000)
+,(93,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(93,1064,0.00000)
+,(93,1070,0.00000)
+,(93,1089,0.00000)
+,(93,1061,0.00000)
+,(94,1089,0.00000)
+,(94,1061,0.00000)
+,(94,1070,0.00000)
+,(94,1064,0.00000)
+,(94,1065,0.00000)
+,(94,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(94,1062,0.00000)
+,(94,1063,0.00000)
+,(94,1088,0.00000)
+,(94,1060,0.00000)
+,(94,1074,0.00000)
+,(94,1075,0.00000)
+,(94,1077,0.00000)
+,(94,1078,0.00000)
+,(94,1073,0.00000)
+,(94,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(94,1085,0.00000)
+,(94,1086,0.00000)
+,(94,1087,0.00000)
+,(94,1080,0.00000)
+,(94,1093,0.00000)
+,(95,1093,0.00000)
+,(95,1061,0.00000)
+,(95,1089,0.00000)
+,(95,1070,0.00000)
+,(95,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(95,1065,0.00000)
+,(95,1066,0.00000)
+,(95,1062,0.00000)
+,(95,1063,0.00000)
+,(95,1088,0.00000)
+,(95,1060,0.00000)
+,(95,1074,0.00000)
+,(95,1075,0.00000)
+,(95,1077,0.00000)
+,(95,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(95,1073,0.00000)
+,(95,1076,0.00000)
+,(95,1085,0.00000)
+,(95,1086,0.00000)
+,(95,1087,0.00000)
+,(95,1080,0.00000)
+,(96,1093,0.00000)
+,(96,1080,0.00000)
+,(96,1087,0.00000)
+,(96,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(96,1085,0.00000)
+,(96,1076,0.00000)
+,(96,1073,0.00000)
+,(96,1078,0.00000)
+,(96,1077,0.00000)
+,(96,1075,0.00000)
+,(96,1074,0.00000)
+,(96,1060,0.00000)
+,(96,1088,0.00000)
+,(96,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(96,1062,0.00000)
+,(96,1066,0.00000)
+,(96,1065,0.00000)
+,(96,1064,0.00000)
+,(96,1070,0.00000)
+,(96,1089,0.00000)
+,(96,1061,0.00000)
+,(97,1063,0.00000)
+,(97,1061,0.00000)
+,(97,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(97,1070,0.00000)
+,(97,1064,0.00000)
+,(97,1065,0.00000)
+,(97,1066,0.00000)
+,(97,1062,0.00000)
+,(97,1088,0.00000)
+,(97,1060,0.00000)
+,(97,1074,0.00000)
+,(97,1075,0.00000)
+,(97,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(97,1078,0.00000)
+,(97,1073,0.00000)
+,(97,1076,0.00000)
+,(97,1085,0.00000)
+,(97,1086,0.00000)
+,(97,1087,0.00000)
+,(97,1080,0.00000)
+,(97,1093,0.00000)
+,(98,1061,0.00000)
+,(98,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(98,1070,0.00000)
+,(98,1064,0.00000)
+,(98,1065,0.00000)
+,(98,1066,0.00000)
+,(98,1093,0.00000)
+,(98,1062,0.00000)
+,(98,1063,0.00000)
+,(98,1088,0.00000)
+,(98,1060,0.00000)
+,(98,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(98,1075,0.00000)
+,(98,1077,0.00000)
+,(98,1078,0.00000)
+,(98,1073,0.00000)
+,(98,1076,0.00000)
+,(98,1085,0.00000)
+,(98,1086,0.00000)
+,(98,1087,0.00000)
+,(98,1080,0.00000)
+,(99,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(99,1061,0.00000)
+,(99,1089,0.00000)
+,(99,1070,0.00000)
+,(99,1064,0.00000)
+,(99,1065,0.00000)
+,(99,1066,0.00000)
+,(99,1062,0.00000)
+,(99,1088,0.00000)
+,(99,1060,0.00000)
+,(99,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(99,1075,0.00000)
+,(99,1077,0.00000)
+,(99,1078,0.00000)
+,(99,1073,0.00000)
+,(99,1076,0.00000)
+,(99,1085,0.00000)
+,(99,1086,0.00000)
+,(99,1087,0.00000)
+,(99,1080,0.00000)
+,(99,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(100,1062,0.00000)
+,(100,1061,0.00000)
+,(100,1089,0.00000)
+,(100,1070,0.00000)
+,(100,1064,0.00000)
+,(100,1065,0.00000)
+,(100,1066,0.00000)
+,(100,1063,0.00000)
+,(100,1088,0.00000)
+,(100,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(100,1074,0.00000)
+,(100,1075,0.00000)
+,(100,1077,0.00000)
+,(100,1078,0.00000)
+,(100,1073,0.00000)
+,(100,1076,0.00000)
+,(100,1085,0.00000)
+,(100,1086,0.00000)
+,(100,1087,0.00000)
+,(100,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(100,1093,0.00000)
+,(101,1080,0.00000)
+,(101,1061,0.00000)
+,(101,1089,0.00000)
+,(101,1070,0.00000)
+,(101,1064,0.00000)
+,(101,1065,0.00000)
+,(101,1066,0.00000)
+,(101,1062,0.00000)
+,(101,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(101,1063,0.00000)
+,(101,1088,0.00000)
+,(101,1060,0.00000)
+,(101,1074,0.00000)
+,(101,1075,0.00000)
+,(101,1077,0.00000)
+,(101,1078,0.00000)
+,(101,1073,0.00000)
+,(101,1076,0.00000)
+,(101,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(101,1086,0.00000)
+,(101,1087,0.00000)
+,(102,1060,0.00000)
+,(102,1093,0.00000)
+,(102,1080,0.00000)
+,(102,1087,0.00000)
+,(102,1086,0.00000)
+,(102,1085,0.00000)
+,(102,1076,0.00000)
+,(102,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(102,1078,0.00000)
+,(102,1077,0.00000)
+,(102,1075,0.00000)
+,(102,1074,0.00000)
+,(102,1088,0.00000)
+,(102,1063,0.00000)
+,(102,1062,0.00000)
+,(102,1066,0.00000)
+,(102,1065,0.00000)
+,(102,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(102,1070,0.00000)
+,(102,1089,0.00000)
+,(102,1061,0.00000)
+,(103,1093,0.00000)
+,(103,1080,0.00000)
+,(103,1087,0.00000)
+,(103,1086,0.00000)
+,(103,1085,0.00000)
+,(103,1076,0.00000)
+,(103,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(103,1078,0.00000)
+,(103,1077,0.00000)
+,(103,1075,0.00000)
+,(103,1074,0.00000)
+,(103,1060,0.00000)
+,(103,1088,0.00000)
+,(103,1063,0.00000)
+,(103,1062,0.00000)
+,(103,1066,0.00000)
+,(103,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(103,1064,0.00000)
+,(103,1070,0.00000)
+,(103,1089,0.00000)
+,(103,1061,0.00000)
+,(104,1093,0.00000)
+,(104,1080,0.00000)
+,(104,1087,0.00000)
+,(104,1086,0.00000)
+,(104,1085,0.00000)
+,(104,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(104,1073,0.00000)
+,(104,1078,0.00000)
+,(104,1077,0.00000)
+,(104,1075,0.00000)
+,(104,1074,0.00000)
+,(104,1060,0.00000)
+,(104,1088,0.00000)
+,(104,1063,0.00000)
+,(104,1062,0.00000)
+,(104,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(104,1065,0.00000)
+,(104,1064,0.00000)
+,(104,1070,0.00000)
+,(104,1089,0.00000)
+,(104,1061,0.00000)
+,(105,1093,0.00000)
+,(105,1080,0.00000)
+,(105,1087,0.00000)
+,(105,1086,0.00000)
+,(105,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(105,1076,0.00000)
+,(105,1073,0.00000)
+,(105,1078,0.00000)
+,(105,1077,0.00000)
+,(105,1075,0.00000)
+,(105,1074,0.00000)
+,(105,1060,0.00000)
+,(105,1088,0.00000)
+,(105,1063,0.00000)
+,(105,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(105,1066,0.00000)
+,(105,1065,0.00000)
+,(105,1064,0.00000)
+,(105,1070,0.00000)
+,(105,1089,0.00000)
+,(105,1061,0.00000)
+,(106,1093,0.00000)
+,(106,1061,0.00000)
+,(106,1089,0.00000)
+,(106,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(106,1064,0.00000)
+,(106,1065,0.00000)
+,(106,1066,0.00000)
+,(106,1062,0.00000)
+,(106,1063,0.00000)
+,(106,1088,0.00000)
+,(106,1060,0.00000)
+,(106,1074,0.00000)
+,(106,1075,0.00000)
+,(106,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(106,1078,0.00000)
+,(106,1073,0.00000)
+,(106,1076,0.00000)
+,(106,1085,0.00000)
+,(106,1086,0.00000)
+,(106,1087,0.00000)
+,(106,1080,0.00000)
+,(107,1093,0.00000)
+,(107,1061,0.00000)
+,(107,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(107,1070,0.00000)
+,(107,1064,0.00000)
+,(107,1065,0.00000)
+,(107,1066,0.00000)
+,(107,1062,0.00000)
+,(107,1063,0.00000)
+,(107,1088,0.00000)
+,(107,1060,0.00000)
+,(107,1074,0.00000)
+,(107,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(107,1077,0.00000)
+,(107,1078,0.00000)
+,(107,1073,0.00000)
+,(107,1076,0.00000)
+,(107,1085,0.00000)
+,(107,1086,0.00000)
+,(107,1087,0.00000)
+,(107,1080,0.00000)
+,(108,1093,0.00000)
+,(108,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(108,1089,0.00000)
+,(108,1070,0.00000)
+,(108,1064,0.00000)
+,(108,1065,0.00000)
+,(108,1066,0.00000)
+,(108,1062,0.00000)
+,(108,1063,0.00000)
+,(108,1088,0.00000)
+,(108,1060,0.00000)
+,(108,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(108,1075,0.00000)
+,(108,1077,0.00000)
+,(108,1078,0.00000)
+,(108,1073,0.00000)
+,(108,1076,0.00000)
+,(108,1085,0.00000)
+,(108,1086,0.00000)
+,(108,1087,0.00000)
+,(108,1080,0.00000)
+,(109,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(109,1080,0.00000)
+,(109,1087,0.00000)
+,(109,1086,0.00000)
+,(109,1085,0.00000)
+,(109,1076,0.00000)
+,(109,1073,0.00000)
+,(109,1078,0.00000)
+,(109,1077,0.00000)
+,(109,1075,0.00000)
+,(109,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(109,1060,0.00000)
+,(109,1088,0.00000)
+,(109,1063,0.00000)
+,(109,1062,0.00000)
+,(109,1066,0.00000)
+,(109,1065,0.00000)
+,(109,1064,0.00000)
+,(109,1070,0.00000)
+,(109,1089,0.00000)
+,(109,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(110,1093,0.00000)
+,(110,1080,0.00000)
+,(110,1087,0.00000)
+,(110,1086,0.00000)
+,(110,1085,0.00000)
+,(110,1076,0.00000)
+,(110,1073,0.00000)
+,(110,1078,0.00000)
+,(110,1077,0.00000)
+,(110,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(110,1074,0.00000)
+,(110,1060,0.00000)
+,(110,1088,0.00000)
+,(110,1063,0.00000)
+,(110,1062,0.00000)
+,(110,1066,0.00000)
+,(110,1065,0.00000)
+,(110,1064,0.00000)
+,(110,1070,0.00000)
+,(110,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(110,1061,0.00000)
+,(111,1080,0.00000)
+,(111,1093,0.00000)
+,(111,1061,0.00000)
+,(111,1089,0.00000)
+,(111,1070,0.00000)
+,(111,1064,0.00000)
+,(111,1065,0.00000)
+,(111,1066,0.00000)
+,(111,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(111,1063,0.00000)
+,(111,1088,0.00000)
+,(111,1060,0.00000)
+,(111,1074,0.00000)
+,(111,1075,0.00000)
+,(111,1077,0.00000)
+,(111,1078,0.00000)
+,(111,1073,0.00000)
+,(111,1076,0.00000)
+,(111,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(111,1086,0.00000)
+,(111,1087,0.00000)
+,(112,1093,0.00000)
+,(112,1080,0.00000)
+,(112,1087,0.00000)
+,(112,1086,0.00000)
+,(112,1085,0.00000)
+,(112,1076,0.00000)
+,(112,1073,0.00000)
+,(112,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(112,1077,0.00000)
+,(112,1075,0.00000)
+,(112,1074,0.00000)
+,(112,1060,0.00000)
+,(112,1088,0.00000)
+,(112,1063,0.00000)
+,(112,1062,0.00000)
+,(112,1066,0.00000)
+,(112,1065,0.00000)
+,(112,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(112,1070,0.00000)
+,(112,1089,0.00000)
+,(112,1061,0.00000)
+,(113,1061,0.00000)
+,(113,1089,0.00000)
+,(113,1070,0.00000)
+,(113,1064,0.00000)
+,(113,1065,0.00000)
+,(113,1066,0.00000)
+,(113,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(113,1063,0.00000)
+,(113,1088,0.00000)
+,(113,1060,0.00000)
+,(113,1074,0.00000)
+,(113,1075,0.00000)
+,(113,1077,0.00000)
+,(113,1078,0.00000)
+,(113,1073,0.00000)
+,(113,1076,0.00000)
+,(113,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(113,1086,0.00000)
+,(113,1087,0.00000)
+,(113,1080,0.00000)
+,(113,1093,0.00000)
+,(114,1061,0.00000)
+,(114,1089,0.00000)
+,(114,1070,0.00000)
+,(114,1064,0.00000)
+,(114,1065,0.00000)
+,(114,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(114,1062,0.00000)
+,(114,1063,0.00000)
+,(114,1088,0.00000)
+,(114,1060,0.00000)
+,(114,1074,0.00000)
+,(114,1075,0.00000)
+,(114,1077,0.00000)
+,(114,1078,0.00000)
+,(114,1073,0.00000)
+,(114,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(114,1085,0.00000)
+,(114,1086,0.00000)
+,(114,1087,0.00000)
+,(114,1080,0.00000)
+,(114,1093,0.00000)
+,(115,1093,0.00000)
+,(115,1080,0.00000)
+,(115,1087,0.00000)
+,(115,1086,0.00000)
+,(115,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(115,1076,0.00000)
+,(115,1073,0.00000)
+,(115,1078,0.00000)
+,(115,1077,0.00000)
+,(115,1075,0.00000)
+,(115,1074,0.00000)
+,(115,1060,0.00000)
+,(115,1088,0.00000)
+,(115,1063,0.00000)
+,(115,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(115,1066,0.00000)
+,(115,1065,0.00000)
+,(115,1064,0.00000)
+,(115,1070,0.00000)
+,(115,1089,0.00000)
+,(115,1061,0.00000)
+,(116,1089,0.00000)
+,(116,1070,0.00000)
+,(116,1064,0.00000)
+,(116,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(116,1066,0.00000)
+,(116,1062,0.00000)
+,(116,1063,0.00000)
+,(116,1088,0.00000)
+,(116,1060,0.00000)
+,(116,1074,0.00000)
+,(116,1075,0.00000)
+,(116,1077,0.00000)
+,(116,1078,0.00000)
+,(116,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(116,1076,0.00000)
+,(116,1085,0.00000)
+,(116,1086,0.00000)
+,(116,1087,0.00000)
+,(116,1080,0.00000)
+,(116,1093,0.00000)
+,(116,1061,0.00000)
+,(117,1086,0.00000)
+,(117,1061,0.00000)
+,(117,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(117,1070,0.00000)
+,(117,1064,0.00000)
+,(117,1065,0.00000)
+,(117,1066,0.00000)
+,(117,1062,0.00000)
+,(117,1063,0.00000)
+,(117,1088,0.00000)
+,(117,1060,0.00000)
+,(117,1074,0.00000)
+,(117,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(117,1077,0.00000)
+,(117,1078,0.00000)
+,(117,1073,0.00000)
+,(117,1076,0.00000)
+,(117,1085,0.00000)
+,(117,1087,0.00000)
+,(117,1080,0.00000)
+,(117,1093,0.00000)
+,(118,1086,0.00000)
+,(118,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(118,1080,0.00000)
+,(118,1087,0.00000)
+,(118,1085,0.00000)
+,(118,1076,0.00000)
+,(118,1073,0.00000)
+,(118,1078,0.00000)
+,(118,1077,0.00000)
+,(118,1075,0.00000)
+,(118,1074,0.00000)
+,(118,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(118,1088,0.00000)
+,(118,1063,0.00000)
+,(118,1062,0.00000)
+,(118,1066,0.00000)
+,(118,1065,0.00000)
+,(118,1064,0.00000)
+,(118,1070,0.00000)
+,(118,1089,0.00000)
+,(118,1061,0.00000)
+,(119,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(119,1080,0.00000)
+,(119,1087,0.00000)
+,(119,1086,0.00000)
+,(119,1085,0.00000)
+,(119,1076,0.00000)
+,(119,1073,0.00000)
+,(119,1078,0.00000)
+,(119,1077,0.00000)
+,(119,1075,0.00000)
+,(119,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(119,1060,0.00000)
+,(119,1088,0.00000)
+,(119,1063,0.00000)
+,(119,1062,0.00000)
+,(119,1066,0.00000)
+,(119,1065,0.00000)
+,(119,1064,0.00000)
+,(119,1070,0.00000)
+,(119,1089,0.00000)
+,(119,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(120,1061,0.00000)
+,(120,1089,0.00000)
+,(120,1070,0.00000)
+,(120,1064,0.00000)
+,(120,1065,0.00000)
+,(120,1066,0.00000)
+,(120,1062,0.00000)
+,(120,1063,0.00000)
+,(120,1088,0.00000)
+,(120,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(120,1074,0.00000)
+,(120,1075,0.00000)
+,(120,1077,0.00000)
+,(120,1078,0.00000)
+,(120,1073,0.00000)
+,(120,1076,0.00000)
+,(120,1085,0.00000)
+,(120,1086,0.00000)
+,(120,1087,0.00000)
+,(120,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(120,1093,0.00000)
+,(121,1093,0.00000)
+,(121,1080,0.00000)
+,(121,1087,0.00000)
+,(121,1086,0.00000)
+,(121,1085,0.00000)
+,(121,1076,0.00000)
+,(121,1073,0.00000)
+,(121,1078,0.00000)
+,(121,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(121,1075,0.00000)
+,(121,1074,0.00000)
+,(121,1060,0.00000)
+,(121,1088,0.00000)
+,(121,1063,0.00000)
+,(121,1062,0.00000)
+,(121,1066,0.00000)
+,(121,1065,0.00000)
+,(121,1064,0.00000)
+,(121,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(121,1089,0.00000)
+,(121,1061,0.00000)
+,(122,1077,0.00000)
+,(122,1061,0.00000)
+,(122,1089,0.00000)
+,(122,1070,0.00000)
+,(122,1064,0.00000)
+,(122,1065,0.00000)
+,(122,1066,0.00000)
+,(122,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(122,1063,0.00000)
+,(122,1088,0.00000)
+,(122,1060,0.00000)
+,(122,1074,0.00000)
+,(122,1075,0.00000)
+,(122,1078,0.00000)
+,(122,1073,0.00000)
+,(122,1076,0.00000)
+,(122,1085,0.00000)
+,(122,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(122,1087,0.00000)
+,(122,1080,0.00000)
+,(122,1093,0.00000)
+,(123,1093,0.00000)
+,(123,1080,0.00000)
+,(123,1087,0.00000)
+,(123,1086,0.00000)
+,(123,1085,0.00000)
+,(123,1076,0.00000)
+,(123,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(123,1078,0.00000)
+,(123,1077,0.00000)
+,(123,1075,0.00000)
+,(123,1074,0.00000)
+,(123,1060,0.00000)
+,(123,1088,0.00000)
+,(123,1063,0.00000)
+,(123,1062,0.00000)
+,(123,1066,0.00000)
+,(123,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(123,1064,0.00000)
+,(123,1070,0.00000)
+,(123,1089,0.00000)
+,(123,1061,0.00000)
+,(124,1061,0.00000)
+,(124,1089,0.00000)
+,(124,1070,0.00000)
+,(124,1064,0.00000)
+,(124,1065,0.00000)
+,(124,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(124,1062,0.00000)
+,(124,1063,0.00000)
+,(124,1088,0.00000)
+,(124,1060,0.00000)
+,(124,1074,0.00000)
+,(124,1075,0.00000)
+,(124,1077,0.00000)
+,(124,1078,0.00000)
+,(124,1073,0.00000)
+,(124,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(124,1085,0.00000)
+,(124,1086,0.00000)
+,(124,1087,0.00000)
+,(124,1080,0.00000)
+,(124,1093,0.00000)
+,(125,1061,0.00000)
+,(125,1089,0.00000)
+,(125,1070,0.00000)
+,(125,1064,0.00000)
+,(125,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(125,1066,0.00000)
+,(125,1062,0.00000)
+,(125,1063,0.00000)
+,(125,1088,0.00000)
+,(125,1060,0.00000)
+,(125,1074,0.00000)
+,(125,1075,0.00000)
+,(125,1077,0.00000)
+,(125,1078,0.00000)
+,(125,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(125,1076,0.00000)
+,(125,1085,0.00000)
+,(125,1086,0.00000)
+,(125,1087,0.00000)
+,(125,1080,0.00000)
+,(125,1093,0.00000)
+,(126,1065,0.00000)
+,(126,1061,0.00000)
+,(126,1089,0.00000)
+,(126,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(126,1064,0.00000)
+,(126,1066,0.00000)
+,(126,1062,0.00000)
+,(126,1063,0.00000)
+,(126,1088,0.00000)
+,(126,1060,0.00000)
+,(126,1074,0.00000)
+,(126,1075,0.00000)
+,(126,1077,0.00000)
+,(126,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(126,1073,0.00000)
+,(126,1076,0.00000)
+,(126,1085,0.00000)
+,(126,1086,0.00000)
+,(126,1087,0.00000)
+,(126,1080,0.00000)
+,(126,1093,0.00000)
+,(127,1093,0.00000)
+,(127,1080,0.00000)
+,(127,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(127,1086,0.00000)
+,(127,1085,0.00000)
+,(127,1076,0.00000)
+,(127,1073,0.00000)
+,(127,1078,0.00000)
+,(127,1077,0.00000)
+,(127,1075,0.00000)
+,(127,1074,0.00000)
+,(127,1060,0.00000)
+,(127,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(127,1063,0.00000)
+,(127,1062,0.00000)
+,(127,1066,0.00000)
+,(127,1065,0.00000)
+,(127,1064,0.00000)
+,(127,1070,0.00000)
+,(127,1089,0.00000)
+,(127,1061,0.00000)
+,(128,1089,0.00000)
+,(128,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(128,1087,0.00000)
+,(128,1086,0.00000)
+,(128,1085,0.00000)
+,(128,1093,0.00000)
+,(128,1076,0.00000)
+,(128,1073,0.00000)
+,(128,1078,0.00000)
+,(128,1077,0.00000)
+,(128,1075,0.00000)
+,(128,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(128,1060,0.00000)
+,(128,1088,0.00000)
+,(128,1063,0.00000)
+,(128,1062,0.00000)
+,(128,1066,0.00000)
+,(128,1065,0.00000)
+,(128,1064,0.00000)
+,(128,1070,0.00000)
+,(128,1061,0.00000)
+,(129,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(129,1089,0.00000)
+,(129,1070,0.00000)
+,(129,1064,0.00000)
+,(129,1065,0.00000)
+,(129,1066,0.00000)
+,(129,1062,0.00000)
+,(129,1063,0.00000)
+,(129,1088,0.00000)
+,(129,1060,0.00000)
+,(129,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(129,1075,0.00000)
+,(129,1077,0.00000)
+,(129,1078,0.00000)
+,(129,1073,0.00000)
+,(129,1076,0.00000)
+,(129,1085,0.00000)
+,(129,1086,0.00000)
+,(129,1087,0.00000)
+,(129,1080,0.00000)
+,(129,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(130,1085,0.00000)
+,(130,1093,0.00000)
+,(130,1080,0.00000)
+,(130,1087,0.00000)
+,(130,1086,0.00000)
+,(130,1076,0.00000)
+,(130,1073,0.00000)
+,(130,1078,0.00000)
+,(130,1077,0.00000)
+,(130,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(130,1074,0.00000)
+,(130,1060,0.00000)
+,(130,1088,0.00000)
+,(130,1063,0.00000)
+,(130,1062,0.00000)
+,(130,1066,0.00000)
+,(130,1065,0.00000)
+,(130,1064,0.00000)
+,(130,1070,0.00000)
+,(130,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(130,1061,0.00000)
+,(131,1080,0.00000)
+,(131,1087,0.00000)
+,(131,1086,0.00000)
+,(131,1085,0.00000)
+,(131,1076,0.00000)
+,(131,1073,0.00000)
+,(131,1078,0.00000)
+,(131,1077,0.00000)
+,(131,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(131,1074,0.00000)
+,(131,1060,0.00000)
+,(131,1088,0.00000)
+,(131,1063,0.00000)
+,(131,1062,0.00000)
+,(131,1066,0.00000)
+,(131,1065,0.00000)
+,(131,1064,0.00000)
+,(131,1070,0.00000)
+,(131,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(131,1061,0.00000)
+,(131,1093,0.00000)
+,(132,1061,0.00000)
+,(132,1089,0.00000)
+,(132,1070,0.00000)
+,(132,1064,0.00000)
+,(132,1065,0.00000)
+,(132,1066,0.00000)
+,(132,1062,0.00000)
+,(132,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(132,1088,0.00000)
+,(132,1060,0.00000)
+,(132,1074,0.00000)
+,(132,1075,0.00000)
+,(132,1077,0.00000)
+,(132,1078,0.00000)
+,(132,1073,0.00000)
+,(132,1076,0.00000)
+,(132,1085,0.00000)
+,(132,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(132,1087,0.00000)
+,(132,1080,0.00000)
+,(132,1093,0.00000)
+,(133,1089,0.00000)
+,(133,1070,0.00000)
+,(133,1064,0.00000)
+,(133,1065,0.00000)
+,(133,1066,0.00000)
+,(133,1062,0.00000)
+,(133,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(133,1088,0.00000)
+,(133,1060,0.00000)
+,(133,1074,0.00000)
+,(133,1075,0.00000)
+,(133,1077,0.00000)
+,(133,1078,0.00000)
+,(133,1073,0.00000)
+,(133,1076,0.00000)
+,(133,1085,0.00000)
+,(133,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(133,1087,0.00000)
+,(133,1080,0.00000)
+,(133,1093,0.00000)
+,(133,1061,0.00000)
+,(134,1093,0.00000)
+,(134,1080,0.00000)
+,(134,1087,0.00000)
+,(134,1086,0.00000)
+,(134,1085,0.00000)
+,(134,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(134,1073,0.00000)
+,(134,1078,0.00000)
+,(134,1077,0.00000)
+,(134,1075,0.00000)
+,(134,1074,0.00000)
+,(134,1060,0.00000)
+,(134,1088,0.00000)
+,(134,1063,0.00000)
+,(134,1062,0.00000)
+,(134,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(134,1065,0.00000)
+,(134,1064,0.00000)
+,(134,1070,0.00000)
+,(134,1089,0.00000)
+,(134,1061,0.00000)
+,(135,1061,0.00000)
+,(135,1089,0.00000)
+,(135,1070,0.00000)
+,(135,1064,0.00000)
+,(135,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(135,1066,0.00000)
+,(135,1062,0.00000)
+,(135,1063,0.00000)
+,(135,1088,0.00000)
+,(135,1060,0.00000)
+,(135,1074,0.00000)
+,(135,1075,0.00000)
+,(135,1077,0.00000)
+,(135,1078,0.00000)
+,(135,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(135,1076,0.00000)
+,(135,1085,0.00000)
+,(135,1086,0.00000)
+,(135,1087,0.00000)
+,(135,1080,0.00000)
+,(135,1093,0.00000)
+,(136,1061,0.00000)
+,(136,1089,0.00000)
+,(136,1070,0.00000)
+,(136,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(136,1065,0.00000)
+,(136,1066,0.00000)
+,(136,1062,0.00000)
+,(136,1063,0.00000)
+,(136,1088,0.00000)
+,(136,1060,0.00000)
+,(136,1074,0.00000)
+,(136,1075,0.00000)
+,(136,1077,0.00000)
+,(136,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(136,1073,0.00000)
+,(136,1076,0.00000)
+,(136,1085,0.00000)
+,(136,1086,0.00000)
+,(136,1087,0.00000)
+,(136,1080,0.00000)
+,(136,1093,0.00000)
+,(137,1061,0.00000)
+,(137,1089,0.00000)
+,(137,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(137,1064,0.00000)
+,(137,1065,0.00000)
+,(137,1066,0.00000)
+,(137,1062,0.00000)
+,(137,1063,0.00000)
+,(137,1088,0.00000)
+,(137,1060,0.00000)
+,(137,1074,0.00000)
+,(137,1075,0.00000)
+,(137,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(137,1078,0.00000)
+,(137,1073,0.00000)
+,(137,1076,0.00000)
+,(137,1085,0.00000)
+,(137,1086,0.00000)
+,(137,1087,0.00000)
+,(137,1080,0.00000)
+,(137,1093,0.00000)
+,(138,1061,0.00000)
+,(138,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(138,1070,0.00000)
+,(138,1064,0.00000)
+,(138,1065,0.00000)
+,(138,1066,0.00000)
+,(138,1062,0.00000)
+,(138,1063,0.00000)
+,(138,1088,0.00000)
+,(138,1060,0.00000)
+,(138,1074,0.00000)
+,(138,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(138,1077,0.00000)
+,(138,1078,0.00000)
+,(138,1073,0.00000)
+,(138,1076,0.00000)
+,(138,1085,0.00000)
+,(138,1086,0.00000)
+,(138,1087,0.00000)
+,(138,1080,0.00000)
+,(138,1093,0.00000)
+,(139,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(139,1089,0.00000)
+,(139,1070,0.00000)
+,(139,1064,0.00000)
+,(139,1065,0.00000)
+,(139,1066,0.00000)
+,(139,1062,0.00000)
+,(139,1063,0.00000)
+,(139,1088,0.00000)
+,(139,1060,0.00000)
+,(139,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(139,1075,0.00000)
+,(139,1077,0.00000)
+,(139,1078,0.00000)
+,(139,1073,0.00000)
+,(139,1076,0.00000)
+,(139,1085,0.00000)
+,(139,1086,0.00000)
+,(139,1087,0.00000)
+,(139,1080,0.00000)
+,(139,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(140,1085,0.00000)
+,(140,1061,0.00000)
+,(140,1089,0.00000)
+,(140,1070,0.00000)
+,(140,1064,0.00000)
+,(140,1065,0.00000)
+,(140,1066,0.00000)
+,(140,1062,0.00000)
+,(140,1063,0.00000)
+,(140,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(140,1060,0.00000)
+,(140,1074,0.00000)
+,(140,1075,0.00000)
+,(140,1077,0.00000)
+,(140,1078,0.00000)
+,(140,1073,0.00000)
+,(140,1076,0.00000)
+,(140,1086,0.00000)
+,(140,1087,0.00000)
+,(140,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(140,1093,0.00000)
+,(141,1093,0.00000)
+,(141,1061,0.00000)
+,(141,1089,0.00000)
+,(141,1070,0.00000)
+,(141,1064,0.00000)
+,(141,1065,0.00000)
+,(141,1066,0.00000)
+,(141,1062,0.00000)
+,(141,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(141,1088,0.00000)
+,(141,1060,0.00000)
+,(141,1074,0.00000)
+,(141,1075,0.00000)
+,(141,1077,0.00000)
+,(141,1078,0.00000)
+,(141,1073,0.00000)
+,(141,1076,0.00000)
+,(141,1085,0.00000)
+,(141,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(141,1087,0.00000)
+,(141,1080,0.00000)
+,(142,1093,0.00000)
+,(142,1080,0.00000)
+,(142,1087,0.00000)
+,(142,1086,0.00000)
+,(142,1085,0.00000)
+,(142,1076,0.00000)
+,(142,1073,0.00000)
+,(142,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(142,1077,0.00000)
+,(142,1075,0.00000)
+,(142,1074,0.00000)
+,(142,1060,0.00000)
+,(142,1088,0.00000)
+,(142,1063,0.00000)
+,(142,1062,0.00000)
+,(142,1066,0.00000)
+,(142,1065,0.00000)
+,(142,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(142,1070,0.00000)
+,(142,1089,0.00000)
+,(142,1061,0.00000)
+,(143,1061,0.00000)
+,(143,1089,0.00000)
+,(143,1070,0.00000)
+,(143,1064,0.00000)
+,(143,1065,0.00000)
+,(143,1066,0.00000)
+,(143,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(143,1063,0.00000)
+,(143,1088,0.00000)
+,(143,1060,0.00000)
+,(143,1074,0.00000)
+,(143,1075,0.00000)
+,(143,1077,0.00000)
+,(143,1078,0.00000)
+,(143,1073,0.00000)
+,(143,1076,0.00000)
+,(143,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(143,1086,0.00000)
+,(143,1087,0.00000)
+,(143,1080,0.00000)
+,(143,1093,0.00000)
+,(144,1093,0.00000)
+,(144,1080,0.00000)
+,(144,1087,0.00000)
+,(144,1086,0.00000)
+,(144,1085,0.00000)
+,(144,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(144,1073,0.00000)
+,(144,1078,0.00000)
+,(144,1077,0.00000)
+,(144,1075,0.00000)
+,(144,1074,0.00000)
+,(144,1060,0.00000)
+,(144,1088,0.00000)
+,(144,1063,0.00000)
+,(144,1062,0.00000)
+,(144,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(144,1065,0.00000)
+,(144,1064,0.00000)
+,(144,1070,0.00000)
+,(144,1089,0.00000)
+,(144,1061,0.00000)
+,(145,1088,0.00000)
+,(145,1061,0.00000)
+,(145,1089,0.00000)
+,(145,1070,0.00000)
+,(145,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(145,1065,0.00000)
+,(145,1066,0.00000)
+,(145,1062,0.00000)
+,(145,1063,0.00000)
+,(145,1060,0.00000)
+,(145,1074,0.00000)
+,(145,1075,0.00000)
+,(145,1077,0.00000)
+,(145,1078,0.00000)
+,(145,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(145,1076,0.00000)
+,(145,1085,0.00000)
+,(145,1086,0.00000)
+,(145,1087,0.00000)
+,(145,1080,0.00000)
+,(145,1093,0.00000)
+,(146,1061,0.00000)
+,(146,1093,0.00000)
+,(146,1080,0.00000)
+,(146,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(146,1086,0.00000)
+,(146,1085,0.00000)
+,(146,1076,0.00000)
+,(146,1073,0.00000)
+,(146,1078,0.00000)
+,(146,1077,0.00000)
+,(146,1075,0.00000)
+,(146,1074,0.00000)
+,(146,1060,0.00000)
+,(146,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(146,1063,0.00000)
+,(146,1062,0.00000)
+,(146,1066,0.00000)
+,(146,1065,0.00000)
+,(146,1064,0.00000)
+,(146,1070,0.00000)
+,(146,1089,0.00000)
+,(147,1064,0.00000)
+,(147,1080,0.00000)
+,(147,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(147,1086,0.00000)
+,(147,1085,0.00000)
+,(147,1076,0.00000)
+,(147,1073,0.00000)
+,(147,1078,0.00000)
+,(147,1077,0.00000)
+,(147,1075,0.00000)
+,(147,1074,0.00000)
+,(147,1060,0.00000)
+,(147,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(147,1063,0.00000)
+,(147,1062,0.00000)
+,(147,1066,0.00000)
+,(147,1065,0.00000)
+,(147,1070,0.00000)
+,(147,1089,0.00000)
+,(147,1061,0.00000)
+,(147,1093,0.00000)
+,(148,1093,0.00000)
+,(148,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(148,1089,0.00000)
+,(148,1070,0.00000)
+,(148,1064,0.00000)
+,(148,1065,0.00000)
+,(148,1066,0.00000)
+,(148,1062,0.00000)
+,(148,1063,0.00000)
+,(148,1088,0.00000)
+,(148,1060,0.00000)
+,(148,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(148,1075,0.00000)
+,(148,1077,0.00000)
+,(148,1078,0.00000)
+,(148,1073,0.00000)
+,(148,1076,0.00000)
+,(148,1085,0.00000)
+,(148,1086,0.00000)
+,(148,1087,0.00000)
+,(148,1080,0.00000)
+,(149,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(149,1093,0.00000)
+,(149,1080,0.00000)
+,(149,1087,0.00000)
+,(149,1086,0.00000)
+,(149,1085,0.00000)
+,(149,1076,0.00000)
+,(149,1073,0.00000)
+,(149,1078,0.00000)
+,(149,1077,0.00000)
+,(149,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(149,1074,0.00000)
+,(149,1060,0.00000)
+,(149,1088,0.00000)
+,(149,1063,0.00000)
+,(149,1062,0.00000)
+,(149,1066,0.00000)
+,(149,1065,0.00000)
+,(149,1064,0.00000)
+,(149,1070,0.00000)
+,(149,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(150,1093,0.00000)
+,(150,1080,0.00000)
+,(150,1087,0.00000)
+,(150,1086,0.00000)
+,(150,1085,0.00000)
+,(150,1076,0.00000)
+,(150,1073,0.00000)
+,(150,1078,0.00000)
+,(150,1077,0.00000)
+,(150,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(150,1074,0.00000)
+,(150,1060,0.00000)
+,(150,1088,0.00000)
+,(150,1063,0.00000)
+,(150,1062,0.00000)
+,(150,1066,0.00000)
+,(150,1065,0.00000)
+,(150,1064,0.00000)
+,(150,1070,0.00000)
+,(150,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(150,1061,0.00000)
+,(151,1070,0.00000)
+,(151,1093,0.00000)
+,(151,1080,0.00000)
+,(151,1087,0.00000)
+,(151,1086,0.00000)
+,(151,1085,0.00000)
+,(151,1076,0.00000)
+,(151,1073,0.00000)
+,(151,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(151,1077,0.00000)
+,(151,1075,0.00000)
+,(151,1074,0.00000)
+,(151,1060,0.00000)
+,(151,1088,0.00000)
+,(151,1063,0.00000)
+,(151,1062,0.00000)
+,(151,1066,0.00000)
+,(151,1065,0.00000)
+,(151,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(151,1089,0.00000)
+,(151,1061,0.00000)
+,(152,1093,0.00000)
+,(152,1080,0.00000)
+,(152,1087,0.00000)
+,(152,1086,0.00000)
+,(152,1085,0.00000)
+,(152,1076,0.00000)
+,(152,1073,0.00000)
+,(152,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(152,1077,0.00000)
+,(152,1075,0.00000)
+,(152,1074,0.00000)
+,(152,1060,0.00000)
+,(152,1088,0.00000)
+,(152,1063,0.00000)
+,(152,1062,0.00000)
+,(152,1066,0.00000)
+,(152,1065,0.00000)
+,(152,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(152,1070,0.00000)
+,(152,1089,0.00000)
+,(152,1061,0.00000)
+,(153,1093,0.00000)
+,(153,1061,0.00000)
+,(153,1089,0.00000)
+,(153,1070,0.00000)
+,(153,1064,0.00000)
+,(153,1065,0.00000)
+,(153,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(153,1062,0.00000)
+,(153,1063,0.00000)
+,(153,1088,0.00000)
+,(153,1060,0.00000)
+,(153,1074,0.00000)
+,(153,1075,0.00000)
+,(153,1077,0.00000)
+,(153,1078,0.00000)
+,(153,1073,0.00000)
+,(153,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(153,1085,0.00000)
+,(153,1086,0.00000)
+,(153,1087,0.00000)
+,(153,1080,0.00000)
+,(154,1093,0.00000)
+,(154,1061,0.00000)
+,(154,1089,0.00000)
+,(154,1070,0.00000)
+,(154,1064,0.00000)
+,(154,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(154,1066,0.00000)
+,(154,1062,0.00000)
+,(154,1063,0.00000)
+,(154,1088,0.00000)
+,(154,1060,0.00000)
+,(154,1074,0.00000)
+,(154,1075,0.00000)
+,(154,1077,0.00000)
+,(154,1078,0.00000)
+,(154,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(154,1076,0.00000)
+,(154,1085,0.00000)
+,(154,1086,0.00000)
+,(154,1087,0.00000)
+,(154,1080,0.00000)
+,(155,1061,0.00000)
+,(155,1089,0.00000)
+,(155,1070,0.00000)
+,(155,1064,0.00000)
+,(155,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(155,1066,0.00000)
+,(155,1062,0.00000)
+,(155,1063,0.00000)
+,(155,1088,0.00000)
+,(155,1060,0.00000)
+,(155,1074,0.00000)
+,(155,1075,0.00000)
+,(155,1077,0.00000)
+,(155,1078,0.00000)
+,(155,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(155,1076,0.00000)
+,(155,1085,0.00000)
+,(155,1086,0.00000)
+,(155,1087,0.00000)
+,(155,1080,0.00000)
+,(155,1093,0.00000)
+,(156,1093,0.00000)
+,(156,1061,0.00000)
+,(156,1089,0.00000)
+,(156,1070,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(156,1064,0.00000)
+,(156,1065,0.00000)
+,(156,1066,0.00000)
+,(156,1062,0.00000)
+,(156,1063,0.00000)
+,(156,1088,0.00000)
+,(156,1060,0.00000)
+,(156,1074,0.00000)
+,(156,1075,0.00000)
+,(156,1077,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(156,1078,0.00000)
+,(156,1073,0.00000)
+,(156,1076,0.00000)
+,(156,1085,0.00000)
+,(156,1086,0.00000)
+,(156,1087,0.00000)
+,(156,1080,0.00000)
+,(157,1093,0.00000)
+,(157,1080,0.00000)
+,(157,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(157,1086,0.00000)
+,(157,1085,0.00000)
+,(157,1076,0.00000)
+,(157,1073,0.00000)
+,(157,1078,0.00000)
+,(157,1077,0.00000)
+,(157,1075,0.00000)
+,(157,1074,0.00000)
+,(157,1060,0.00000)
+,(157,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(157,1063,0.00000)
+,(157,1062,0.00000)
+,(157,1066,0.00000)
+,(157,1065,0.00000)
+,(157,1064,0.00000)
+,(157,1070,0.00000)
+,(157,1089,0.00000)
+,(157,1061,0.00000)
+,(158,1093,0.00000)
+,(158,1080,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(158,1087,0.00000)
+,(158,1086,0.00000)
+,(158,1085,0.00000)
+,(158,1076,0.00000)
+,(158,1073,0.00000)
+,(158,1078,0.00000)
+,(158,1077,0.00000)
+,(158,1075,0.00000)
+,(158,1074,0.00000)
+,(158,1060,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(158,1088,0.00000)
+,(158,1063,0.00000)
+,(158,1062,0.00000)
+,(158,1066,0.00000)
+,(158,1065,0.00000)
+,(158,1064,0.00000)
+,(158,1070,0.00000)
+,(158,1089,0.00000)
+,(158,1061,0.00000)
+,(159,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(159,1089,0.00000)
+,(159,1070,0.00000)
+,(159,1064,0.00000)
+,(159,1065,0.00000)
+,(159,1066,0.00000)
+,(159,1062,0.00000)
+,(159,1063,0.00000)
+,(159,1088,0.00000)
+,(159,1060,0.00000)
+,(159,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(159,1075,0.00000)
+,(159,1077,0.00000)
+,(159,1078,0.00000)
+,(159,1073,0.00000)
+,(159,1076,0.00000)
+,(159,1085,0.00000)
+,(159,1086,0.00000)
+,(159,1087,0.00000)
+,(159,1080,0.00000)
+,(159,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(160,1093,0.00000)
+,(160,1080,0.00000)
+,(160,1087,0.00000)
+,(160,1086,0.00000)
+,(160,1085,0.00000)
+,(160,1076,0.00000)
+,(160,1073,0.00000)
+,(160,1078,0.00000)
+,(160,1077,0.00000)
+,(160,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(160,1074,0.00000)
+,(160,1060,0.00000)
+,(160,1088,0.00000)
+,(160,1063,0.00000)
+,(160,1062,0.00000)
+,(160,1066,0.00000)
+,(160,1065,0.00000)
+,(160,1064,0.00000)
+,(160,1070,0.00000)
+,(160,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(160,1061,0.00000)
+,(161,1093,0.00000)
+,(161,1061,0.00000)
+,(161,1089,0.00000)
+,(161,1070,0.00000)
+,(161,1064,0.00000)
+,(161,1065,0.00000)
+,(161,1066,0.00000)
+,(161,1062,0.00000)
+,(161,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(161,1088,0.00000)
+,(161,1060,0.00000)
+,(161,1074,0.00000)
+,(161,1075,0.00000)
+,(161,1077,0.00000)
+,(161,1078,0.00000)
+,(161,1073,0.00000)
+,(161,1076,0.00000)
+,(161,1085,0.00000)
+,(161,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(161,1087,0.00000)
+,(161,1080,0.00000)
+,(162,1087,0.00000)
+,(162,1093,0.00000)
+,(162,1080,0.00000)
+,(162,1086,0.00000)
+,(162,1085,0.00000)
+,(162,1076,0.00000)
+,(162,1073,0.00000)
+,(162,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(162,1077,0.00000)
+,(162,1075,0.00000)
+,(162,1074,0.00000)
+,(162,1060,0.00000)
+,(162,1088,0.00000)
+,(162,1063,0.00000)
+,(162,1062,0.00000)
+,(162,1066,0.00000)
+,(162,1065,0.00000)
+,(162,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(162,1070,0.00000)
+,(162,1089,0.00000)
+,(162,1061,0.00000)
+,(163,1061,0.00000)
+,(163,1093,0.00000)
+,(163,1080,0.00000)
+,(163,1087,0.00000)
+,(163,1086,0.00000)
+,(163,1085,0.00000)
+,(163,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(163,1073,0.00000)
+,(163,1078,0.00000)
+,(163,1077,0.00000)
+,(163,1075,0.00000)
+,(163,1074,0.00000)
+,(163,1060,0.00000)
+,(163,1088,0.00000)
+,(163,1063,0.00000)
+,(163,1062,0.00000)
+,(163,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(163,1065,0.00000)
+,(163,1064,0.00000)
+,(163,1070,0.00000)
+,(163,1089,0.00000)
+,(164,1061,0.00000)
+,(164,1089,0.00000)
+,(164,1070,0.00000)
+,(164,1064,0.00000)
+,(164,1065,0.00000)
+,(164,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(164,1062,0.00000)
+,(164,1063,0.00000)
+,(164,1088,0.00000)
+,(164,1060,0.00000)
+,(164,1074,0.00000)
+,(164,1075,0.00000)
+,(164,1077,0.00000)
+,(164,1078,0.00000)
+,(164,1073,0.00000)
+,(164,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(164,1085,0.00000)
+,(164,1086,0.00000)
+,(164,1087,0.00000)
+,(164,1080,0.00000)
+,(164,1093,0.00000)
+,(165,1093,0.00000)
+,(165,1080,0.00000)
+,(165,1087,0.00000)
+,(165,1086,0.00000)
+,(165,1085,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(165,1076,0.00000)
+,(165,1073,0.00000)
+,(165,1078,0.00000)
+,(165,1077,0.00000)
+,(165,1075,0.00000)
+,(165,1074,0.00000)
+,(165,1060,0.00000)
+,(165,1088,0.00000)
+,(165,1063,0.00000)
+,(165,1062,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(165,1066,0.00000)
+,(165,1065,0.00000)
+,(165,1064,0.00000)
+,(165,1070,0.00000)
+,(165,1089,0.00000)
+,(165,1061,0.00000)
+,(170,1061,0.00000)
+,(170,1093,0.00000)
+,(170,1080,0.00000)
+,(170,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(170,1086,0.00000)
+,(170,1085,0.00000)
+,(170,1076,0.00000)
+,(170,1073,0.00000)
+,(170,1078,0.00000)
+,(170,1077,0.00000)
+,(170,1075,0.00000)
+,(170,1074,0.00000)
+,(170,1060,0.00000)
+,(170,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(170,1063,0.00000)
+,(170,1062,0.00000)
+,(170,1066,0.00000)
+,(170,1065,0.00000)
+,(170,1064,0.00000)
+,(170,1070,0.00000)
+,(170,1089,0.00000)
+,(171,1074,0.00000)
+,(171,1080,0.00000)
+,(171,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(171,1086,0.00000)
+,(171,1085,0.00000)
+,(171,1076,0.00000)
+,(171,1073,0.00000)
+,(171,1078,0.00000)
+,(171,1077,0.00000)
+,(171,1075,0.00000)
+,(171,1093,0.00000)
+,(171,1060,0.00000)
+,(171,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(171,1063,0.00000)
+,(171,1062,0.00000)
+,(171,1066,0.00000)
+,(171,1065,0.00000)
+,(171,1064,0.00000)
+,(171,1070,0.00000)
+,(171,1089,0.00000)
+,(171,1061,0.00000)
+,(172,1093,0.00000)
+,(172,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(172,1089,0.00000)
+,(172,1070,0.00000)
+,(172,1064,0.00000)
+,(172,1065,0.00000)
+,(172,1066,0.00000)
+,(172,1062,0.00000)
+,(172,1063,0.00000)
+,(172,1088,0.00000)
+,(172,1060,0.00000)
+,(172,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(172,1075,0.00000)
+,(172,1077,0.00000)
+,(172,1078,0.00000)
+,(172,1073,0.00000)
+,(172,1076,0.00000)
+,(172,1085,0.00000)
+,(172,1086,0.00000)
+,(172,1087,0.00000)
+,(172,1080,0.00000)
+,(173,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(173,1080,0.00000)
+,(173,1087,0.00000)
+,(173,1086,0.00000)
+,(173,1085,0.00000)
+,(173,1076,0.00000)
+,(173,1073,0.00000)
+,(173,1078,0.00000)
+,(173,1077,0.00000)
+,(173,1075,0.00000)
+,(173,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(173,1060,0.00000)
+,(173,1088,0.00000)
+,(173,1063,0.00000)
+,(173,1062,0.00000)
+,(173,1066,0.00000)
+,(173,1065,0.00000)
+,(173,1064,0.00000)
+,(173,1070,0.00000)
+,(173,1089,0.00000)
+,(173,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(174,1093,0.00000)
+,(174,1089,0.00000)
+,(174,1088,0.00000)
+,(174,1087,0.00000)
+,(174,1086,0.00000)
+,(174,1085,0.00000)
+,(174,1080,0.00000)
+,(174,1078,0.00000)
+,(174,1077,0.00000)
+,(174,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(174,1075,0.00000)
+,(174,1074,0.00000)
+,(174,1073,0.00000)
+,(174,1070,0.00000)
+,(174,1066,0.00000)
+,(174,1065,0.00000)
+,(174,1064,0.00000)
+,(174,1063,0.00000)
+,(174,1062,0.00000)
+,(174,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(174,1060,0.00000)
+,(43,1061,0.00000)
+,(43,1089,0.00000)
+,(43,1070,0.00000)
+,(43,1064,0.00000)
+,(43,1065,0.00000)
+,(43,1066,0.00000)
+,(43,1062,0.00000)
+,(43,1063,0.00000)
+,(43,1088,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(43,1060,0.00000)
+,(43,1074,0.00000)
+,(43,1075,0.00000)
+,(43,1077,0.00000)
+,(43,1078,0.00000)
+,(43,1073,0.00000)
+,(43,1076,0.00000)
+,(43,1085,0.00000)
+,(43,1086,0.00000)
+,(43,1087,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(43,1080,0.00000)
+,(43,1093,0.00000)
+,(44,1093,0.00000)
+,(44,1080,0.00000)
+,(44,1087,0.00000)
+,(44,1086,0.00000)
+,(44,1085,0.00000)
+,(44,1076,0.00000)
+,(44,1073,0.00000)
+,(44,1078,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(44,1077,0.00000)
+,(44,1075,0.00000)
+,(44,1074,0.00000)
+,(44,1060,0.00000)
+,(44,1088,0.00000)
+,(44,1063,0.00000)
+,(44,1062,0.00000)
+,(44,1066,0.00000)
+,(44,1065,0.00000)
+,(44,1064,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(44,1070,0.00000)
+,(44,1089,0.00000)
+,(44,1061,0.00000)
+,(45,1093,0.00000)
+,(45,1080,0.00000)
+,(45,1087,0.00000)
+,(45,1086,0.00000)
+,(45,1085,0.00000)
+,(45,1076,0.00000)
+,(45,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(45,1078,0.00000)
+,(45,1077,0.00000)
+,(45,1075,0.00000)
+,(45,1074,0.00000)
+,(45,1060,0.00000)
+,(45,1088,0.00000)
+,(45,1063,0.00000)
+,(45,1062,0.00000)
+,(45,1066,0.00000)
+,(45,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(45,1064,0.00000)
+,(45,1070,0.00000)
+,(45,1089,0.00000)
+,(45,1061,0.00000)
+,(46,1093,0.00000)
+,(46,1080,0.00000)
+,(46,1087,0.00000)
+,(46,1086,0.00000)
+,(46,1085,0.00000)
+,(46,1076,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(46,1073,0.00000)
+,(46,1078,0.00000)
+,(46,1077,0.00000)
+,(46,1075,0.00000)
+,(46,1074,0.00000)
+,(46,1060,0.00000)
+,(46,1088,0.00000)
+,(46,1063,0.00000)
+,(46,1062,0.00000)
+,(46,1066,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(46,1065,0.00000)
+,(46,1064,0.00000)
+,(46,1070,0.00000)
+,(46,1089,0.00000)
+,(46,1061,0.00000)
+,(47,1061,0.00000)
+,(47,1089,0.00000)
+,(47,1070,0.00000)
+,(47,1064,0.00000)
+,(47,1065,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(47,1066,0.00000)
+,(47,1062,0.00000)
+,(47,1063,0.00000)
+,(47,1088,0.00000)
+,(47,1060,0.00000)
+,(47,1074,0.00000)
+,(47,1075,0.00000)
+,(47,1077,0.00000)
+,(47,1078,0.00000)
+,(47,1073,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(47,1076,0.00000)
+,(47,1085,0.00000)
+,(47,1086,0.00000)
+,(47,1087,0.00000)
+,(47,1080,0.00000)
+,(47,1093,0.00000)
+,(48,1093,0.00000)
+,(48,1080,0.00000)
+,(48,1087,0.00000)
+,(48,1086,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(48,1085,0.00000)
+,(48,1076,0.00000)
+,(48,1073,0.00000)
+,(48,1078,0.00000)
+,(48,1077,0.00000)
+,(48,1075,0.00000)
+,(48,1074,0.00000)
+,(48,1060,0.00000)
+,(48,1088,0.00000)
+,(48,1063,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(48,1062,0.00000)
+,(48,1066,0.00000)
+,(48,1065,0.00000)
+,(48,1064,0.00000)
+,(48,1070,0.00000)
+,(48,1089,0.00000)
+,(48,1061,0.00000)
+,(49,1093,0.00000)
+,(49,1061,0.00000)
+,(49,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(49,1070,0.00000)
+,(49,1064,0.00000)
+,(49,1065,0.00000)
+,(49,1066,0.00000)
+,(49,1062,0.00000)
+,(49,1063,0.00000)
+,(49,1088,0.00000)
+,(49,1060,0.00000)
+,(49,1074,0.00000)
+,(49,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(49,1077,0.00000)
+,(49,1078,0.00000)
+,(49,1073,0.00000)
+,(49,1076,0.00000)
+,(49,1085,0.00000)
+,(49,1086,0.00000)
+,(49,1087,0.00000)
+,(49,1080,0.00000)
+,(1,1061,0.00000)
+,(1,1089,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(1,1070,0.00000)
+,(1,1064,0.00000)
+,(1,1065,0.00000)
+,(1,1066,0.00000)
+,(1,1062,0.00000)
+,(1,1063,0.00000)
+,(1,1088,0.00000)
+,(1,1060,0.00000)
+,(1,1074,0.00000)
+,(1,1075,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(1,1077,0.00000)
+,(1,1078,0.00000)
+,(1,1073,0.00000)
+,(1,1076,0.00000)
+,(1,1085,0.00000)
+,(1,1086,0.00000)
+,(1,1087,0.00000)
+,(1,1080,0.00000)
+,(1,1093,0.00000)
+,(29,1061,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(29,1089,0.00000)
+,(29,1070,0.00000)
+,(29,1064,0.00000)
+,(29,1065,0.00000)
+,(29,1066,0.00000)
+,(29,1062,0.00000)
+,(29,1063,0.00000)
+,(29,1088,0.00000)
+,(29,1060,0.00000)
+,(29,1074,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(29,1075,0.00000)
+,(29,1077,0.00000)
+,(29,1078,0.00000)
+,(29,1073,0.00000)
+,(29,1076,0.00000)
+,(29,1085,0.00000)
+,(29,1086,0.00000)
+,(29,1087,0.00000)
+,(29,1080,0.00000)
+,(29,1093,0.00000)
+;
+INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb,id_equipo,cantidadequ) VALUES 
+(49,977,1.00000)
+,(28,1032,1.00000)
+,(70,966,1.00000)
+,(111,1054,1.00000)
+;
+
+--Se establece cantidades en tabla de equipo
+SELECT snx.ft_ucsbequipo_reset();
+
+--Se actualiza las unidades constuctivas
+SELECT snx.calcularprecioucsball();
+
+--Cambio de nombre del proyecto en precios
+update 	snx.tequipoprecio
+set		proyecto = 'SPVPT';
+
+update 	snx.tmaquinariaprecio
+set		proyecto = 'SPVPT';
+
+update 	snx.tmaterialprecio
+set		proyecto = 'SPVPT';
+
+update 	snx.tmontajepreciolt
+set		proyecto = 'SPVPT';
+
+update 	snx.tobracivilpreciolt
+set		proyecto = 'SPVPT';
+
+update 	snx.tmaterialpreciolt
+set		proyecto = 'SPVPT';
+
+--Trampa de onda para comunicaciones
+INSERT INTO snx.tunidadconstructivacomun 
+(
+	id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,
+	unidadconstructivacomun,id_unidad,cantidadcomun,precio,id_unidadconstructivaenccomun
+)
+select 	1 as id_usuario_reg, null as id_usuario_mod, now() as fecha_reg, now() as fecha_mod,
+		'activo' as estado_reg, null as id_usuario_ai, 'NULL' as usuario_ai,
+		'Trampa de Onda' as unidadconstructivacomun, 12 as id_unidad, 0.00000 as cantidadcomun, 
+		8525.00 as precio, id_unidadconstructivaenccomun
+from	snx.tunidadconstructivaenccomun ta;
+
+--Actualización cantidades de cable de fuerza y control en Unidades constructivas de subestaciones
+update snx.tequipomaterial set cantidadequimat = 424 where id_equipomaterial = 80732;
+update snx.tequipomaterial set cantidadequimat = 424 where id_equipomaterial = 80731;
+update snx.tequipomaterial set cantidadequimat = 411 where id_equipomaterial = 80160;
+update snx.tequipomaterial set cantidadequimat = 411 where id_equipomaterial = 80159;
+update snx.tequipomaterial set cantidadequimat = 399 where id_equipomaterial = 79588;
+update snx.tequipomaterial set cantidadequimat = 399 where id_equipomaterial = 79587;
+update snx.tequipomaterial set cantidadequimat = 346 where id_equipomaterial = 79016;
+update snx.tequipomaterial set cantidadequimat = 346 where id_equipomaterial = 79015;
+update snx.tequipomaterial set cantidadequimat = 308 where id_equipomaterial = 78444;
+update snx.tequipomaterial set cantidadequimat = 308 where id_equipomaterial = 78443;
+update snx.tequipomaterial set cantidadequimat = 136 where id_equipomaterial = 77872;
+update snx.tequipomaterial set cantidadequimat = 136 where id_equipomaterial = 77871;
+update snx.tequipomaterial set cantidadequimat = 123 where id_equipomaterial = 77300;
+update snx.tequipomaterial set cantidadequimat = 123 where id_equipomaterial = 77299;
+update snx.tequipomaterial set cantidadequimat = 111 where id_equipomaterial = 76728;
+update snx.tequipomaterial set cantidadequimat = 111 where id_equipomaterial = 76727;
+update snx.tequipomaterial set cantidadequimat = 87 where id_equipomaterial = 76156;
+update snx.tequipomaterial set cantidadequimat = 87 where id_equipomaterial = 76155;
+update snx.tequipomaterial set cantidadequimat = 283 where id_equipomaterial = 80680;
+update snx.tequipomaterial set cantidadequimat = 283 where id_equipomaterial = 80679;
+update snx.tequipomaterial set cantidadequimat = 270 where id_equipomaterial = 80108;
+update snx.tequipomaterial set cantidadequimat = 270 where id_equipomaterial = 80107;
+update snx.tequipomaterial set cantidadequimat = 258 where id_equipomaterial = 79536;
+update snx.tequipomaterial set cantidadequimat = 258 where id_equipomaterial = 79535;
+update snx.tequipomaterial set cantidadequimat = 223 where id_equipomaterial = 78964;
+update snx.tequipomaterial set cantidadequimat = 223 where id_equipomaterial = 78963;
+update snx.tequipomaterial set cantidadequimat = 186 where id_equipomaterial = 78392;
+update snx.tequipomaterial set cantidadequimat = 186 where id_equipomaterial = 78391;
+update snx.tequipomaterial set cantidadequimat = 215 where id_equipomaterial = 77819;
+update snx.tequipomaterial set cantidadequimat = 203 where id_equipomaterial = 77247;
+update snx.tequipomaterial set cantidadequimat = 190 where id_equipomaterial = 76675;
+update snx.tequipomaterial set cantidadequimat = 84 where id_equipomaterial = 76103;
+
+--Actualización de pesos en materiales de líneas de transmisión.
+update snx.tmateriallt set peso = 2.4 where id_materiallt = 414;
+update snx.tmateriallt set peso = 0.00193 where id_materiallt = 298;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 309;
+update snx.tmateriallt set peso = 0 where id_materiallt = 304;
+update snx.tmateriallt set peso = 0 where id_materiallt = 302;
+update snx.tmateriallt set peso = 1.05 where id_materiallt = 226;
+update snx.tmateriallt set peso = 0 where id_materiallt = 301;
+update snx.tmateriallt set peso = 0 where id_materiallt = 303;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 308;
+update snx.tmateriallt set peso = 0.00031 where id_materiallt = 299;
+update snx.tmateriallt set peso = 11.7 where id_materiallt = 333;
+update snx.tmateriallt set peso = 4.73 where id_materiallt = 334;
+update snx.tmateriallt set peso = 0.41 where id_materiallt = 300;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 311;
+update snx.tmateriallt set peso = 0.89 where id_materiallt = 310;
+update snx.tmateriallt set peso = 0 where id_materiallt = 307;
+update snx.tmateriallt set peso = 0 where id_materiallt = 305;
+update snx.tmateriallt set peso = 2.98 where id_materiallt = 332;
+update snx.tmateriallt set peso = 4.17 where id_materiallt = 330;
+update snx.tmateriallt set peso = 7.17 where id_materiallt = 331;
+update snx.tmateriallt set peso = 13.71 where id_materiallt = 335;
+update snx.tmateriallt set peso = 0 where id_materiallt = 306;
+update snx.tmateriallt set peso = 6.8 where id_materiallt = 317;
+update snx.tmateriallt set peso = 0.3 where id_materiallt = 314;
+update snx.tmateriallt set peso = 1.41 where id_materiallt = 312;
+update snx.tmateriallt set peso = 0.73 where id_materiallt = 313;
+update snx.tmateriallt set peso = 0 where id_materiallt = 339;
+update snx.tmateriallt set peso = 4.1 where id_materiallt = 315;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 336;
+update snx.tmateriallt set peso = 4.71 where id_materiallt = 316;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 340;
+update snx.tmateriallt set peso = 0.01 where id_materiallt = 338;
+update snx.tmateriallt set peso = 0.00031 where id_materiallt = 297;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 341;
+update snx.tmateriallt set peso = 0.55 where id_materiallt = 337;
+update snx.tmateriallt set peso = 0 where id_materiallt = 343;
+update snx.tmateriallt set peso = 16 where id_materiallt = 346;
+update snx.tmateriallt set peso = 0.02 where id_materiallt = 342;
+update snx.tmateriallt set peso = 17 where id_materiallt = 347;
+update snx.tmateriallt set peso = 0.07 where id_materiallt = 409;
+update snx.tmateriallt set peso = 0.05 where id_materiallt = 361;
+update snx.tmateriallt set peso = 0.002 where id_materiallt = 378;
+update snx.tmateriallt set peso = 0.0066 where id_materiallt = 379;
+update snx.tmateriallt set peso = 0.0104 where id_materiallt = 380;
+update snx.tmateriallt set peso = 0.0003 where id_materiallt = 381;
+
+--Cantidades de obras civiles en líneas
+TRUNCATE TABLE snx.tobracivilcantidadlt RESTART IDENTITY;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-15 07:32:12.887','activo',NULL,'NULL',1,1,1,4,1,2,8,2,1,26.5600,1,1)
+,(1,1,'2019-02-26 14:16:00.775','2019-03-08 09:08:29.895','activo',NULL,'NULL',2,2,2,7,1,4,11,1,4,5.4200,1,5)
+,(1,1,'2019-02-26 13:37:04.957','2019-02-26 13:49:29.930','activo',NULL,'NULL',8,2,2,7,1,4,11,1,4,11.3500,1,3)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,7,4,1,10.8100,1,1)
+,(1,NULL,'2019-02-26 13:37:51.220',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,4,7.3800,1,2)
+,(1,NULL,'2019-02-26 13:39:12.899',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,4,0.0000,1,4)
+,(1,NULL,'2019-02-26 13:40:12.697',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,4,17.8800,1,5)
+,(1,1,'2019-02-26 13:40:56.519','2019-02-26 14:47:07.808','activo',NULL,'NULL',8,2,2,7,1,4,11,1,2,414.0000,2,1)
+,(1,NULL,'2019-02-26 13:45:01.134',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,2,690.0000,3,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2019-02-26 13:45:36.808',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,2,0.0000,4,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,3,2,3,10,4,1,46.9400,1,1)
+,(1,NULL,'2019-02-26 14:07:02.509',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,2,147.7800,2,1)
+,(1,NULL,'2019-02-26 14:07:37.198',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,2,147.7800,3,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,7,3,1,362.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,10,3,1,652.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,8,3,1,591.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,9,3,1,680.0200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,7,3,1,502.6200,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:13:20.326','activo',NULL,'NULL',3,1,3,4,1,3,7,4,1,1503.6800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,8,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,7,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,2,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,2,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2019-02-26 14:08:19.613',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,2,147.7800,4,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:16:23.954','activo',NULL,'NULL',3,1,3,1,1,3,8,4,1,2248.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,2,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,7,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,8,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2019-02-26 14:13:23.558',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,4,5.4200,1,2)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:18:37.910','activo',NULL,'NULL',3,1,3,3,1,2,9,4,1,2815.3500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,3,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,2,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,3,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,7,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,7,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2019-02-26 14:14:17.613',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,4,5.4200,1,3)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:25:37.085','activo',NULL,'NULL',2,1,3,1,1,2,8,4,1,20.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,6,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,7,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,7,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,8,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,7,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,5,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,7,1,4,11,1,2,70.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,7,2,4,11,1,2,140.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,11,1,4,11,1,4,12.0700,1,1)
+,(1,NULL,'2019-02-26 14:14:58.669',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,4,5.4200,1,4)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:24.514','activo',NULL,'NULL',2,1,3,3,1,2,7,4,1,15.9000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,11,2,4,11,1,1,14.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,8,1,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,8,2,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,11,1,4,11,1,5,0.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,1,11,2,4,11,1,5,0.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,7,1,4,11,1,2,70.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,7,2,4,11,1,2,140.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,11,1,4,11,1,4,12.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,11,2,4,11,1,1,14.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,8,1,4,11,1,3,1.4700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,8,2,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,11,1,4,11,1,5,0.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,2,11,2,4,11,1,5,0.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,7,1,4,11,1,2,100.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,7,2,4,11,1,2,200.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,11,1,4,11,1,4,15.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,11,2,4,11,1,1,18.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,8,1,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,8,2,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,11,1,4,11,1,5,0.0700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,2,3,11,2,4,11,1,5,0.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,7,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,8,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,8,4,1,8.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,9,4,1,9.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,7,4,1,6.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,2,10,4,1,10.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,8,4,1,12.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,9,4,1,13.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,7,4,1,10.2700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,1,3,10,4,1,29.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,8,4,1,15.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,9,4,1,18.0800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:27:54.024','activo',NULL,'NULL',2,1,3,3,2,3,7,4,1,26.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,7,4,1,13.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,2,10,4,1,22.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,8,4,1,18.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,9,4,1,21.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,7,4,1,16.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,4,2,3,10,4,1,27.1600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,2,8,4,1,2.9040,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,2,9,4,1,3.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,2,7,4,1,2.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,2,10,4,1,3.7752,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,3,8,4,1,9.1425,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,3,9,4,1,10.5100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,3,7,4,1,7.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,1,3,10,4,1,11.8853,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,2,8,4,1,3.1740,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,2,9,4,1,3.6500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,2,7,4,1,2.7000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,2,10,4,1,4.1262,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,3,8,4,1,9.7520,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,3,9,4,1,11.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,3,7,4,1,8.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,1,2,3,10,4,1,12.6776,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,2,8,4,1,5.0820,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,2,9,4,1,5.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,2,7,4,1,4.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,2,10,4,1,6.6066,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,3,8,4,1,5.0820,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,3,9,4,1,5.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,3,7,4,1,4.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,1,3,10,4,1,6.6066,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,2,8,4,1,5.8443,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,2,9,4,1,6.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,2,7,4,1,4.9700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,2,10,4,1,7.5976,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,3,8,4,1,5.8443,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,3,9,4,1,6.7200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,3,7,4,1,4.9700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,2,2,3,10,4,1,7.5976,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,2,8,4,1,3.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,2,9,4,1,4.1100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,2,7,4,1,3.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,2,10,4,1,4.2840,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,3,8,4,1,5.1000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,3,9,4,1,5.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,3,7,4,1,4.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,1,3,10,4,1,6.1200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,2,8,4,1,8.3895,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,2,9,4,1,9.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,2,7,4,1,7.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,2,10,4,1,8.5680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,3,8,4,1,10.0674,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,3,9,4,1,11.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,3,7,4,1,8.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,1,3,2,3,10,4,1,12.0809,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2019-02-26 14:23:15.679',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,2,487.5000,2,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:28:25.976','activo',NULL,'NULL',1,1,3,3,1,2,8,4,1,17.8120,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,8,4,1,10.2680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,9,4,1,11.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,7,4,1,8.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,2,10,4,1,16.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,8,4,1,15.3700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,9,4,1,17.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,7,4,1,13.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,1,3,10,4,1,39.7100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,8,4,1,22.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,9,4,1,26.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,7,4,1,19.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,2,10,4,1,43.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,8,4,1,33.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,9,4,1,38.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,7,4,1,28.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,4,2,3,10,4,1,65.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,2,8,4,1,6.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,2,9,4,1,7.0600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,2,7,4,1,5.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,2,10,4,1,9.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,3,8,4,1,12.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,3,9,4,1,13.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,3,7,4,1,10.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,1,3,10,4,1,15.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,2,8,4,1,15.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,2,9,4,1,17.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,2,7,4,1,12.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,2,10,4,1,20.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,3,8,4,1,25.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,3,9,4,1,29.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,3,7,4,1,21.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,1,2,3,10,4,1,33.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,2,8,4,1,4.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,2,9,4,1,5.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,2,7,4,1,4.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,2,10,4,1,6.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,3,8,4,1,13.6050,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,3,9,4,1,15.6500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,3,7,4,1,11.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,1,3,10,4,1,18.1600,1,1)
+,(1,NULL,'2019-02-26 14:23:48.312',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,2,625.5000,3,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:29:01.765','activo',NULL,'NULL',1,1,3,3,1,3,7,4,1,18.1680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,2,8,4,1,19.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,2,9,4,1,21.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,2,7,4,1,16.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,2,10,4,1,26.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,3,8,4,1,22.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,3,9,4,1,26.3600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,3,7,4,1,19.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,2,3,2,3,10,4,1,35.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,8,4,1,12.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,9,4,1,14.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,7,4,1,10.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,2,10,4,1,43.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,8,4,1,20.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,9,4,1,24.0600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,7,4,1,17.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,1,3,10,4,1,56.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,8,4,1,25.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,9,4,1,29.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,7,4,1,21.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,2,10,4,1,64.6720,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,8,4,1,36.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,9,4,1,41.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,7,4,1,30.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,4,2,3,10,4,1,77.5400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,2,8,4,1,19.2765,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,2,9,4,1,22.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,2,7,4,1,16.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,2,10,4,1,23.7502,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,3,8,4,1,22.4145,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,3,9,4,1,25.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,3,7,4,1,19.0500,1,1)
+,(1,NULL,'2019-02-26 14:24:36.887',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,2,487.5000,4,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,9,2,1,30.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,7,2,1,22.5800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,8,2,1,32.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,9,2,1,37.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,7,2,1,27.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,8,2,1,28.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,9,2,1,33.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,7,2,1,24.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,8,2,1,39.6800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,9,2,1,45.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,7,2,1,33.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,8,3,1,25.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,9,3,1,28.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,7,3,1,21.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,10,3,1,51.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,8,3,1,36.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,9,3,1,41.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,7,3,1,30.7400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,10,3,1,82.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,8,3,1,36.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,9,3,1,41.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,7,3,1,30.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,10,3,1,124.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,8,3,1,64.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,9,3,1,73.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,7,3,1,54.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,10,3,1,109.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,8,4,1,8.0400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,9,4,1,9.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,7,4,1,6.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,2,10,4,1,10.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,8,4,1,12.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,9,4,1,13.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,7,4,1,10.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,1,3,10,4,1,29.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,8,4,1,15.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,9,4,1,18.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,7,4,1,13.3600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,2,10,4,1,22.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,8,4,1,18.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,9,4,1,21.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,7,4,1,16.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,4,2,3,10,4,1,27.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,2,8,4,1,2.9040,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,2,9,4,1,3.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,2,7,4,1,2.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,2,10,4,1,3.7752,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,3,8,4,1,9.1425,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,3,9,4,1,10.5100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,3,7,4,1,7.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,1,3,10,4,1,11.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,2,8,4,1,3.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,2,9,4,1,3.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,2,7,4,1,2.7000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,2,10,4,1,4.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,3,8,4,1,9.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,3,9,4,1,11.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,3,7,4,1,8.2900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,1,2,3,10,4,1,12.6776,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,2,8,4,1,5.0820,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,2,9,4,1,5.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,2,7,4,1,4.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,2,10,4,1,6.6066,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,3,8,4,1,5.0820,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,3,9,4,1,5.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,3,7,4,1,4.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,1,3,10,4,1,6.6066,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,2,8,4,1,5.8443,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,2,9,4,1,6.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,2,7,4,1,4.9700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,2,10,4,1,7.5976,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,3,8,4,1,5.8443,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,3,9,4,1,6.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,3,7,4,1,4.9700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,2,2,3,10,4,1,7.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,2,8,4,1,3.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,2,9,4,1,4.1100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,2,7,4,1,3.0300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,2,10,4,1,4.2840,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,3,8,4,1,5.1000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,3,9,4,1,5.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,3,7,4,1,4.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,1,3,10,4,1,6.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,2,8,4,1,8.3895,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,2,9,4,1,9.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,2,7,4,1,7.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,2,10,4,1,8.5680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,3,8,4,1,10.0674,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,3,9,4,1,11.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,3,7,4,1,8.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,1,3,2,3,10,4,1,12.0809,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,8,2,1,28.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,9,2,1,32.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,7,2,1,23.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,8,2,1,39.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,9,2,1,45.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,7,2,1,33.3200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,8,2,1,44.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,9,2,1,51.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,7,2,1,37.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,8,2,1,63.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,9,2,1,73.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,7,2,1,53.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,8,3,1,28.0400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,9,3,1,32.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,7,3,1,23.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,10,3,1,78.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,8,3,1,74.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,9,3,1,85.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,7,3,1,63.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,10,3,1,142.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,8,3,1,47.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,9,3,1,54.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,7,3,1,40.4600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,10,3,1,198.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,8,3,1,84.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,9,3,1,97.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,7,3,1,71.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,10,3,1,173.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,8,4,1,10.2680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,9,4,1,11.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,7,4,1,8.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,2,10,4,1,16.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,8,4,1,15.3700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,9,4,1,17.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,7,4,1,13.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,1,3,10,4,1,39.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,8,4,1,22.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,9,4,1,26.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,7,4,1,19.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,2,10,4,1,43.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,8,4,1,33.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,9,4,1,38.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,7,4,1,28.5900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,4,2,3,10,4,1,65.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,2,8,4,1,6.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,2,9,4,1,7.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,2,7,4,1,5.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,2,10,4,1,9.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,3,8,4,1,12.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,3,9,4,1,13.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,3,7,4,1,10.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,1,3,10,4,1,15.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,2,8,4,1,15.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,2,9,4,1,17.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,2,7,4,1,12.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,2,10,4,1,20.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,3,8,4,1,25.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,3,9,4,1,29.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,3,7,4,1,21.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,1,2,3,10,4,1,33.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,2,8,4,1,4.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,2,9,4,1,5.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,2,7,4,1,4.1900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,2,10,4,1,6.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,3,8,4,1,13.6050,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,3,9,4,1,15.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,3,7,4,1,11.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,1,3,10,4,1,18.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,2,8,4,1,19.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,2,9,4,1,21.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,2,7,4,1,16.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,2,10,4,1,26.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,3,8,4,1,22.9200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,3,9,4,1,26.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,3,7,4,1,19.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,2,3,2,3,10,4,1,35.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,8,2,1,32.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,9,2,1,37.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,7,2,1,27.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,8,2,1,45.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,9,2,1,52.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,7,2,1,38.8000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,8,2,1,51.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,9,2,1,58.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,7,2,1,43.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,8,2,1,73.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,9,2,1,84.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,7,2,1,62.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,8,3,1,31.1400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,9,3,1,35.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,7,3,1,26.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,10,3,1,81.7960,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,8,3,1,88.1000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,9,3,1,101.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,7,3,1,74.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,10,3,1,153.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,8,3,1,51.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,9,3,1,59.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,7,3,1,43.9500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,10,3,1,236.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,8,3,1,91.9072,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,9,3,1,105.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,7,3,1,78.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,10,3,1,410.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,8,4,1,12.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,9,4,1,14.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,2,10,4,1,43.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,8,4,1,20.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,9,4,1,24.0600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,7,4,1,17.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,1,3,10,4,1,56.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,8,4,1,25.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,9,4,1,29.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,7,4,1,21.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,2,10,4,1,64.6720,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,8,4,1,36.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,9,4,1,41.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,7,4,1,30.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,4,2,3,10,4,1,77.5400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,2,8,4,1,19.2765,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,2,9,4,1,22.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,2,7,4,1,16.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,2,10,4,1,23.7502,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,3,8,4,1,22.4145,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,3,9,4,1,25.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,3,7,4,1,19.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,1,3,10,4,1,27.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,2,8,4,1,29.4817,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,2,9,4,1,33.9000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,2,7,4,1,25.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,2,10,4,1,36.3238,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,3,8,4,1,34.2810,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,3,9,4,1,39.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,3,7,4,1,29.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,1,2,3,10,4,1,42.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,3,1,2,10,4,1,27.6992,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,3,1,3,10,4,1,31.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,3,2,2,10,4,1,38.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,3,3,2,3,10,4,1,43.6400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,8,2,1,58.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,9,2,1,67.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,7,2,1,49.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,8,2,1,91.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,9,2,1,105.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,7,2,1,78.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,8,2,1,90.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,9,2,1,103.5000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,7,2,1,76.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,8,2,1,138.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,9,2,1,159.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,7,2,1,117.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,8,3,1,50.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,9,3,1,57.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,7,3,1,42.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,10,3,1,99.0800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,8,3,1,150.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,9,3,1,172.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,7,3,1,127.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,10,3,1,205.0800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:28:33.149','activo',NULL,'NULL',1,1,3,3,1,2,9,4,1,20.4800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:28:39.524','activo',NULL,'NULL',1,1,3,3,1,2,7,4,1,15.1400,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:28:46.983','activo',NULL,'NULL',1,1,3,3,1,3,8,4,1,21.3700,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:28:54.107','activo',NULL,'NULL',1,1,3,3,1,3,9,4,1,24.5800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:29:13.748','activo',NULL,'NULL',1,1,3,3,2,2,8,4,1,24.9400,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:29:20.423','activo',NULL,'NULL',1,1,3,3,2,2,9,4,1,28.6800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:29:49.580','activo',NULL,'NULL',1,1,3,3,2,2,7,4,1,21.2000,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:29:57.479','activo',NULL,'NULL',1,1,3,3,2,3,8,4,1,29.9200,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:30:07.170','activo',NULL,'NULL',1,1,3,3,2,3,9,4,1,34.4100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:30:16.236','activo',NULL,'NULL',1,1,3,3,2,3,7,4,1,25.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,8,3,1,74.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,9,3,1,85.5100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,7,3,1,63.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,10,3,1,342.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,8,3,1,109.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,9,3,1,126.2700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,7,3,1,93.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,10,3,1,562.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,8,4,1,23.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,9,4,1,27.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,7,4,1,20.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,2,10,4,1,61.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,8,4,1,27.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,9,4,1,31.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,7,4,1,23.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,1,3,10,4,1,95.3400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,8,4,1,31.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,9,4,1,36.4300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,7,4,1,26.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,2,10,4,1,81.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,8,4,1,41.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,9,4,1,47.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,7,4,1,35.3900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,6,4,2,3,10,4,1,127.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,8,2,1,28.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,9,2,1,32.3500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,7,2,1,23.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,8,2,1,39.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,9,2,1,45.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,7,2,1,33.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,8,2,1,44.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,9,2,1,51.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,7,2,1,37.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,8,2,1,63.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,9,2,1,73.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,7,2,1,53.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,8,3,1,28.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,9,3,1,32.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,7,3,1,23.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,10,3,1,78.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,8,3,1,74.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,9,3,1,85.3300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,7,3,1,63.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,10,3,1,142.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,8,3,1,47.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,9,3,1,54.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,7,3,1,40.4600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,10,3,1,198.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,8,3,1,84.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,9,3,1,97.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,7,3,1,71.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,10,3,1,173.9600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,8,4,1,10.2680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,9,4,1,11.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,7,4,1,8.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,2,10,4,1,16.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,8,4,1,15.3700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,9,4,1,17.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,7,4,1,13.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,1,3,10,4,1,39.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,8,4,1,22.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,9,4,1,26.0100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,7,4,1,19.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,2,10,4,1,43.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,8,4,1,33.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,9,4,1,38.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,7,4,1,28.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,1,5,4,2,3,10,4,1,65.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,7,1,4,11,1,2,910.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,7,2,4,11,1,2,1820.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,11,1,4,11,1,4,67.6032,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,11,2,4,11,1,1,81.6900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,8,2,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,1,11,2,4,11,1,5,1.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,7,1,4,11,1,2,910.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,7,2,4,11,1,2,1820.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,11,1,4,11,1,4,67.6032,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,11,2,4,11,1,1,81.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,8,2,4,11,1,3,38.5000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,2,11,2,4,11,1,5,1.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,7,1,4,11,1,2,1500.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,7,2,4,11,1,2,2070.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,11,1,4,11,1,4,81.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,11,2,4,11,1,1,106.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,8,2,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,1,2,3,11,2,4,11,1,5,1.5700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,8,3,1,5.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,9,3,1,6.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,7,3,1,4.7900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,10,3,1,13.1600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,8,3,1,12.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,9,3,1,14.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,7,3,1,10.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,10,3,1,18.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,8,3,1,7.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,9,3,1,8.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,7,3,1,6.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,10,3,1,17.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,8,3,1,14.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,9,3,1,16.5600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,7,3,1,12.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,10,3,1,23.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,8,4,1,10.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,9,4,1,11.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,7,4,1,8.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,2,10,4,1,12.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,8,4,1,14.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,9,4,1,16.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,7,4,1,12.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,1,3,10,4,1,34.1600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,8,4,1,19.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,9,4,1,21.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,7,4,1,16.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,2,10,4,1,25.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,8,4,1,22.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,9,4,1,25.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,7,4,1,18.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,4,2,3,10,4,1,31.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,2,8,4,1,2.1740,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,2,9,4,1,2.5000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,2,7,4,1,1.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,2,10,4,1,2.8262,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,3,8,4,1,7.6824,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,3,9,4,1,8.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,3,7,4,1,6.5300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,1,3,10,4,1,9.9900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,2,8,4,1,2.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,2,9,4,1,2.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,2,7,4,1,2.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,2,10,4,1,3.1800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,3,8,4,1,8.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,3,9,4,1,9.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,3,7,4,1,7.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,1,2,3,10,4,1,10.7795,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,2,8,4,1,3.8210,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,2,9,4,1,4.3900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,2,7,4,1,3.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,2,10,4,1,4.9674,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,3,8,4,1,3.8210,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,3,9,4,1,4.3900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,3,7,4,1,3.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,1,3,10,4,1,4.9674,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,2,8,4,1,4.3942,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,2,9,4,1,5.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,2,7,4,1,3.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,2,10,4,1,5.7125,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,3,8,4,1,4.3942,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,3,9,4,1,5.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,3,7,4,1,3.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,2,2,3,10,4,1,5.7100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,2,8,4,1,3.9340,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,2,9,4,1,4.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,2,7,4,1,3.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,2,10,4,1,4.7208,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,3,8,4,1,5.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,3,9,4,1,6.4600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,3,7,4,1,4.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,1,3,10,4,1,6.7440,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,2,8,4,1,9.2449,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,2,9,4,1,10.6300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,2,7,4,1,7.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,2,10,4,1,9.4416,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,3,8,4,1,11.0939,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,3,9,4,1,12.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,3,7,4,1,9.4300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,1,3,2,3,10,4,1,13.3127,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,8,3,1,6.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,9,3,1,7.1800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,7,3,1,5.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,10,3,1,15.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,8,3,1,12.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,9,3,1,14.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,7,3,1,10.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,10,3,1,24.0400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,8,3,1,11.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,9,3,1,12.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,7,3,1,9.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,10,3,1,37.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,8,3,1,17.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,9,3,1,19.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,7,3,1,14.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,10,3,1,27.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,8,4,1,13.1240,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,9,4,1,15.0900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,7,4,1,11.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,2,10,4,1,21.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,8,4,1,18.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,9,4,1,21.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,7,4,1,15.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,1,3,10,4,1,47.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,8,4,1,23.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,9,4,1,27.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,7,4,1,20.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,2,10,4,1,45.7600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,8,4,1,37.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,9,4,1,42.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,7,4,1,31.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,4,2,3,10,4,1,68.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,2,8,4,1,5.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,2,9,4,1,6.6100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,2,7,4,1,4.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,2,10,4,1,8.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,3,8,4,1,11.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,3,9,4,1,12.9400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,3,7,4,1,9.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,1,3,10,4,1,14.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,2,8,4,1,13.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,2,9,4,1,15.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,2,7,4,1,11.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,2,10,4,1,18.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,3,8,4,1,22.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,3,9,4,1,25.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,3,7,4,1,18.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,1,2,3,10,4,1,29.6200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,2,8,4,1,5.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,2,9,4,1,5.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,2,7,4,1,4.3900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,2,10,4,1,6.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,3,8,4,1,14.0150,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,3,9,4,1,16.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,3,7,4,1,11.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,1,3,10,4,1,19.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,2,8,4,1,19.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,2,9,4,1,22.8600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,2,7,4,1,16.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,2,10,4,1,27.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,3,8,4,1,23.3950,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,3,9,4,1,26.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,3,7,4,1,19.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,2,3,2,3,10,4,1,37.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,7,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,8,3,1,8.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,9,3,1,9.6600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,7,3,1,7.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,10,3,1,18.1280,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,8,3,1,22.7000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,9,3,1,26.1100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,7,3,1,19.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,10,3,1,39.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,8,3,1,12.7800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,9,3,1,14.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,7,3,1,10.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,10,3,1,44.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,8,3,1,18.6560,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,9,3,1,21.4500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,7,3,1,15.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,10,3,1,72.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,8,4,1,15.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,9,4,1,17.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,7,4,1,12.8200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,2,10,4,1,55.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,8,4,1,24.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,9,4,1,28.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,7,4,1,20.9400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,1,3,10,4,1,64.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,8,4,1,27.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,9,4,1,31.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,7,4,1,23.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,2,10,4,1,68.0320,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,8,4,1,40.0800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,9,4,1,46.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,7,4,1,34.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,4,2,3,10,4,1,80.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,1,2,10,4,1,24.3715,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,1,3,8,4,1,23.2560,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,1,3,9,4,1,26.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,1,3,7,4,1,19.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,1,3,10,4,1,28.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,2,8,4,1,30.5885,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,2,9,4,1,35.1800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,2,7,4,1,26.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,2,10,4,1,37.2741,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,3,8,4,1,35.5680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,3,9,4,1,40.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,3,7,4,1,30.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,1,2,3,10,4,1,43.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,3,1,2,10,4,1,32.9922,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,3,1,3,10,4,1,37.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,3,3,2,2,10,4,1,41.4800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:25:46.961','activo',NULL,'NULL',2,1,3,1,1,2,9,4,1,23.1840,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:25:55.315','activo',NULL,'NULL',2,1,3,1,1,2,7,4,1,17.1360,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:11.485','activo',NULL,'NULL',2,1,3,3,1,2,8,4,1,18.7000,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:17.825','activo',NULL,'NULL',2,1,3,3,1,2,9,4,1,21.5100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:32.114','activo',NULL,'NULL',2,1,3,3,1,3,8,4,1,22.4400,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:39.657','activo',NULL,'NULL',2,1,3,3,1,3,9,4,1,25.8100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:47.113','activo',NULL,'NULL',2,1,3,3,1,3,7,4,1,19.0760,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:26:58.904','activo',NULL,'NULL',2,1,3,3,2,2,8,4,1,26.1800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:27:06.431','activo',NULL,'NULL',2,1,3,3,2,2,9,4,1,30.1100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:27:31.552','activo',NULL,'NULL',2,1,3,3,2,2,7,4,1,22.2600,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:27:38.554','activo',NULL,'NULL',2,1,3,3,2,3,8,4,1,31.4200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:27:46.493','activo',NULL,'NULL',2,1,3,3,2,3,9,4,1,36.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,8,3,1,13.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,9,3,1,15.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,7,3,1,11.8000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,10,3,1,22.8480,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,8,3,1,34.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,9,3,1,39.7900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,7,3,1,29.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,10,3,1,53.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,8,3,1,18.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,9,3,1,21.3900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,7,3,1,15.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,10,3,1,81.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,8,3,1,26.1600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,9,3,1,30.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,7,3,1,22.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,10,3,1,98.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,8,4,1,25.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,9,4,1,29.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,7,4,1,21.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,2,10,4,1,66.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,8,4,1,29.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,9,4,1,33.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,7,4,1,24.6600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,1,3,10,4,1,100.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,8,4,1,34.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,9,4,1,39.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,7,4,1,29.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,2,10,4,1,89.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,8,4,1,44.4820,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,9,4,1,51.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,7,4,1,37.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,6,4,2,3,10,4,1,134.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,8,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,7,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,8,3,1,6.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,9,3,1,7.1800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,7,3,1,5.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,10,3,1,15.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,8,3,1,12.8800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,9,3,1,14.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,7,3,1,10.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,10,3,1,24.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,8,3,1,11.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,9,3,1,12.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,7,3,1,9.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,10,3,1,37.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,8,3,1,17.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,9,3,1,19.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,7,3,1,14.4800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,10,3,1,27.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,8,4,1,13.1240,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,9,4,1,15.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,7,4,1,11.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,2,10,4,1,21.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,8,4,1,18.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,9,4,1,21.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,7,4,1,15.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,1,3,10,4,1,47.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,8,4,1,23.7500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,9,4,1,27.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,7,4,1,20.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,2,10,4,1,45.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,8,4,1,37.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,9,4,1,42.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,7,4,1,31.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,1,5,4,2,3,10,4,1,68.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,7,1,4,11,1,2,348.1958,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,7,2,4,11,1,2,706.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,11,1,4,11,1,4,29.0742,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,11,2,4,11,1,1,32.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,8,1,4,11,1,3,18.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,8,2,4,11,1,3,18.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,11,1,4,11,1,5,0.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,1,11,2,4,11,1,5,0.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,7,1,4,11,1,2,348.1958,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,7,2,4,11,1,2,706.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,11,1,4,11,1,4,29.0742,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,11,2,4,11,1,1,32.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,8,1,4,11,1,3,18.1300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,8,2,4,11,1,3,18.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,11,1,4,11,1,5,0.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,2,11,2,4,11,1,5,0.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,7,1,4,11,1,2,664.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,7,2,4,11,1,2,1582.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,11,1,4,11,1,4,39.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,11,2,4,11,1,1,49.6600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,8,1,4,11,1,3,18.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,8,2,4,11,1,3,18.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,11,1,4,11,1,5,0.5400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,2,2,3,11,2,4,11,1,5,0.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,8,2,1,1071.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,9,2,1,1231.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,7,2,1,910.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,8,2,1,1485.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,9,2,1,1708.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,7,2,1,1262.7900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,8,2,1,1155.4000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,9,2,1,1328.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,7,2,1,982.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,8,2,1,1539.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,9,2,1,1770.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,7,2,1,1308.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,8,3,1,426.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,9,3,1,490.1800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,10,3,1,859.1600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,8,3,1,466.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,9,3,1,536.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,7,3,1,396.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,10,3,1,991.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,8,3,1,706.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,9,3,1,812.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,7,3,1,600.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,10,3,1,1433.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,8,4,1,892.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,9,4,1,1025.8000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,7,4,1,758.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,2,10,4,1,1020.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,8,4,1,1132.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,9,4,1,1301.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,7,4,1,962.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,1,3,10,4,1,2204.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,8,4,1,1520.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,9,4,1,1748.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,7,4,1,1292.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,2,10,4,1,1740.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,8,4,1,1576.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,9,4,1,1812.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,7,4,1,1339.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,4,2,3,10,4,1,2084.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,2,8,4,1,7.9785,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,2,9,4,1,9.1800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,2,7,4,1,6.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,2,10,4,1,10.3720,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,3,8,4,1,36.7221,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,3,9,4,1,42.2300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,3,7,4,1,31.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,1,3,10,4,1,47.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,2,8,4,1,8.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,2,9,4,1,9.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,2,7,4,1,6.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,2,10,4,1,10.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,3,8,4,1,39.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,3,9,4,1,45.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,3,7,4,1,33.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,1,2,3,10,4,1,51.5261,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,2,8,4,1,14.0232,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,2,9,4,1,16.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,2,7,4,1,11.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,2,10,4,1,18.2302,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,3,8,4,1,14.0232,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,3,9,4,1,16.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,3,7,4,1,11.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,1,3,10,4,1,18.2302,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,2,8,4,1,16.1267,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,2,9,4,1,18.5500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,2,7,4,1,13.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,2,10,4,1,20.9647,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,3,8,4,1,16.1267,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,3,9,4,1,18.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,3,7,4,1,13.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,2,2,3,10,4,1,20.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,2,8,4,1,106.9600,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:12:27.413','activo',NULL,'NULL',3,1,3,4,1,2,8,4,1,1254.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,7,3,1,429.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,10,3,1,826.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,8,3,1,1047.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,9,3,1,1204.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,7,3,1,890.6100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,10,3,1,1940.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,8,3,1,926.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,9,3,1,1065.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,7,3,1,787.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,10,3,1,2604.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,8,3,1,1378.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,9,3,1,1585.6200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,7,3,1,1171.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,10,3,1,2600.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,8,4,1,1263.3720,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,9,4,1,1452.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,7,4,1,1073.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,10,4,1,2088.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,8,4,1,1830.7000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,9,4,1,2105.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,7,4,1,1556.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,10,4,1,4769.0700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,8,4,1,1668.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,9,4,1,1918.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,7,4,1,1417.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,10,4,1,3213.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,8,4,1,2617.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,9,4,1,3009.9900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,7,4,1,2224.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,10,4,1,4841.1000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,2,8,4,1,553.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,2,9,4,1,636.6900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,2,7,4,1,470.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,2,10,4,1,849.3700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,3,8,4,1,1082.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,3,9,4,1,1245.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,3,7,4,1,920.2500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,1,3,10,4,1,1433.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,2,8,4,1,960.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,2,9,4,1,1104.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,2,7,4,1,816.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,2,10,4,1,1311.4500,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,3,8,4,1,1564.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,3,9,4,1,1799.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,3,7,4,1,1330.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,1,2,3,10,4,1,2080.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,2,8,4,1,497.9100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,2,9,4,1,572.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,2,7,4,1,423.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,2,10,4,1,637.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,3,8,4,1,767.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,3,9,4,1,882.3300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,3,7,4,1,652.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,1,3,10,4,1,1043.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,2,8,4,1,995.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,2,9,4,1,1144.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,2,7,4,1,846.0100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,2,10,4,1,1379.5100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,3,8,4,1,1733.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,3,9,4,1,1993.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,3,7,4,1,1473.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,3,2,3,10,4,1,2799.8100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,8,2,1,1414.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,9,2,1,1626.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,7,2,1,1202.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,8,2,1,1873.1700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,9,2,1,2154.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,7,2,1,1592.1900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,8,2,1,1804.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,9,2,1,2075.2000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,7,2,1,1533.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,8,2,1,2465.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,9,2,1,2834.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,7,2,1,2095.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,8,3,1,715.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,9,3,1,822.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,7,3,1,607.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,10,3,1,1097.8440,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,8,3,1,1740.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,9,3,1,2001.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,7,3,1,1479.2600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,10,3,1,3029.5100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,8,3,1,1051.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,9,3,1,1208.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,7,3,1,893.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,10,3,1,2936.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,8,3,1,1549.3632,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,9,3,1,1781.7700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,7,3,1,1316.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,10,3,1,4830.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,2,10,4,1,3463.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,1,3,10,4,1,5022.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,2,10,4,1,4028.2240,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,4,2,3,10,4,1,5244.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,1,1,2,10,4,1,3321.7014,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,1,1,3,10,4,1,3610.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,1,2,2,10,4,1,5080.2492,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,1,2,3,10,4,1,5522.0100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,3,1,2,10,4,1,4463.0502,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,3,1,3,10,4,1,4965.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,3,2,2,10,4,1,4996.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,3,3,2,3,10,4,1,5559.4800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:12:36.252','activo',NULL,'NULL',3,1,3,4,1,2,9,4,1,1442.2500,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:12:44.601','activo',NULL,'NULL',3,1,3,4,1,2,7,4,1,1066.0100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:13:04.735','activo',NULL,'NULL',3,1,3,4,1,3,8,4,1,1769.0400,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:13:12.718','activo',NULL,'NULL',3,1,3,4,1,3,9,4,1,2034.4000,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:13:43.932','activo',NULL,'NULL',3,1,3,4,2,2,8,4,1,1305.7800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:13:52.275','activo',NULL,'NULL',3,1,3,4,2,2,9,4,1,1501.6400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:14:01.731','activo',NULL,'NULL',3,1,3,4,2,2,7,4,1,1109.9100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:14:10.496','activo',NULL,'NULL',3,1,3,4,2,3,8,4,1,1873.0000,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:14:18.763','activo',NULL,'NULL',3,1,3,4,2,3,9,4,1,2153.7300,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:14:27.706','activo',NULL,'NULL',3,1,3,4,2,3,7,4,1,1591.8900,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:14:51.581','activo',NULL,'NULL',3,1,3,1,1,2,8,4,1,2068.5200,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:15:02.763','activo',NULL,'NULL',3,1,3,1,1,2,9,4,1,2378.8000,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:15:10.422','activo',NULL,'NULL',3,1,3,1,1,2,7,4,1,1758.2500,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:16:33.049','activo',NULL,'NULL',3,1,3,1,1,3,9,4,1,2585.6600,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:16:39.924','activo',NULL,'NULL',3,1,3,1,1,3,7,4,1,1911.1400,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:17:03.608','activo',NULL,'NULL',3,1,3,1,2,2,8,4,1,3163.6300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:17:11.597','activo',NULL,'NULL',3,1,3,1,2,2,9,4,1,3638.1700,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:17:19.657','activo',NULL,'NULL',3,1,3,1,2,2,7,4,1,2689.0800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:17:31.124','activo',NULL,'NULL',3,1,3,1,2,3,8,4,1,3438.7200,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:17:40.306','activo',NULL,'NULL',3,1,3,1,2,3,9,4,1,3954.5300,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:18:24.127','activo',NULL,'NULL',3,1,3,3,1,2,8,4,1,2448.1300,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:18:04.387','activo',NULL,'NULL',3,1,3,1,2,3,7,4,1,2922.9200,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:18:45.569','activo',NULL,'NULL',3,1,3,3,1,2,7,4,1,2080.9100,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:18:57.367','activo',NULL,'NULL',3,1,3,3,1,3,8,4,1,2937.7550,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:19:14.383','activo',NULL,'NULL',3,1,3,3,1,3,9,4,1,3378.4190,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:19:27.291','activo',NULL,'NULL',3,1,3,3,1,3,7,4,1,2497.0900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:19:46.466','activo',NULL,'NULL',3,1,3,3,2,2,8,4,1,3427.3800,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:19:53.898','activo',NULL,'NULL',3,1,3,3,2,2,9,4,1,3941.4900,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:20:05.831','activo',NULL,'NULL',3,1,3,3,2,2,7,4,1,2913.2700,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:20:13.256','activo',NULL,'NULL',3,1,3,3,2,3,8,4,1,4112.8600,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:20:22.731','activo',NULL,'NULL',3,1,3,3,2,3,9,4,1,4729.7900,1,1)
+,(1,1,'2018-09-14 09:48:10.326','2019-02-14 11:23:46.028','activo',NULL,'NULL',3,1,3,3,2,3,7,4,1,3495.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,8,2,1,4707.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,9,2,1,5413.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,7,2,1,4001.4600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,8,2,1,5269.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,9,2,1,6059.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,7,2,1,4479.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,8,2,1,3569.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,9,2,1,4105.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,7,2,1,3034.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,8,2,1,5462.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,9,2,1,6281.7600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,7,2,1,4643.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,8,3,1,1216.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,9,3,1,1398.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,7,3,1,1033.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,10,3,1,1525.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,8,3,1,4472.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,9,3,1,5142.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,7,3,1,3801.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,10,3,1,5520.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,8,3,1,1451.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,9,3,1,1669.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,7,3,1,1234.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,10,3,1,5073.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,8,3,1,2005.4800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,9,3,1,2306.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,7,3,1,1704.6600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,10,3,1,6210.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,8,4,1,1680.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,9,4,1,1932.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,7,4,1,1428.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,2,10,4,1,4450.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,8,4,1,2242.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,9,4,1,2579.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,7,4,1,1906.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,1,3,10,4,1,6400.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,8,4,1,2352.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,9,4,1,2704.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,7,4,1,1999.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,2,10,4,1,5933.5200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,8,4,1,2865.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,9,4,1,3295.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,7,4,1,2435.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,6,4,2,3,10,4,1,8534.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,8,2,1,1334.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,9,2,1,1534.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,7,2,1,1134.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,8,2,1,1631.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,9,2,1,1875.8800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,7,2,1,1386.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,8,2,1,1264.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,9,2,1,1454.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,7,2,1,1074.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,8,2,1,2010.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,9,2,1,2312.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,7,2,1,1709.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,8,3,1,505.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,9,3,1,581.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,7,3,1,429.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,10,3,1,826.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,8,3,1,1047.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,9,3,1,1204.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,7,3,1,890.6100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,10,3,1,1940.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,8,3,1,926.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,9,3,1,1065.8200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,7,3,1,787.7800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,10,3,1,2604.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,8,3,1,1378.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,9,3,1,1585.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,7,3,1,1171.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,10,3,1,2600.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,8,4,1,1263.3720,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,9,4,1,1452.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,7,4,1,1073.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,2,10,4,1,2088.4100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,8,4,1,1830.7000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,9,4,1,2105.3000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,7,4,1,1556.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,1,3,10,4,1,4769.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,8,4,1,1668.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,9,4,1,1918.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,7,4,1,1417.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,2,10,4,1,3213.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,8,4,1,2617.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,9,4,1,3009.9900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,7,4,1,2224.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,5,4,2,3,10,4,1,4841.1000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,7,1,4,11,1,2,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,7,2,4,11,1,2,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,11,1,4,11,1,4,2923.7516,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,11,2,4,11,1,1,3240.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,8,1,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,8,2,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,11,1,4,11,1,5,70.6600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,1,11,2,4,11,1,5,115.7600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,7,1,4,11,1,2,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,7,2,4,11,1,2,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,11,1,4,11,1,4,2923.7516,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,11,2,4,11,1,1,3240.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,8,1,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,8,2,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,11,1,4,11,1,5,70.6600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,2,11,2,4,11,1,5,115.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,7,1,4,11,1,2,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,7,2,4,11,1,2,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,11,1,4,11,1,4,3679.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,11,2,4,11,1,1,3992.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,8,1,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,8,2,4,11,1,3,2030.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,11,1,4,11,1,5,42.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,2,3,11,2,4,11,1,5,77.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,8,2,1,25.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,9,2,1,29.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,7,2,1,21.4500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,8,2,1,31.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,9,2,1,35.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,7,2,1,26.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,8,2,1,27.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,9,2,1,31.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,7,2,1,23.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,8,2,1,37.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,9,2,1,43.3800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,7,2,1,32.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,8,3,1,22.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,9,3,1,26.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,7,3,1,19.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,10,3,1,47.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,8,3,1,33.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,9,3,1,38.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,7,3,1,28.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,10,3,1,77.5200,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,8,3,1,33.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,9,3,1,38.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,7,3,1,28.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,10,3,1,120.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,8,3,1,61.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,9,3,1,70.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,7,3,1,51.9500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,10,3,1,104.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,1,2,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,2,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,1,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,8,2,1,26.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,9,2,1,30.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,7,2,1,22.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,8,2,1,37.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,9,2,1,42.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,7,2,1,31.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,8,2,1,42.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,9,2,1,48.7700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,7,2,1,36.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,8,2,1,60.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,9,2,1,69.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,7,2,1,51.2600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,8,3,1,23.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,9,3,1,26.7100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,7,3,1,19.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,10,3,1,65.2800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,8,3,1,60.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,9,3,1,69.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,7,3,1,51.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,10,3,1,106.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,8,3,1,37.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,9,3,1,42.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,7,3,1,31.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,10,3,1,162.5600,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,8,3,1,68.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,9,3,1,78.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,7,3,1,58.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,10,3,1,147.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,4,2,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,2,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,8,2,1,31.1600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,9,2,1,35.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,7,2,1,26.4900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,8,2,1,43.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,9,2,1,49.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,7,2,1,36.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,8,2,1,48.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,9,2,1,55.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,7,2,1,41.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,8,2,1,70.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,9,2,1,80.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,7,2,1,59.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,8,3,1,23.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,9,3,1,27.3800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,7,3,1,20.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,10,3,1,67.3640,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,8,3,1,65.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,9,3,1,75.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,7,3,1,55.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,10,3,1,114.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,8,3,1,41.8200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,9,3,1,48.0900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,7,3,1,35.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,10,3,1,193.6000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,8,3,1,75.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,9,3,1,87.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,7,3,1,64.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,10,3,1,336.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,4,2,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,3,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,8,2,1,45.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,9,2,1,52.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,7,2,1,39.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,8,2,1,87.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,9,2,1,100.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,7,2,1,74.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,8,2,1,85.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,9,2,1,98.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,7,2,1,72.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,8,2,1,131.6000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,9,2,1,151.3400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,7,2,1,111.8600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,8,3,1,36.4400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,9,3,1,41.9100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,7,3,1,30.9700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,10,3,1,86.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,8,3,1,115.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,9,3,1,133.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,7,3,1,98.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,10,3,1,174.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,8,3,1,56.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,9,3,1,65.3700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,7,3,1,48.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,10,3,1,263.2000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,8,3,1,85.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,9,3,1,97.8900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,7,3,1,72.3500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,10,3,1,469.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,6,4,2,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,8,2,1,26.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,9,2,1,30.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,7,2,1,22.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,8,2,1,37.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,9,2,1,42.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,7,2,1,31.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,8,2,1,42.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,9,2,1,48.7700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,7,2,1,36.0500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,8,2,1,60.3100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,9,2,1,69.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,7,2,1,51.2600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,8,3,1,23.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,9,3,1,26.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,7,3,1,19.7500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,10,3,1,65.2800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,8,3,1,60.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,9,3,1,69.7400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,7,3,1,51.5400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,10,3,1,106.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,8,3,1,37.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,9,3,1,42.9600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,7,3,1,31.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,10,3,1,162.5600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,8,3,1,68.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,9,3,1,78.5700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,7,3,1,58.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,10,3,1,147.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,1,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,1,5,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,7,1,4,11,1,2,518.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,7,2,4,11,1,2,1036.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,11,1,4,11,1,4,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,11,2,4,11,1,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,8,1,4,11,1,3,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,8,2,4,11,1,3,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,11,1,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,1,11,2,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,7,1,4,11,1,2,518.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,7,2,4,11,1,2,1036.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,11,1,4,11,1,4,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,11,2,4,11,1,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,8,1,4,11,1,3,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,8,2,4,11,1,3,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,11,1,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,2,11,2,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,7,1,4,11,1,2,725.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,7,2,4,11,1,2,630.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,11,1,4,11,1,4,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,11,2,4,11,1,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,8,1,4,11,1,3,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,8,2,4,11,1,3,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,11,1,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,4,2,3,11,2,4,11,1,5,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,4,2,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,2,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,1,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,1,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,1,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,2,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,1,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,3,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,6,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,1,5,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,7,1,4,11,1,2,70.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,7,2,4,11,1,2,140.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,11,1,4,11,1,4,12.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,11,2,4,11,1,1,14.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,8,1,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,8,2,4,11,1,3,1.4700,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,11,1,4,11,1,5,0.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,1,11,2,4,11,1,5,0.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,7,1,4,11,1,2,70.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,7,2,4,11,1,2,140.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,11,1,4,11,1,4,12.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,11,2,4,11,1,1,14.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,8,1,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,8,2,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,11,1,4,11,1,5,0.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,2,11,2,4,11,1,5,0.1300,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,7,1,4,11,1,2,100.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,7,2,4,11,1,2,200.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,11,1,4,11,1,4,15.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,11,2,4,11,1,1,18.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,8,1,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,8,2,4,11,1,3,1.4700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,11,1,4,11,1,5,0.0700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,5,2,3,11,2,4,11,1,5,0.1300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,4,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,2,9,4,1,123.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,2,7,4,1,90.9200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,2,10,4,1,128.3520,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,3,8,4,1,152.8000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,3,9,4,1,175.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,3,7,4,1,129.8800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,1,3,10,4,1,183.3600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,2,8,4,1,251.3560,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,2,9,4,1,289.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,2,7,4,1,213.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,2,10,4,1,256.7040,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,3,8,4,1,301.6272,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,3,9,4,1,346.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,3,7,4,1,256.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,1,3,2,3,10,4,1,361.9526,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,8,2,1,1334.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,9,2,1,1534.2700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,7,2,1,1134.0300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,8,2,1,1631.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,9,2,1,1875.8800,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,7,2,1,1386.5200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,8,2,1,1264.5500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,9,2,1,1454.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,7,2,1,1074.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,8,2,1,2010.9800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,9,2,1,2312.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,7,2,1,1709.3300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,2,3,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,8,3,1,505.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,3,1,2,4,1,2,9,3,1,581.3300,1,1)
+,(1,NULL,'2019-02-26 14:25:17.417',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,4,6.8600,1,2)
+,(1,NULL,'2019-02-26 14:25:51.781',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,4,5.4900,1,3)
+,(1,NULL,'2019-02-26 14:26:42.638',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,4,6.6400,1,4)
+,(1,NULL,'2019-02-26 14:42:31.161',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,4,10.6000,1,5)
+,(1,NULL,'2019-02-26 14:43:27.066',NULL,'activo',NULL,'NULL',3,2,2,7,1,4,11,1,4,223.1600,1,2)
+,(1,NULL,'2019-02-26 14:44:00.449',NULL,'activo',NULL,'NULL',3,2,2,7,1,4,11,1,4,223.1600,1,3)
+,(1,NULL,'2019-02-26 14:44:43.180',NULL,'activo',NULL,'NULL',3,2,2,7,1,4,11,1,4,223.1600,1,4)
+,(1,NULL,'2019-02-26 14:45:13.445',NULL,'activo',NULL,'NULL',3,2,2,7,1,4,11,1,4,223.1600,1,5)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2019-02-26 14:48:06.213',NULL,'activo',NULL,'NULL',8,2,2,7,1,4,11,1,2,2160.0000,5,1)
+,(1,NULL,'2019-02-26 14:49:07.018',NULL,'activo',NULL,'NULL',2,2,2,7,1,4,11,1,2,147.7800,5,1)
+,(1,NULL,'2019-02-26 14:49:41.684',NULL,'activo',NULL,'NULL',4,2,2,7,1,4,11,1,2,1755.9000,5,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,2,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,1,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,2,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,1,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,3,9,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,2,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,1,3,10,4,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,2,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,2,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,2,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,2,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,3,8,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,3,9,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,3,7,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,1,3,2,3,10,4,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,6,1,2,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,1,3,10,4,1,27.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,2,8,4,1,29.4817,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,2,9,4,1,33.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,2,7,4,1,25.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,2,10,4,1,36.3238,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,3,8,4,1,34.2810,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,3,9,4,1,39.4200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,3,7,4,1,29.1400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,1,2,3,10,4,1,42.2400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,2,8,4,1,23.3448,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,2,9,4,1,26.8500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,2,7,4,1,19.8400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,2,10,4,1,27.6992,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,3,8,4,1,27.9883,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,3,9,4,1,32.1900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,3,7,4,1,23.7900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,1,3,10,4,1,31.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,2,8,4,1,32.2100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,2,9,4,1,37.0400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,2,7,4,1,27.3800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,2,10,4,1,38.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,3,8,4,1,38.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,3,9,4,1,44.4100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,3,7,4,1,32.8300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,3,3,2,3,10,4,1,43.6400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,8,4,1,23.7600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,9,4,1,27.3200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,7,4,1,20.2000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,2,10,4,1,61.2900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,8,4,1,27.1500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,9,4,1,31.2200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,7,4,1,23.0800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,1,3,10,4,1,95.3400,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,8,4,1,31.6800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,9,4,1,36.4300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,7,4,1,26.9300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,2,10,4,1,81.7200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,8,4,1,41.6300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,9,4,1,47.8700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,7,4,1,35.3900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,6,4,2,3,10,4,1,127.1200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,9,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,10,2,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,8,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,9,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,7,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,10,2,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,9,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,10,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,8,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,9,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,7,3,1,0.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,10,3,1,0.0000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,8,4,1,10.2680,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,9,4,1,11.8100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,7,4,1,8.7300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,2,10,4,1,16.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,8,4,1,15.3700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,9,4,1,17.6700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,7,4,1,13.0600,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,1,3,10,4,1,39.7100,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,8,4,1,22.6200,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,9,4,1,26.0100,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,7,4,1,19.2300,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,2,10,4,1,43.5800,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,8,4,1,33.6400,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,9,4,1,38.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,7,4,1,28.5900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,1,5,4,2,3,10,4,1,65.6500,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,7,1,4,11,1,2,392.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,7,2,4,11,1,2,784.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,11,1,4,11,1,4,67.6032,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,11,2,4,11,1,1,81.6900,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,8,2,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,1,11,2,4,11,1,5,1.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,7,1,4,11,1,2,392.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,7,2,4,11,1,2,784.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,11,1,4,11,1,4,67.6032,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,11,2,4,11,1,1,81.6900,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,8,2,4,11,1,3,38.5000,1,1)
+;
+INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fecha_mod,estado_reg,id_usuario_ai,usuario_ai,id_obracivillt,id_tipolinea,id_tensionservicio,id_tipoestructura,id_configuracionlt,id_funcionestructura,id_terreno,id_tipocimentacion,id_tipocanalizacion,cantidadobracivillt,id_bancoductos,id_cajaempalme) VALUES 
+(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,2,11,2,4,11,1,5,1.5700,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,7,1,4,11,1,2,775.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,7,2,4,11,1,2,1440.0000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,11,1,4,11,1,4,81.4000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,11,2,4,11,1,1,106.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,8,1,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,8,2,4,11,1,3,38.5000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,11,1,4,11,1,5,0.9000,1,1)
+,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,11,2,4,11,1,5,1.5700,1,1)
+;
+/***********************************F-SCP-JYP-CMS-2-06/03/2019****************************************/

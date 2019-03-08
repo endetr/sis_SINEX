@@ -2,6 +2,21 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.2.1.0 - 2019-03-08
+  * Actualización Formulación UC Edificaciones.
+  * Actualización cantidades de transformadores de tensión en UC B107,B207,B507,B607 (1 Unidad).
+  * Actualización de pesos en materiales de líneas de transmisión.
+  * Actualización cantidades de cable de fuerza y control en Unidades constructivas de subestaciones.
+  * Actualización Unidad constructiva de Comunicaciones, se ingresa ítem y precio de trampa de onda.
+  * Actualización de suministro suelto en UC de tableros de C&P.
+  * Actualización nombre tablero de acople de barras en UC de tableros de C&P.
+  * Actualización Servicios en UC de tableros de C&P, se eliminan ítems repetidos y se deja valor unitario promedio.
+  * Actualización UC de Servicios Auxiliares, se incluye ítem de cable de cobre de 70 mm2.
+  * En la configuración de los precios de los equipos en el ítem proyecto se elimina la palabra SYNEX y se reemplaza por SPVPT.
+  * Nueva obra civil relleno en roca con su APU.
+  * Integración de la nueva obra civil con las unidades constructivas de líneas de transmisión.
+  * Creación de la UUCC L 18.
+  * Corrección issue del 18 de febrero de 2019
 * Versión 1.2.0.0 - 2019-02-26
   * Cambio en pesos de los materiales para líneas.
   * Se agrega unidades constructivas para estudios y trámites ambientales, las cuales pueden ser usadas en el cotizador de subestaciones.

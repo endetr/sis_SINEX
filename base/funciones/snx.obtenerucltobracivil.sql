@@ -1,16 +1,7 @@
--- FUNCTION: snx.obtenerucltobracivil(integer, integer)
-
--- DROP FUNCTION snx.obtenerucltobracivil(integer, integer);
-
-CREATE OR REPLACE FUNCTION snx.obtenerucltobracivil(
-	id_unidadconstructivaltint integer,
-	id_revistaint integer)
-    RETURNS TABLE(id_unidadconstructivalt integer, terrenolt character varying, funcionestructura character varying, tipocimentacion character varying, cantidaditem numeric, cosotunitariooc numeric, costototaloc numeric, pesounitariooc numeric, pesototaloc numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.obtenerucltobracivil(id_unidadconstructivaltint integer, id_revistaint integer)
+ RETURNS TABLE(id_unidadconstructivalt integer, terrenolt character varying, funcionestructura character varying, tipocimentacion character varying, cantidaditem numeric, cosotunitariooc numeric, costototaloc numeric, pesounitariooc numeric, pesototaloc numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 
 DECLARE
@@ -36,7 +27,7 @@ BEGIN
 	
 	factoroc := (SELECT uclt.factoroc FROM snx.tunidadconstructivalt uclt WHERE uclt.id_unidadconstructivalt = id_unidadconstructivaltint);
 	
-	IF id_unidadconstructivaltint = 1 OR id_unidadconstructivaltint = 5 OR id_unidadconstructivaltint = 9 THEN
+	IF id_unidadconstructivaltint = 1 OR id_unidadconstructivaltint = 5 OR id_unidadconstructivaltint = 9 THEN		
 		factorgridafirme := 0.8;
 		factorzapatafirme := 0.2;
 		factorpilotefirme := 0.0;
@@ -52,6 +43,22 @@ BEGIN
 		factorgridasumer := 0.0;
 		factorzapatasumer := 0.1;
 		factorpilotesumer := 0.9;
+	elseif id_unidadconstructivaltint = 10 then
+		factorgridafirme := 1;
+		factorzapatafirme := 0.0;
+		factorpilotefirme := 0.0;
+		
+		factorgridainter := 0.0;
+		factorzapatainter := 1;
+		factorpiloteinter := 0.0;
+		
+		factorgridablando := 0.0;
+		factorzapatablando := 0.0;
+		factorpiloteblando := 1;
+		
+		factorgridasumer := 0.0;
+		factorzapatasumer := 0.0;
+		factorpilotesumer := 1;
 	ELSEIF factoroc = 1 AND id_unidadconstructivaltint <> 10 THEN
 		factorgridafirme := 0.5;
 		factorzapatafirme := 0.4;
@@ -153,8 +160,9 @@ BEGIN
 	FROM		snx.tobracivilcantidadlt occlt	
 	INNER JOIN	snx.tobracivillt oclt ON occlt.id_obracivillt = oclt.id_obracivillt		
 	INNER JOIN	snx.tunidadconstructivalt uclt ON occlt.id_tipolinea = uclt.id_tipolinea AND occlt.id_tensionservicio = uclt.id_tensionservicio AND
-												   occlt.id_tipoestructura = uclt.id_tipoestructura AND occlt.id_configuracionlt = uclt.id_configuracionlt
-	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND uclt.id_tipolinea = 2
+												  occlt.id_tipoestructura = uclt.id_tipoestructura AND occlt.id_configuracionlt = uclt.id_configuracionlt and
+											      occlt.id_bancoductos = uclt.id_bancoductos and occlt.id_cajaempalme = uclt.id_cajaempalme
+	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND uclt.id_tipolinea = 2 and uclt.id_unidadconstructivalt <> 19
 	GROUP BY	uclt.id_unidadconstructivalt, uclt.longitud;
 																			   
 	INSERT INTO ttemppbracivil
@@ -170,8 +178,9 @@ BEGIN
 	FROM		snx.tobracivilcantidadlt occlt	
 	INNER JOIN	snx.tobracivillt oclt ON occlt.id_obracivillt = oclt.id_obracivillt		
 	INNER JOIN	snx.tunidadconstructivalt uclt ON occlt.id_tipolinea = uclt.id_tipolinea AND occlt.id_tensionservicio = uclt.id_tensionservicio AND
-												   occlt.id_configuracionlt = uclt.id_configuracionlt
-	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND uclt.id_tipolinea = 2 AND occlt.id_tipoestructura = 11 AND
+												  occlt.id_configuracionlt = uclt.id_configuracionlt and
+											      occlt.id_bancoductos = uclt.id_bancoductos and occlt.id_cajaempalme = uclt.id_cajaempalme
+	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND uclt.id_tipolinea = 2 AND occlt.id_tipoestructura = 11 and uclt.id_unidadconstructivalt <> 19 AND
 				((uclt.id_configuracionlt = 1 AND occlt.id_tipocanalizacion = 4) OR (uclt.id_configuracionlt = 2 AND occlt.id_tipocanalizacion = 1))
 	GROUP BY	uclt.id_unidadconstructivalt, uclt.longitud;
 		
@@ -190,8 +199,62 @@ BEGIN
 	INNER JOIN	snx.tunidadconstructivalt uclt ON occlt.id_tipolinea = uclt.id_tipolinea AND occlt.id_tensionservicio = uclt.id_tensionservicio AND
 												   occlt.id_configuracionlt = uclt.id_configuracionlt
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND uclt.id_tipolinea = 2 AND occlt.id_tipoestructura = 11 AND
-				 occlt.id_tipocanalizacion = 5
+				occlt.id_tipocanalizacion = 5 and uclt.id_unidadconstructivalt <> 19
 	GROUP BY	uclt.id_unidadconstructivalt, uclt.longitud;
+
+	--Si es la UUCC L 18
+	if id_unidadconstructivaltint=19 then
+		INSERT INTO ttemppbracivil
+		SELECT		uclt.id_unidadconstructivalt,
+					'' AS terrenolt,
+					'' AS funcionestructura,
+					bc.bancoductos as tipocimentacion,
+					uclt.longitud as cantidaditem,
+					SUM((occlt.cantidadobracivillt * snx.calcularprecioobracivillt(occlt.id_obracivillt, id_revistaint))) as cosotunitariooc,
+					0.0 AS costototaloc,
+					SUM(oclt.peso * occlt.cantidadobracivillt) AS pesounitariooc,
+					0.0 AS pesototaloc
+		FROM		snx.tobracivilcantidadlt occlt	
+		INNER JOIN	snx.tobracivillt oclt ON occlt.id_obracivillt = oclt.id_obracivillt	
+		INNER JOIN	snx.tunidadconstructivalt uclt on occlt.id_bancoductos = uclt.id_bancoductos
+		INNER JOIN	snx.tbancoductos bc on 	occlt.id_bancoductos = bc.id_bancoductos												  
+		WHERE		occlt.id_bancoductos <> 1 and uclt.id_unidadconstructivalt = id_unidadconstructivaltint
+		GROUP BY    uclt.id_unidadconstructivalt, bc.bancoductos, uclt.longitud;
+		
+		INSERT INTO ttemppbracivil
+		SELECT		uclt.id_unidadconstructivalt,
+					'' AS terrenolt,
+					'' AS funcionestructura,
+					ce.cajaempalme as tipocimentacion,
+					(uclt.longitud/2)+1 as cantidaditem,
+					SUM((occlt.cantidadobracivillt * snx.calcularprecioobracivillt(occlt.id_obracivillt, id_revistaint))) as cosotunitariooc,
+					0.0 AS costototaloc,
+					SUM(oclt.peso * occlt.cantidadobracivillt) AS pesounitariooc,
+					0.0 AS pesototaloc
+		FROM		snx.tobracivilcantidadlt occlt	
+		INNER JOIN	snx.tobracivillt oclt ON occlt.id_obracivillt = oclt.id_obracivillt	
+		INNER JOIN	snx.tunidadconstructivalt uclt on occlt.id_cajaempalme = uclt.id_cajaempalme
+		INNER JOIN	snx.tcajaempalme ce on 	occlt.id_cajaempalme = ce.id_cajaempalme												  
+		WHERE		occlt.id_cajaempalme <> 1 and uclt.id_unidadconstructivalt = id_unidadconstructivaltint
+		GROUP BY    uclt.id_unidadconstructivalt, ce.cajaempalme, uclt.longitud;
+	
+		INSERT INTO ttemppbracivil
+		SELECT		id_unidadconstructivaltint as id_unidadconstructivalt,
+					'' AS terrenolt,
+					'' AS funcionestructura,
+					bc.bancoductos as tipocimentacion,
+					uclt.longitud/20 as cantidaditem,
+					SUM((occlt.cantidadobracivillt * snx.calcularprecioobracivillt(occlt.id_obracivillt, id_revistaint))) as cosotunitariooc,
+					0.0 AS costototaloc,
+					SUM(oclt.peso * occlt.cantidadobracivillt) AS pesounitariooc,
+					0.0 AS pesototaloc
+		FROM		snx.tobracivilcantidadlt occlt	
+		INNER JOIN	snx.tobracivillt oclt ON occlt.id_obracivillt = oclt.id_obracivillt		
+		INNER JOIN	snx.tbancoductos bc on 	occlt.id_bancoductos = bc.id_bancoductos
+		cross join	snx.tunidadconstructivalt uclt
+		WHERE		occlt.id_bancoductos = 5 and uclt.id_unidadconstructivalt = id_unidadconstructivaltint
+		GROUP BY    uclt.id_unidadconstructivalt, bc.bancoductos, uclt.longitud;
+	end if;
 
 	UPDATE	ttemppbracivil
 	SET		cantidaditem = 0
@@ -215,7 +278,5 @@ BEGIN
 end;
 
 
-$BODY$;
-
-ALTER FUNCTION snx.obtenerucltobracivil(integer, integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

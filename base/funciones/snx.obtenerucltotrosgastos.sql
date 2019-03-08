@@ -1,15 +1,7 @@
--- FUNCTION: snx.obtenerucltotrosgastos(integer)
-
--- DROP FUNCTION snx.obtenerucltotrosgastos(integer);
-
-CREATE OR REPLACE FUNCTION snx.obtenerucltotrosgastos(
-	id_unidadconstructivaltint integer)
-    RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.obtenerucltotrosgastos(id_unidadconstructivaltint integer)
+ RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 
 BEGIN
@@ -41,25 +33,25 @@ BEGIN
 				CAST('km' AS character varying) AS unidad,
 				CASE 
 					WHEN uclt.id_unidadconstructivalt = 16 THEN 1
-					WHEN uclt.id_unidadconstructivalt IN (9,18) AND uclt.longitud < 1 THEN 1
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
 					ELSE uclt.longitud 
 				END AS costobase,
 				CASE
 					WHEN uclt.id_unidadconstructivalt = 8 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 29)
 					WHEN uclt.id_unidadconstructivalt = 16 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 29)
 					WHEN uclt.id_unidadconstructivalt = 10 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 31)
-					WHEN uclt.id_tensionservicio = 1 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 21)
-					WHEN uclt.id_tensionservicio = 2 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 22)
-					WHEN uclt.id_tensionservicio = 5 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 23)
-					WHEN uclt.id_tensionservicio = 3 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 24)
-					WHEN uclt.id_tensionservicio = 6 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 25)
+					WHEN uclt.id_tensionservicio = 1 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 21)
+					WHEN uclt.id_tensionservicio = 2 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 22)
+					WHEN uclt.id_tensionservicio = 5 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 23)
+					WHEN uclt.id_tensionservicio = 3 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 24)
+					WHEN uclt.id_tensionservicio = 6 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 25)
 					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 30)
 					ELSE 0
 				END AS cantidaditem,
 				0.0 AS costototal
 	FROM		snx.tunidadconstructivalt uclt
-	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;
-	
+	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;	
+
 	UPDATE	ttempotrosgastos
 	SET		costototal = ttempotrosgastos.costobase * ttempotrosgastos.cantidaditem;
 	
@@ -391,7 +383,5 @@ BEGIN
 end;
 
 
-$BODY$;
-
-ALTER FUNCTION snx.obtenerucltotrosgastos(integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

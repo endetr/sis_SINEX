@@ -1,17 +1,7 @@
--- FUNCTION: snx.ft_unidadconstructivalt_ime(integer, integer, character varying, character varying)
-
--- DROP FUNCTION snx.ft_unidadconstructivalt_ime(integer, integer, character varying, character varying);
-
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_ime(
-	p_administrador integer,
-	p_id_usuario integer,
-	p_tabla character varying,
-	p_transaccion character varying)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_ime(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -92,7 +82,9 @@ BEGIN
 			usuario_ai,
 			fecha_reg,
 			id_usuario_mod,
-			fecha_mod
+			fecha_mod,
+			id_bancoductos,
+			id_cajaempalme
           	) values(
 			v_parametros.estructurapasocantidad,
 			v_parametros.id_clasificacionaltura,
@@ -132,10 +124,9 @@ BEGIN
 			v_parametros._nombre_usuario_ai,
 			now(),
 			null,
-			null
-							
-			
-			
+			null,
+			v_parametros.id_bancoductos,
+			v_parametros.id_cajaempalme
 			)RETURNING id_unidadconstructivalt into v_id_unidadconstructivalt;
 			
 			--Definicion de la respuesta
@@ -194,7 +185,9 @@ BEGIN
 			id_usuario_mod = p_id_usuario,
 			fecha_mod = now(),
 			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
+			usuario_ai = v_parametros._nombre_usuario_ai,
+			id_bancoductos = v_parametros.id_bancoductos,
+			id_cajaempalme = v_parametros.id_cajaempalme
 			where id_unidadconstructivalt=v_parametros.id_unidadconstructivalt;
                
 			--Definicion de la respuesta
@@ -246,7 +239,5 @@ EXCEPTION
 				        
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.ft_unidadconstructivalt_ime(integer, integer, character varying, character varying)
-    OWNER TO postgres;
+$function$
+;

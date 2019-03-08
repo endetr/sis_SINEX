@@ -8685,3 +8685,19 @@ ADD CONSTRAINT fk_id_unidad FOREIGN KEY (id_unidad) REFERENCES snx.tunidad(id_un
 commit;
 
 /***********************************F-SCP-JYP-CMS-1-26/02/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-01/03/2019****************************************/
+ALTER TABLE snx.tunidadconstructivalt
+ADD COLUMN id_bancoductos INTEGER,
+ADD COLUMN id_cajaempalme INTEGER;
+
+UPDATE	snx.tunidadconstructivalt
+SET		id_bancoductos=1, id_cajaempalme=1;
+
+--Se crea relación
+ALTER TABLE snx.tunidadconstructivalt
+ADD CONSTRAINT fk_tuclt_id_bancoductos FOREIGN KEY (id_bancoductos) REFERENCES snx.tbancoductos(id_bancoductos);
+
+ALTER TABLE snx.tunidadconstructivalt
+ADD CONSTRAINT fk_tuclt_id_cajaempalme FOREIGN KEY (id_cajaempalme) REFERENCES snx.tcajaempalme(id_cajaempalme);
+/***********************************F-SCP-JYP-CMS-1-01/03/2019****************************************/

@@ -33,7 +33,7 @@ BEGIN
 	--Edificiones
 	INSERT INTO ttempotrasunidades
 	SELECT		TA.id_otraunidad, TA.codigo, TA.descripcion, TA.codigo_descripcion,
-				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivaedif,numerobahiasint,TA.valortotal,2)) AS valortotal
+				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivaedif,numerobahiasint,TA.valortotal,2,id_revistaint,distanciatrans)) AS valortotal
 	FROM		(										  
 				SELECT		CAST('2000000' || CAST(uce.id_unidadconstructivaedif as character varying) AS character varying) AS id_otraunidad,
 							uce.id_unidadconstructivaedif,

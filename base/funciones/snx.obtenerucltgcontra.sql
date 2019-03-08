@@ -1,15 +1,7 @@
--- FUNCTION: snx.obtenerucltgcontra(integer)
-
--- DROP FUNCTION snx.obtenerucltgcontra(integer);
-
-CREATE OR REPLACE FUNCTION snx.obtenerucltgcontra(
-	id_unidadconstructivaltint integer)
-    RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.obtenerucltgcontra(id_unidadconstructivaltint integer)
+ RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 
 DECLARE
@@ -104,18 +96,28 @@ BEGIN
 				6 AS id_descripcion,
 				CAST('Topografía' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				uclt.longitud AS costobase,
 				CASE
-					WHEN uclt.id_unidadconstructivalt IN (9,18) AND uclt.longitud < 1 THEN 1
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
 					ELSE uclt.longitud
+				END AS costobase,
+				CASE 
+					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)														 
+					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
+					WHEN uclt.id_tipolinea = 1 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 5)
+					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 15 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
+					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 16 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 35))
 				END AS cantidaditem,
 				CASE
 					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
 					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
 					WHEN uclt.id_tipolinea = 1 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 5)
-					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 15 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
+					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt in (15,19) THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
 					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 16 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 35))							 
-				END * (uclt.longitud)  AS costototal
+				END * 
+				CASE
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
+					ELSE uclt.longitud
+				END  AS costototal
 	FROM		snx.tunidadconstructivalt uclt
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;			
 	
@@ -184,7 +186,5 @@ BEGIN
 end;
 
 
-$BODY$;
-
-ALTER FUNCTION snx.obtenerucltgcontra(integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

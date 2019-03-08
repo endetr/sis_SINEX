@@ -1,17 +1,7 @@
--- FUNCTION: snx.calcularobracivilucsb(integer, integer, integer)
-
--- DROP FUNCTION snx.calcularobracivilucsb(integer, integer, integer);
-
-CREATE OR REPLACE FUNCTION snx.calcularobracivilucsb(
-	id_unidadconstructivasbint integer,
-	id_terrenosbint integer DEFAULT 2,
-	id_revistaint integer DEFAULT 1)
-    RETURNS TABLE(id_unidadconstructivasb integer, codigo character varying, id_obracivil integer, descripcion character varying, obracivil character varying, unidadabrev character varying, cantidadpeso numeric, valorunitario numeric, valorobracivil numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.calcularobracivilucsb(id_unidadconstructivasbint integer, id_terrenosbint integer DEFAULT 2, id_revistaint integer DEFAULT 1)
+ RETURNS TABLE(id_unidadconstructivasb integer, codigo character varying, id_obracivil integer, descripcion character varying, obracivil character varying, unidadabrev character varying, cantidadpeso numeric, valorunitario numeric, valorobracivil numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 DECLARE
 	valorhormigon numeric := 0;
@@ -295,7 +285,7 @@ BEGIN
 	FROM 		snx.tobracivil oc
 	INNER JOIN	snx.tunidad un ON oc.id_unidad = un.id_unidad
 	CROSS JOIN	ttempobracivil
-	WHERE		oc.id_obracivil = 5 AND ttempobracivil.id_obracivil = 6;
+	WHERE		oc.id_obracivil = 11 AND ttempobracivil.id_obracivil = 6;
 		
 	--Mano de Obra
 	INSERT INTO ttempobracivil
@@ -331,7 +321,5 @@ BEGIN
 
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.calcularobracivilucsb(integer, integer, integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

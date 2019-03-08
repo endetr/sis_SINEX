@@ -1,15 +1,7 @@
--- FUNCTION: snx.calcularprecioobracivillt(integer, integer)
-
--- DROP FUNCTION snx.calcularprecioobracivillt(integer, integer);
-
-CREATE OR REPLACE FUNCTION snx.calcularprecioobracivillt(
-	id_obracivilltint integer,
-	id_revistaint integer)
-    RETURNS numeric
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.calcularprecioobracivillt(id_obracivilltint integer, id_revistaint integer)
+ RETURNS numeric
+ LANGUAGE plpgsql
+AS $function$
 
 Declare
 	valortotalobracivil NUMERIC := 0;
@@ -57,44 +49,22 @@ Begin
 										) AS PRECIO	
 							);
 	
-	ELSEIF id_obracivilltint = 1 THEN
-		valortotalobracivil := (SELECT	CASE id_revistaint
-											WHEN 1 THEN preciounitariorlp
-											WHEN 2 THEN preciounitariorcb
-											WHEN 3 THEN preciounitariorsc
-											ELSE preciounitariorlp
-										END AS valortotalobracivil
-								FROM	snx.calcularvaloresobracivilmoe(31));
-	ELSEIF id_obracivilltint = 2 THEN
-		valortotalobracivil := (SELECT	CASE id_revistaint
-											WHEN 1 THEN preciounitariorlp
-											WHEN 2 THEN preciounitariorcb
-											WHEN 3 THEN preciounitariorsc
-											ELSE preciounitariorlp
-										END AS valortotalobracivil
-								FROM	snx.calcularvaloresobracivilmoe(44));
-	ELSEIF id_obracivilltint = 3 THEN
-		valortotalobracivil := (SELECT	CASE id_revistaint
-											WHEN 1 THEN preciounitariorlp
-											WHEN 2 THEN preciounitariorcb
-											WHEN 3 THEN preciounitariorsc
-											ELSE preciounitariorlp
-										END AS valortotalobracivil
-								FROM	snx.calcularvaloresobracivilmoe(3));
-	ELSEIF id_obracivilltint = 4 THEN
-		valortotalobracivil := (SELECT	CASE id_revistaint
-											WHEN 1 THEN preciounitariorlp
-											WHEN 2 THEN preciounitariorcb
-											WHEN 3 THEN preciounitariorsc
-											ELSE preciounitariorlp
-										END AS valortotalobracivil
-								FROM	snx.calcularvaloresobracivilmoe(89));
+	else
+		valortotalobracivil := (select 		CASE id_revistaint
+												WHEN 1 THEN tc.preciounitariorlp
+												WHEN 2 THEN tc.preciounitariorcb
+												WHEN 3 THEN tc.preciounitariorsc
+												ELSE preciounitariorlp
+											END AS valortotalobracivil
+								from		snx.tobracivillt ta
+								inner join  snx.tobracivilmoe tb on ta.obracivillt = tb.obracivilmoe
+								inner join	snx.calcularvaloresobracivilmoe(tb.id_obracivilmoe) tc on tb.id_obracivilmoe = tc.id_obracivilmoe
+								where		ta.id_obracivillt = id_obracivilltint);
+							
 	END IF;
 		
 	RETURN valortotalobracivil;
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.calcularprecioobracivillt(integer, integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

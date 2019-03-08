@@ -1,15 +1,7 @@
--- FUNCTION: snx.obteneruclteqmate(integer)
-
--- DROP FUNCTION snx.obteneruclteqmate(integer);
-
-CREATE OR REPLACE FUNCTION snx.obteneruclteqmate(
-	id_unidadconstructivaltint integer)
-    RETURNS TABLE(id_unidadconstructivalt integer, id_grupo integer, grupo character varying, id_item integer, item character varying, id_unidad integer, unidadabrev character varying, cantidaditem numeric, costounitarioext numeric, costounitarinac numeric, costototalext numeric, costototalnac numeric, costototalsumi numeric, pesounitarioext numeric, pesounitarionac numeric, pesototalext numeric, pesototalnac numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.obteneruclteqmate(id_unidadconstructivaltint integer)
+ RETURNS TABLE(id_unidadconstructivalt integer, id_grupo integer, grupo character varying, id_item integer, item character varying, id_unidad integer, unidadabrev character varying, cantidaditem numeric, costounitarioext numeric, costounitarinac numeric, costototalext numeric, costototalnac numeric, costototalsumi numeric, pesounitarioext numeric, pesounitarionac numeric, pesototalext numeric, pesototalnac numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 	
 BEGIN
@@ -49,7 +41,8 @@ BEGIN
 												   tmatecan.id_tensionservicio = uclt.id_tensionservicio AND
 												   ((((tmatecan.id_hilosguarda = uclt.id_hilosguarda AND uclt.id_hilosguarda <> 4) OR (tmatecan.id_hilosguarda = 3 AND uclt.id_hilosguarda = 4)) AND 
 												   uclt.id_unidadconstructivalt <> 8) OR (uclt.id_unidadconstructivalt = 8)) AND 
-												   tmatecan.id_configuracionlt = uclt.id_configuracionlt AND
+												   ((tmatecan.id_configuracionlt = uclt.id_configuracionlt and uclt.id_unidadconstructivalt not in (9,18)) or 
+											   	   (tmatecan.id_configuracionlt = 1 and uclt.id_unidadconstructivalt in (9,18))) and 
 												   tmatecan.id_tipoestructura = uclt.id_tipoestructura
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint AND tmatecan.cantidadmontajelt > 0 AND tmatecan.id_tipolinea <> 3
 	GROUP BY	uclt.id_unidadconstructivalt, tmatecan.id_funcionestructura, tmatecan.id_puestatierra, tmatecan.id_aislador, tmate.id_ambitoprecio, tmate.id_materiallt, tmatecan.id_extralt;
@@ -110,37 +103,48 @@ BEGIN
 					WHEN (ucltitem.id_item = 28 OR ucltitem.id_item = 29) AND uclt.id_configuracionlt = 2 THEN 6
 					WHEN ucltitem.id_item = 30 AND uclt.id_configuracionlt = 1 AND uclt.id_tensionservicio = 3 THEN uclt.longitud*1000/2.5
 					WHEN ucltitem.id_item = 30 AND uclt.id_configuracionlt = 2 AND uclt.id_tensionservicio = 3 THEN uclt.longitud*1000/2.5*2
+					WHEN ucltitem.id_item = 31 AND uclt.id_unidadconstructivalt = 19 THEN uclt.longitud*1.03
 					WHEN ucltitem.id_item = 31 AND uclt.id_configuracionlt = 1 THEN uclt.longitud*1.03*4
 					WHEN ucltitem.id_item = 31 AND uclt.id_configuracionlt = 2 THEN uclt.longitud*1.03*2*4
+					WHEN ucltitem.id_item = 32 AND uclt.id_unidadconstructivalt = 19 THEN 0.0
 					WHEN ucltitem.id_item = 32 AND uclt.id_configuracionlt = 1 THEN uclt.longitud*1000/2.5
 					WHEN ucltitem.id_item = 32 AND uclt.id_configuracionlt = 2 THEN uclt.longitud*1000/2.5*2
-					WHEN ucltitem.id_item = 33 THEN uclt.longitud
+					WHEN ucltitem.id_item = 33 AND uclt.id_unidadconstructivalt = 19 THEN (uclt.longitud/2)+1
+					WHEN ucltitem.id_item = 33 AND uclt.id_unidadconstructivalt <> 19 THEN uclt.longitud
 					WHEN ucltitem.id_item = 34 AND uclt.id_configuracionlt = 1 THEN uclt.longitud*1.03
 					WHEN ucltitem.id_item = 34 AND uclt.id_configuracionlt = 2 THEN uclt.longitud*1.03*2
+					WHEN ucltitem.id_item = 35 AND uclt.id_unidadconstructivalt = 19 THEN (uclt.longitud/2)+1
 					WHEN ucltitem.id_item = 35 AND uclt.id_configuracionlt = 1 THEN (uclt.longitud/2.5*2) + 1
 					WHEN ucltitem.id_item = 35 AND uclt.id_configuracionlt = 2 THEN ((uclt.longitud/2.5*2) + 1) * 2
+					WHEN ucltitem.id_item = 36 AND uclt.id_unidadconstructivalt = 19 THEN 0
 					WHEN ucltitem.id_item = 36 AND uclt.id_configuracionlt = 1 THEN (uclt.longitud/2.5*2) 
 					WHEN ucltitem.id_item = 36 AND uclt.id_configuracionlt = 2 THEN (uclt.longitud/2.5*2) * 2
+					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 1 THEN 3*((uclt.longitud/2)+1)
+					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 2 THEN 3*((uclt.longitud/2)+1)*2
 					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 1 THEN ((uclt.longitud/2.5*2) + 1) + ((uclt.longitud/2.5*2)) - 1
 					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 2 THEN (((uclt.longitud/2.5*2) + 1) * 2) + ((uclt.longitud/2.5*2) * 2) - 2					
 					WHEN ucltitem.id_item = 38 AND uclt.id_configuracionlt = 1 AND uclt.id_pararrayolinea = 2 THEN 6
 					WHEN ucltitem.id_item = 38 AND uclt.id_configuracionlt = 2 AND uclt.id_pararrayolinea = 2 THEN 12
+					WHEN ucltitem.id_item = 39 AND uclt.id_unidadconstructivalt = 19 THEN 0
 					WHEN ucltitem.id_item = 39 AND uclt.id_configuracionlt = 1 THEN (uclt.longitud*1.03*1000) 
 					WHEN ucltitem.id_item = 39 AND uclt.id_configuracionlt = 2 THEN (uclt.longitud*1.03*1000) * 2
 					WHEN ucltitem.id_item = 40 AND uclt.id_configuracionlt = 1 AND uclt.id_tensionservicio <> 3 THEN 3*uclt.longitud*1.03*1000
 					WHEN ucltitem.id_item = 40 AND uclt.id_configuracionlt = 2 AND uclt.id_tensionservicio <> 3 THEN 6*uclt.longitud*1.03*1000
 					WHEN ucltitem.id_item = 41 AND uclt.id_configuracionlt = 1 AND uclt.id_tensionservicio = 3 THEN 3*uclt.longitud*1.03*1000
 					WHEN ucltitem.id_item = 41 AND uclt.id_configuracionlt = 2 AND uclt.id_tensionservicio = 3 THEN 6*uclt.longitud*1.03*1000 
+					WHEN ucltitem.id_item = 42 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 1 THEN (uclt.longitud*1.03*1000) 
+					WHEN ucltitem.id_item = 42 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 2 THEN (uclt.longitud*1.03*1000) * 2
 					WHEN ucltitem.id_item = 42 AND uclt.id_configuracionlt = 1 THEN (4*uclt.longitud*1.03*1000) 
 					WHEN ucltitem.id_item = 42 AND uclt.id_configuracionlt = 2 THEN (4*uclt.longitud*1.03*1000) * 2
 					WHEN ucltitem.id_item = 43 AND uclt.id_configuracionlt = 1 THEN trunc(uclt.longitud*1000/0.8)*3
 					WHEN ucltitem.id_item = 43 AND uclt.id_configuracionlt = 2 THEN trunc(uclt.longitud*1000/0.8)*3*2
+					WHEN ucltitem.id_item = 44 THEN 279*uclt.longitud
 					ELSE 0.0
 				END AS numeric) AS cantidaditem,
 				CASE
-					WHEN ucltitem.id_item = 5 OR ucltitem.id_item = 7 OR ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN 0.0
+					WHEN ucltitem.id_item = 7 OR ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN 0.0
 					WHEN ucltitem.id_item = 1 THEN tcondumate.preciomateriallt
-					WHEN ucltitem.id_item = 2 OR ucltitem.id_item = 3 OR ucltitem.id_item = 4 OR 
+					WHEN ucltitem.id_item = 2 OR ucltitem.id_item = 3 OR ucltitem.id_item = 4 OR ucltitem.id_item = 5 OR
 						 ucltitem.id_item = 14 OR ucltitem.id_item = 21 OR ucltitem.id_item = 22 OR
 						 ucltitem.id_item = 30 OR ucltitem.id_item = 31 OR ucltitem.id_item = 32 OR
 						 ucltitem.id_item = 33 OR ucltitem.id_item = 34	OR ucltitem.id_item = 43																											
@@ -183,7 +187,7 @@ BEGIN
 																											 WHERE 	tunidadconstructivalt.id_unidadconstructivalt = id_unidadconstructivaltint)					
 					WHEN ucltitem.id_item = 10 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 1 AND ttempestrumate.id_funcionestructura = 3 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 13 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 1 AND ttempestrumate.id_funcionestructura = 2 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)																																																																		
-					WHEN ucltitem.id_item = 16 OR ucltitem.id_item = 23 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 4)
+					WHEN ucltitem.id_item = 16 OR ucltitem.id_item = 23 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 1)
 					WHEN ucltitem.id_item = 19 OR ucltitem.id_item = 25 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 3)
 					WHEN ucltitem.id_item = 20 OR ucltitem.id_item = 27 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 2)
 					WHEN ucltitem.id_item = 28 AND tcondumate.id_materiallt = 344 THEN snx.calcularpreciomateriallt(357)
@@ -230,8 +234,8 @@ BEGIN
 				END AS costounitarioext,
 				CASE
 					WHEN ucltitem.id_item = 1 OR ucltitem.id_item = 2 OR ucltitem.id_item = 3 OR ucltitem.id_item = 4 OR ucltitem.id_item = 6 OR ucltitem.id_item = 7 OR ucltitem.id_item = 8 OR ucltitem.id_item = 11 THEN 0
-					WHEN ucltitem.id_item = 5 OR ucltitem.id_item = 9 OR ucltitem.id_item = 12 OR
-						 ucltitem.id_item = 39 OR ucltitem.id_item = 40 OR ucltitem.id_item = 41 OR ucltitem.id_item = 42
+					WHEN ucltitem.id_item = 9 OR ucltitem.id_item = 12 OR
+						 ucltitem.id_item = 39 OR ucltitem.id_item = 40 OR ucltitem.id_item = 41 OR ucltitem.id_item = 42 OR ucltitem.id_item = 44
 						 THEN snx.calcularpreciomateriallt(uclteqmate.id_codigo)
 					WHEN ucltitem.id_item = 10 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 2 AND ttempestrumate.id_funcionestructura = 3 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 13 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 2 AND ttempestrumate.id_funcionestructura = 2 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
@@ -341,8 +345,7 @@ BEGIN
 																																		
 	UPDATE	ttempeqmate
 	SET		costototalext = ttempeqmate.cantidaditem * ttempeqmate.costounitarioext,
-			costototalnac = ttempeqmate.cantidaditem * ttempeqmate.costounitarinac,
-			costototalsumi = (ttempeqmate.cantidaditem * ttempeqmate.costounitarioext) + (ttempeqmate.cantidaditem * ttempeqmate.costounitarinac),
+			costototalnac = ttempeqmate.cantidaditem * ttempeqmate.costounitarinac,			
 			pesototalext = ttempeqmate.cantidaditem * ttempeqmate.pesounitarioext,
 			pesototalnac = ttempeqmate.cantidaditem * ttempeqmate.pesounitarionac;
 			
@@ -376,12 +379,13 @@ BEGIN
 			) tsumi
 	WHERE	ttempeqmate.id_item = 11 AND ttempeqmate.id_unidadconstructivalt = tsumi.id_unidadconstructivalt;
 
+	UPDATE	ttempeqmate
+	set		costototalsumi = ttempeqmate.costototalext + ttempeqmate.costototalnac;
+	
 	RETURN QUERY
 	SELECT * FROM ttempeqmate;																											 
 																											 
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.obteneruclteqmate(integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

@@ -1,14 +1,7 @@
--- FUNCTION: snx.calcularprecioucsb()
-
--- DROP FUNCTION snx.calcularprecioucsb();
-
-CREATE OR REPLACE FUNCTION snx.calcularprecioucsb(
-	)
-    RETURNS void
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.calcularprecioucsball()
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 
 DECLARE
 	cur_ucsb CURSOR FOR SELECT ucsb.id_unidadconstructivasb FROM snx.tunidadconstructivasb ucsb;
@@ -28,7 +21,5 @@ Begin
 	
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.calcularprecioucsb()
-    OWNER TO dbkerp_admin;
+$function$
+;

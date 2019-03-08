@@ -1,15 +1,7 @@
--- FUNCTION: snx.calcularvaloresuclt(integer)
-
--- DROP FUNCTION snx.calcularvaloresuclt(integer);
-
-CREATE OR REPLACE FUNCTION snx.calcularvaloresuclt(
-	id_unidadconstructivaltint integer)
-    RETURNS TABLE(id_unidadconstructivalt integer, numddp numeric, nummontaje numeric, numoc numeric, numingenieria numeric, numadmeje numeric, numsupero numeric, numcfinan numeric, numcaamb numeric, numcapred numeric, numcostototaluc numeric) 
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-    ROWS 1000
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.calcularvaloresuclt(id_unidadconstructivaltint integer)
+ RETURNS TABLE(id_unidadconstructivalt integer, numddp numeric, nummontaje numeric, numoc numeric, numingenieria numeric, numadmeje numeric, numsupero numeric, numcfinan numeric, numcaamb numeric, numcapred numeric, numcostototaluc numeric)
+ LANGUAGE plpgsql
+AS $function$
 
 DECLARE
 	calcvanoprom numeric:= 1;
@@ -110,7 +102,10 @@ BEGIN
 				6 AS id_descripcion,
 				CAST('Topografía' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				uclt.longitud AS costobase,
+				CASE
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
+					ELSE uclt.longitud
+				END AS costobase,
 				CASE 
 					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)														 
 					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
@@ -122,9 +117,13 @@ BEGIN
 					WHEN uclt.id_unidadconstructivalt IN (5,6,7,8) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
 					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 28)
 					WHEN uclt.id_tipolinea = 1 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 5)
-					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 15 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
+					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt in (15,19) THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 34, 35))
 					WHEN uclt.id_tipolinea = 2 AND uclt.id_unidadconstructivalt = 16 THEN (SELECT SUM(valorindice) FROM snx.tindiceslt WHERE id_indicelt IN (32, 35))							 
-				END * (uclt.longitud)  AS costototal
+				END * 
+				CASE
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
+					ELSE uclt.longitud
+				END  AS costototal
 	FROM		snx.tunidadconstructivalt uclt
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;			
 	
@@ -193,19 +192,20 @@ BEGIN
 				1 AS id_descripcion,
 				CAST('Ingeniería' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				CASE uclt.id_unidadconstructivalt
-					WHEN 16 THEN 1
+				CASE 
+					WHEN uclt.id_unidadconstructivalt = 16 THEN 1
+					WHEN uclt.id_unidadconstructivalt IN (1,2,3,4,5,6,7,8,9,18,10) AND uclt.longitud < 1 THEN 1
 					ELSE uclt.longitud 
 				END AS costobase,
 				CASE
 					WHEN uclt.id_unidadconstructivalt = 8 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 29)
 					WHEN uclt.id_unidadconstructivalt = 16 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 29)
 					WHEN uclt.id_unidadconstructivalt = 10 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 31)
-					WHEN uclt.id_tensionservicio = 1 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 21)
-					WHEN uclt.id_tensionservicio = 2 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 22)
-					WHEN uclt.id_tensionservicio = 5 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 23)
-					WHEN uclt.id_tensionservicio = 3 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 24)
-					WHEN uclt.id_tensionservicio = 6 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt = 15) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 25)
+					WHEN uclt.id_tensionservicio = 1 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 21)
+					WHEN uclt.id_tensionservicio = 2 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 22)
+					WHEN uclt.id_tensionservicio = 5 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 23)
+					WHEN uclt.id_tensionservicio = 3 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 24)
+					WHEN uclt.id_tensionservicio = 6 AND (uclt.id_tipolinea = 1 OR uclt.id_unidadconstructivalt in (15,19)) THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 25)
 					WHEN uclt.id_tipolinea = 3 THEN (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 30)
 					ELSE 0
 				END AS cantidaditem,
@@ -555,7 +555,7 @@ BEGIN
 				END AS numoc, 					
 				((SELECT SUM(ttempa.costototal) FROM ttempotrosgastos_01 ttempa WHERE ttempa.id_unidadconstructivalt = id_unidadconstructivaltint AND ttempa.id_descripcion = 1) +
 				(SELECT SUM(ttempa.costototal) FROM ttempauxgcontra_01 ttempa WHERE ttempa.id_unidadconstructivalt = id_unidadconstructivaltint AND ttempa.id_descripcion IN (6,7))) / 
-				CASE 
+				CASE
 					WHEN uclt.id_unidadconstructivalt = 10 OR uclt.id_unidadconstructivalt = 16 THEN 1
 					WHEN uclt.id_tipolinea=2 THEN uclt.longitud
 					ELSE (SELECT SUM(ttempa.costobase) FROM ttempotrosgastos_01 ttempa WHERE ttempa.id_unidadconstructivalt = id_unidadconstructivaltint AND ttempa.id_descripcion = 1)
@@ -622,7 +622,5 @@ BEGIN
 																											 
 end;
 
-$BODY$;
-
-ALTER FUNCTION snx.calcularvaloresuclt(integer)
-    OWNER TO dbkerp_conexion;
+$function$
+;

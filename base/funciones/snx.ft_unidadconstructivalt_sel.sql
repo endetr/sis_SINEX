@@ -1,17 +1,7 @@
--- FUNCTION: snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying)
-
--- DROP FUNCTION snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying);
-
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_sel(
-	p_administrador integer,
-	p_id_usuario integer,
-	p_tabla character varying,
-	p_transaccion character varying)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_sel(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -114,7 +104,11 @@ BEGIN
 						uclt.id_revista,
 						rev.revista as desc_revista,
 						hil.hilosguarda as desc_hilosguarda,
-						CAST(uclt.codigo || '' - '' || uclt.descripcion as varchar) AS descripcionfull
+						CAST(uclt.codigo || '' - '' || uclt.descripcion as varchar) AS descripcionfull,
+						uclt.id_bancoductos,
+						tband.bancoductos,
+						uclt.id_cajaempalme,
+						tcajae.cajaempalme
 						from snx.tunidadconstructivalt uclt
 						inner join segu.tusuario usu1 on usu1.id_usuario = uclt.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = uclt.id_usuario_mod
@@ -130,6 +124,8 @@ BEGIN
 						left join snx.calcularvaloresuclt(uclt.id_unidadconstructivalt) valores ON uclt.id_unidadconstructivalt = valores.id_unidadconstructivalt
 					    left join snx.trevista rev on uclt.id_revista = rev.id_revista
 						left join snx.thilosguarda hil on uclt.id_hilosguarda = hil.id_hilosguarda
+						inner join snx.tbancoductos tband on uclt.id_bancoductos = tband.id_bancoductos
+						inner join snx.tcajaempalme tcajae on uclt.id_cajaempalme = tcajae.id_cajaempalme
 					   where  ';
 			
 			--Definicion de la respuesta
@@ -216,7 +212,11 @@ BEGIN
 						uclt.id_revista,
 						rev.revista as desc_revista,
 						hil.hilosguarda as desc_hilosguarda,
-						CAST(uclt.codigo || '' - '' || uclt.descripcion as varchar) AS descripcionfull
+						CAST(uclt.codigo || '' - '' || uclt.descripcion as varchar) AS descripcionfull,
+						uclt.id_bancoductos,
+						tband.bancoductos,
+						uclt.id_cajaempalme,
+						tcajae.cajaempalme
 						from snx.tunidadconstructivalt uclt
 						inner join segu.tusuario usu1 on usu1.id_usuario = uclt.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = uclt.id_usuario_mod
@@ -231,6 +231,8 @@ BEGIN
 					    left join snx.tareaprotegida arp on uclt.id_areaprotegida = arp.id_areaprotegida						
 					    left join snx.trevista rev on uclt.id_revista = rev.id_revista
 						left join snx.thilosguarda hil on uclt.id_hilosguarda = hil.id_hilosguarda
+						inner join snx.tbancoductos tband on uclt.id_bancoductos = tband.id_bancoductos
+						inner join snx.tcajaempalme tcajae on uclt.id_cajaempalme = tcajae.id_cajaempalme
 					   where  ';
 			
 			--Definicion de la respuesta
@@ -285,7 +287,5 @@ EXCEPTION
 			raise exception '%',v_resp;
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying)
-    OWNER TO postgres;
+$function$
+;
