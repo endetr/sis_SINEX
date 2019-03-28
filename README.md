@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.2.2.0 - 2019-03-21
+  * Se cambia la funcionalidad del botón Reset Cantidades del Módulo Común Civil y Edificaciones, para que solo cambie las cantidades de la Unidad Constructiva seleccionada.
 * Versión 1.2.1.0 - 2019-03-08
   * Actualización Formulación UC Edificaciones.
   * Actualización cantidades de transformadores de tensión en UC B107,B207,B507,B607 (1 Unidad).

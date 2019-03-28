@@ -1,17 +1,7 @@
--- FUNCTION: snx.ft_unidadconstructivaedif_ime(integer, integer, character varying, character varying)
-
--- DROP FUNCTION snx.ft_unidadconstructivaedif_ime(integer, integer, character varying, character varying);
-
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivaedif_ime(
-	p_administrador integer,
-	p_id_usuario integer,
-	p_tabla character varying,
-	p_transaccion character varying)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivaedif_ime(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
+ RETURNS character varying
+ LANGUAGE plpgsql
+AS $function$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -127,11 +117,13 @@ BEGIN
 
 		begin
 			--Sentencia de la modificacion
-			update snx.tucedifobracivil set cantidadobracivil = 0 from snx.tucedifobracivil obci
-			inner join snx.tucedifsubgrupo sub on sub.id_ucedifsubgrupo = obci.id_ucedifsubgrupo
-			inner join snx.tucedifgrupo grup on grup.id_ucedifgrupo = sub.id_ucedifgrupo
-			inner join snx.tunidadconstructivaedif unid on unid.id_unidadconstructivaedif = grup.id_unidadconstructivaedif
-			where unid.id_unidadconstructivaedif = v_parametros.id_unidadconstructivaedif;
+			update 		snx.tucedifobracivil 
+			set 		cantidadobracivil = 0
+			FROM 		snx.tucedifsubgrupo sub 
+			inner join 	snx.tucedifgrupo grup on sub.id_ucedifgrupo = grup.id_ucedifgrupo 
+			inner join 	snx.tunidadconstructivaedif unid on grup.id_unidadconstructivaedif = unid.id_unidadconstructivaedif
+			where 		tucedifobracivil.id_ucedifsubgrupo = sub.id_ucedifsubgrupo and 
+						unid.id_unidadconstructivaedif = v_parametros.id_unidadconstructivaedif;
                
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Edificaciones modificado(a)'); 
@@ -187,7 +179,5 @@ EXCEPTION
 				        
 END;
 
-$BODY$;
-
-ALTER FUNCTION snx.ft_unidadconstructivaedif_ime(integer, integer, character varying, character varying)
-    OWNER TO postgres;
+$function$
+;
