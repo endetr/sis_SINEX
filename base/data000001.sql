@@ -15349,3 +15349,87 @@ INSERT INTO snx.tobracivilcantidadlt (id_usuario_reg,id_usuario_mod,fecha_reg,fe
 ,(1,NULL,'2018-09-14 09:48:10.326','2018-09-14 09:48:10.326','activo',NULL,NULL,7,2,3,11,2,4,11,1,5,1.5700,1,1)
 ;
 /***********************************F-SCP-JYP-CMS-2-06/03/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-23/04/2019****************************************/
+begin;
+	do $$
+	declare 
+		id_obracivilmoe_varmax int;
+		id_obracivilmoe_varmin int;
+	begin
+
+	id_obracivilmoe_varmin := (
+							SELECT MIN(id_obracivilmoe) id_obracivilmoe
+							FROM snx.tobracivilmoe 
+							WHERE obracivilmoe = 'RELLENO EN ROCA'
+						  );
+
+	id_obracivilmoe_varmax := (
+							SELECT MAX(id_obracivilmoe) id_obracivilmoe
+							FROM snx.tobracivilmoe 
+							WHERE obracivilmoe = 'RELLENO EN ROCA'
+						  );
+	
+	if id_obracivilmoe_varmin <> id_obracivilmoe_varmax then	
+		UPDATE 	snx.tucmoobracivil
+		SET		id_obracivilmoe = id_obracivilmoe_varmin
+		WHERE	id_obracivilmoe = id_obracivilmoe_varmax;
+	
+		UPDATE 	snx.tucedifobracivil
+		SET		id_obracivilmoe = id_obracivilmoe_varmin
+		WHERE	id_obracivilmoe = id_obracivilmoe_varmax;
+	
+		DELETE FROM snx.tocmanoobramoe 
+		WHERE id_obracivilmoe = id_obracivilmoe_varmax;
+	
+		DELETE FROM snx.tocmaquinariamoe
+		WHERE id_obracivilmoe = id_obracivilmoe_varmax;
+	
+		DELETE FROM snx.tocmaterialmoe 
+		WHERE id_obracivilmoe = id_obracivilmoe_varmax;
+	
+		DELETE FROM snx.tobracivilmoe 
+		WHERE id_obracivilmoe = id_obracivilmoe_varmax;
+	end if;
+	
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-1-23/04/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-23/04/2019****************************************/
+begin;
+	do $$
+	declare 
+		id_unidadconstructivalt_varmax int;
+		id_unidadconstructivalt_varmin int;
+	begin
+	
+
+	id_unidadconstructivalt_varmin := (
+							SELECT MIN(id_unidadconstructivalt) id_unidadconstructivalt
+							FROM snx.tunidadconstructivalt 
+							WHERE codigo = 'UUCC L 18'
+						  );
+
+	id_unidadconstructivalt_varmax := (
+							SELECT MAX(id_unidadconstructivalt) id_unidadconstructivalt
+							FROM snx.tunidadconstructivalt 
+							WHERE codigo = 'UUCC L 18'
+						  );
+						  						  
+	if id_unidadconstructivalt_varmin <> id_unidadconstructivalt_varmax then
+		delete from snx.tunidadconstructivalteqmate 
+		where	id_unidadconstructivalt =id_unidadconstructivalt_varmax;
+		
+		delete from snx.tunidadconstructivaltmontaje
+		where	id_unidadconstructivalt =id_unidadconstructivalt_varmax;
+		
+		delete from snx.tunidadconstructivalt 
+		where	id_unidadconstructivalt =id_unidadconstructivalt_varmax;
+	end if;
+	
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-2-23/04/2019****************************************/

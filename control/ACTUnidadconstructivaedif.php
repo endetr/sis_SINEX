@@ -40,7 +40,7 @@ class ACTUnidadconstructivaedif extends ACTbase{
 	function resetCantOBC(){
 		$this->objFunc=$this->create('MODUnidadconstructivaedif');	
 		$this->res=$this->objFunc->resetCantOBC($this->objParam);
-		$this->res->imprimirRespuesta($this->res->generarJson());		
+		$this->res->imprimirRespuesta($this->res->generarJson());
 	}
 			
 	function listarUnidadconstructivaedif(){
@@ -90,7 +90,7 @@ class ACTUnidadconstructivaedif extends ACTbase{
 	}
 						
 	function eliminarUnidadconstructivaedif(){
-		$this->objFunc=$this->create('MODUnidadconstructivaedif');	
+			$this->objFunc=$this->create('MODUnidadconstructivaedif');	
 		$this->res=$this->objFunc->eliminarUnidadconstructivaedif($this->objParam);
 		$this->res->imprimirRespuesta($this->res->generarJson());
 	}

@@ -2,9 +2,11 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
-* Versión 1.2.2.0 - 2019-03-21
-  * Se cambia la funcionalidad del botón Reset Cantidades del Módulo Común Civil y Edificaciones, para que solo cambie las cantidades de la Unidad Constructiva seleccionada.
-* Versión 1.2.1.0 - 2019-03-08
+* Versión 1.2.2.0 - 2019-04-25
+  * Se elimina registro de obra civil repetido en el módulo común civil y efificaciones que intervenía en el cálculo final de las UC de líneas.
+  * Se ajusta el cálculo de las cantidades de equipos y materiales en las UC de líneas de comunicaciones.
+  * Se ajusta el exportar a PDF y Excel del cotizador de subestaciones.	
+* Versión 1.2.1.0 - 2019-03-07
   * Actualización Formulación UC Edificaciones.
   * Actualización cantidades de transformadores de tensión en UC B107,B207,B507,B607 (1 Unidad).
   * Actualización de pesos en materiales de líneas de transmisión.
@@ -18,7 +20,6 @@ Proyecto creado por Colombianos
   * Nueva obra civil relleno en roca con su APU.
   * Integración de la nueva obra civil con las unidades constructivas de líneas de transmisión.
   * Creación de la UUCC L 18.
-  * Corrección issue del 18 de febrero de 2019
 * Versión 1.2.0.0 - 2019-02-26
   * Cambio en pesos de los materiales para líneas.
   * Se agrega unidades constructivas para estudios y trámites ambientales, las cuales pueden ser usadas en el cotizador de subestaciones.

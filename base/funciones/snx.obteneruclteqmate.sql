@@ -1,7 +1,16 @@
-CREATE OR REPLACE FUNCTION snx.obteneruclteqmate(id_unidadconstructivaltint integer)
- RETURNS TABLE(id_unidadconstructivalt integer, id_grupo integer, grupo character varying, id_item integer, item character varying, id_unidad integer, unidadabrev character varying, cantidaditem numeric, costounitarioext numeric, costounitarinac numeric, costototalext numeric, costototalnac numeric, costototalsumi numeric, pesounitarioext numeric, pesounitarionac numeric, pesototalext numeric, pesototalnac numeric)
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.obteneruclteqmate(integer)
+
+-- DROP FUNCTION snx.obteneruclteqmate(integer);
+
+CREATE OR REPLACE FUNCTION snx.obteneruclteqmate(
+	id_unidadconstructivaltint integer)
+    RETURNS TABLE(id_unidadconstructivalt integer, id_grupo integer, grupo character varying, id_item integer, item character varying, id_unidad integer, unidadabrev character varying, cantidaditem numeric, costounitarioext numeric, costounitarinac numeric, costototalext numeric, costototalnac numeric, costototalsumi numeric, pesounitarioext numeric, pesounitarionac numeric, pesototalext numeric, pesototalnac numeric) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+
 
 	
 BEGIN
@@ -342,6 +351,11 @@ BEGIN
 	UPDATE	ttempeqmate
 	SET		costounitarinac = 0.0
 	WHERE	ttempeqmate.costounitarinac IS NULL;
+	
+	UPDATE	ttempeqmate
+	SET		cantidaditem = floor(ttempeqmate.cantidaditem)
+	WHERE	ttempeqmate.id_unidadconstructivalt IN (11,12,13,14) AND
+			ttempeqmate.id_item <> 21;
 																																		
 	UPDATE	ttempeqmate
 	SET		costototalext = ttempeqmate.cantidaditem * ttempeqmate.costounitarioext,
@@ -387,5 +401,8 @@ BEGIN
 																											 
 end;
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.obteneruclteqmate(integer)
+    OWNER TO postgres;

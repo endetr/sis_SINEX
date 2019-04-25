@@ -1,7 +1,17 @@
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivamo_ime(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
- RETURNS character varying
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.ft_unidadconstructivamo_ime(integer, integer, character varying, character varying)
+
+-- DROP FUNCTION snx.ft_unidadconstructivamo_ime(integer, integer, character varying, character varying);
+
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivamo_ime(
+	p_administrador integer,
+	p_id_usuario integer,
+	p_tabla character varying,
+	p_transaccion character varying)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+AS $BODY$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -111,12 +121,10 @@ BEGIN
 
 		begin
 			--Sentencia de la modificacion
-			update 		snx.tucmoobracivil 
-			set 		cantidadobra = 0
-			from 		snx.tucmogrupo grup
-			inner join 	snx.tunidadconstructivamo unid on unid.id_unidadconstructivamo = grup.id_unidadconstructivamo
-			where 		tucmoobracivil.id_ucmogrupo = grup.id_ucmogrupo and 
-						unid.id_unidadconstructivamo = v_parametros.id_unidadconstructivamo;
+			update snx.tucmoobracivil set cantidadobra = 0 from snx.tucmoobracivil obac
+			inner join snx.tucmogrupo grup on grup.id_ucmogrupo = obac.id_ucmogrupo
+			inner join snx.tunidadconstructivamo unid on unid.id_unidadconstructivamo = grup.id_unidadconstructivamo
+			where unid.id_unidadconstructivamo = v_parametros.id_unidadconstructivamo;
                
 			--Definicion de la respuesta
             v_resp = pxp.f_agrega_clave(v_resp,'mensaje','Edificaciones modificado(a)'); 
@@ -173,5 +181,7 @@ EXCEPTION
 				        
 END;
 
-$function$
-;
+$BODY$;
+
+ALTER FUNCTION snx.ft_unidadconstructivamo_ime(integer, integer, character varying, character varying)
+    OWNER TO postgres;
