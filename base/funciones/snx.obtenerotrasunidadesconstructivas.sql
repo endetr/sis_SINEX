@@ -1,7 +1,19 @@
-CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(id_otraunidadint character varying, numerobahiasint integer, id_revistaint integer, distanciatrans numeric DEFAULT 36)
- RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric)
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric)
+
+-- DROP FUNCTION snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric);
+
+CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(
+	id_otraunidadint character varying,
+	numerobahiasint integer,
+	id_revistaint integer,
+	distanciatrans numeric DEFAULT 36)
+    RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+
 
 BEGIN
 	DROP TABLE if exists ttempotrasunidades;
@@ -101,7 +113,7 @@ BEGIN
 				CAST(ucee.codigo_unieepp || ' (' || ten.tensionservicio || ')' AS character varying) AS codigo,	
 				ucee.descripcion,
 				CAST(ucee.codigo_unieepp || ' (' || ten.tensionservicio || ') - ' || ucee.descripcion AS character varying) AS codigo_descripcion,																				
-				cast(((select sum(valor) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as valortotal				
+				cast(((select sum(valor * cantidadeep) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as valortotal				
 	FROM 		snx.tunidadconstructivaeep ucee
 	INNER JOIN	snx.ttensionservicio ten on Ten.id_tensionservicio = ucee.id_tensionservicio
 	WHERE		('5000000' || CAST(ucee.id_unidadconstructivaeep as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = '';		
@@ -168,5 +180,8 @@ BEGIN
 	SELECT * FROM ttempotrasunidades;
 END;
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.obtenerotrasunidadesconstructivas(character varying, integer, integer, numeric)
+    OWNER TO postgres;

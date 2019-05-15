@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_uceepitem_ime(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_uceepitem_ime
@@ -63,7 +64,8 @@ BEGIN
 			usuario_ai,
 			id_usuario_reg,
 			fecha_mod,
-			id_usuario_mod
+			id_usuario_mod,
+			cantidadeep
           	) values(
 			v_parametros.id_unidadconstructivaeep,
 			v_parametros.valor,
@@ -74,7 +76,8 @@ BEGIN
 			v_parametros._nombre_usuario_ai,
 			p_id_usuario,
 			null,
-			null
+			null,
+			v_parametros.cantidadeep
 							
 			
 			
@@ -107,7 +110,8 @@ BEGIN
 			fecha_mod = now(),
 			id_usuario_mod = p_id_usuario,
 			id_usuario_ai = v_parametros._id_usuario_ai,
-			usuario_ai = v_parametros._nombre_usuario_ai
+			usuario_ai = v_parametros._nombre_usuario_ai,
+			cantidadeep = v_parametros.cantidadeep
 			where id_uceepitem=v_parametros.id_uceepitem;
                
 			--Definicion de la respuesta
@@ -158,6 +162,7 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
+
 
 $BODY$;
 

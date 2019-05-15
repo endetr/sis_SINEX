@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivaeep_sel(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_unidadconstructivaeep_sel
@@ -68,7 +69,7 @@ BEGIN
 						usu2.cuenta as usr_mod,
 						ten.tensionservicio as desc_tensionservicio,
 						CAST(CONCAT(ucee.codigo_unieepp,'' ('',ten.tensionservicio,'')'') as varchar) as codigo_unicod,
-						cast(((select sum(valor) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as totalitems,
+						cast(((select sum(valor * cantidadeep) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as totalitems,
 						cast(concat(''['',ten.tensionservicio,''] '', ucee.codigo_unieepp) as varchar) as desc_codigo_unieeppten
 						from snx.tunidadconstructivaeep ucee
 						inner join segu.tusuario usu1 on usu1.id_usuario = ucee.id_usuario_reg
@@ -126,6 +127,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
+
 
 $BODY$;
 

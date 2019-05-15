@@ -1,4 +1,4 @@
-/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
+﻿﻿/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
 --Cantidades Tabla Temporal
 TRUNCATE TABLE snx.tucsbequipotemp RESTART IDENTITY;
 INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb, id_equipo, cantidadequ) VALUES (1, 1035, 3);
@@ -15433,3 +15433,273 @@ begin;
 	$$;
 commit;
 /***********************************F-SCP-JYP-CMS-2-23/04/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-06/05/2019****************************************/
+begin;
+	do $$		
+	
+	begin
+
+		UPDATE	snx.ttarifassb
+		SET		tarifasb = 'Pruebas de Equipos en Fábrica - Bahías de subestación'
+		WHERE	ttarifassb.id_tarifasb = 10;
+		
+		UPDATE	snx.ttarifassb
+		SET		tarifasb = 'Pruebas y Puesta en Servicio - Bahías de subestación'
+		WHERE	ttarifassb.id_tarifasb = 12;
+		
+		INSERT INTO snx.ttarifassb
+		(
+			id_tarifasb, id_unidad, tarifasb, valortarifa, estado_reg, id_usuario_ai,
+			id_usuario_reg, usuario_ai, fecha_reg, fecha_mod, id_usuario_mod
+		) 
+		values
+		(
+			35, 27, 'Pruebas de Equipos en Fábrica - Máquinas', 0.5,
+			'activo', null, 1, null, now(), null, null
+		);
+		
+		INSERT INTO snx.ttarifassb
+		(
+			id_tarifasb, id_unidad, tarifasb, valortarifa, estado_reg, id_usuario_ai,
+			id_usuario_reg, usuario_ai, fecha_reg, fecha_mod, id_usuario_mod
+		) 
+		values
+		(
+			36, 27, 'Pruebas y Puesta en Servicio - Máquinas', 3.0,
+			'activo', null, 1, null, now(), null, null
+		);
+	
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-1-06/05/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-09/05/2019****************************************/
+
+UPDATE snx.tmateriallt SET peso = 1.046 WHERE tmateriallt.id_materiallt = 226;
+UPDATE snx.tmateriallt SET peso = 1.743 WHERE tmateriallt.id_materiallt = 227;
+UPDATE snx.tmateriallt SET peso = 1.03 WHERE tmateriallt.id_materiallt = 228;
+UPDATE snx.tmateriallt SET peso = 1.6 WHERE tmateriallt.id_materiallt = 229;
+UPDATE snx.tmateriallt SET peso = 1.602 WHERE tmateriallt.id_materiallt = 230;
+UPDATE snx.tmateriallt SET peso = 1.63 WHERE tmateriallt.id_materiallt = 231;
+UPDATE snx.tmateriallt SET peso = 1.068 WHERE tmateriallt.id_materiallt = 232;
+UPDATE snx.tmateriallt SET peso = 1.24 WHERE tmateriallt.id_materiallt = 233;
+UPDATE snx.tmateriallt SET peso = 0.815 WHERE tmateriallt.id_materiallt = 234;
+UPDATE snx.tmateriallt SET peso = 0.767 WHERE tmateriallt.id_materiallt = 235;
+UPDATE snx.tmateriallt SET peso = 0.547 WHERE tmateriallt.id_materiallt = 236;
+UPDATE snx.tmateriallt SET peso = 0.55 WHERE tmateriallt.id_materiallt = 237;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 238;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 239;
+UPDATE snx.tmateriallt SET peso = 0.006 WHERE tmateriallt.id_materiallt = 240;
+UPDATE snx.tmateriallt SET peso = 0.006 WHERE tmateriallt.id_materiallt = 241;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 242;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 243;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 244;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 245;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 246;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 247;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 248;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 249;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 250;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 251;
+UPDATE snx.tmateriallt SET peso = 0.0045 WHERE tmateriallt.id_materiallt = 252;
+UPDATE snx.tmateriallt SET peso = 0.002 WHERE tmateriallt.id_materiallt = 253;
+UPDATE snx.tmateriallt SET peso = 0.0015 WHERE tmateriallt.id_materiallt = 254;
+UPDATE snx.tmateriallt SET peso = 0.0016 WHERE tmateriallt.id_materiallt = 255;
+UPDATE snx.tmateriallt SET peso = 0.02 WHERE tmateriallt.id_materiallt = 256;
+UPDATE snx.tmateriallt SET peso = 0.004 WHERE tmateriallt.id_materiallt = 257;
+UPDATE snx.tmateriallt SET peso = 0.007 WHERE tmateriallt.id_materiallt = 258;
+UPDATE snx.tmateriallt SET peso = 0.007 WHERE tmateriallt.id_materiallt = 259;
+UPDATE snx.tmateriallt SET peso = 0.0098 WHERE tmateriallt.id_materiallt = 260;
+UPDATE snx.tmateriallt SET peso = 0.0146 WHERE tmateriallt.id_materiallt = 261;
+UPDATE snx.tmateriallt SET peso = 0.025 WHERE tmateriallt.id_materiallt = 262;
+UPDATE snx.tmateriallt SET peso = 0.007 WHERE tmateriallt.id_materiallt = 263;
+UPDATE snx.tmateriallt SET peso = 0.007 WHERE tmateriallt.id_materiallt = 264;
+UPDATE snx.tmateriallt SET peso = 0.0247 WHERE tmateriallt.id_materiallt = 265;
+UPDATE snx.tmateriallt SET peso = 0.027 WHERE tmateriallt.id_materiallt = 266;
+UPDATE snx.tmateriallt SET peso = 0.007 WHERE tmateriallt.id_materiallt = 267;
+UPDATE snx.tmateriallt SET peso = 0.002 WHERE tmateriallt.id_materiallt = 268;
+UPDATE snx.tmateriallt SET peso = 0.002 WHERE tmateriallt.id_materiallt = 269;
+UPDATE snx.tmateriallt SET peso = 0.002 WHERE tmateriallt.id_materiallt = 270;
+UPDATE snx.tmateriallt SET peso = 0.003 WHERE tmateriallt.id_materiallt = 271;
+UPDATE snx.tmateriallt SET peso = 0.005 WHERE tmateriallt.id_materiallt = 272;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 273;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 274;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 275;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 276;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 277;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 278;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 279;
+UPDATE snx.tmateriallt SET peso = 0.0009 WHERE tmateriallt.id_materiallt = 280;
+UPDATE snx.tmateriallt SET peso = 0.0005 WHERE tmateriallt.id_materiallt = 281;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 282;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 283;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 284;
+UPDATE snx.tmateriallt SET peso = 0.017 WHERE tmateriallt.id_materiallt = 285;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 286;
+UPDATE snx.tmateriallt SET peso = 0.011 WHERE tmateriallt.id_materiallt = 287;
+UPDATE snx.tmateriallt SET peso = 0.01 WHERE tmateriallt.id_materiallt = 288;
+UPDATE snx.tmateriallt SET peso = 0.0005 WHERE tmateriallt.id_materiallt = 289;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 290;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 291;
+UPDATE snx.tmateriallt SET peso = 0.01 WHERE tmateriallt.id_materiallt = 292;
+UPDATE snx.tmateriallt SET peso = 0.003 WHERE tmateriallt.id_materiallt = 293;
+UPDATE snx.tmateriallt SET peso = 0.032 WHERE tmateriallt.id_materiallt = 294;
+UPDATE snx.tmateriallt SET peso = 0.015 WHERE tmateriallt.id_materiallt = 295;
+UPDATE snx.tmateriallt SET peso = 0.015 WHERE tmateriallt.id_materiallt = 296;
+UPDATE snx.tmateriallt SET peso = 0.00031 WHERE tmateriallt.id_materiallt = 297;
+UPDATE snx.tmateriallt SET peso = 0.00193 WHERE tmateriallt.id_materiallt = 298;
+UPDATE snx.tmateriallt SET peso = 0.00031 WHERE tmateriallt.id_materiallt = 299;
+UPDATE snx.tmateriallt SET peso = 0.407 WHERE tmateriallt.id_materiallt = 300;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 301;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 302;
+UPDATE snx.tmateriallt SET peso = 0.0007 WHERE tmateriallt.id_materiallt = 303;
+UPDATE snx.tmateriallt SET peso = 0.0046 WHERE tmateriallt.id_materiallt = 304;
+UPDATE snx.tmateriallt SET peso = 0.0031 WHERE tmateriallt.id_materiallt = 305;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 306;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 307;
+UPDATE snx.tmateriallt SET peso = 0.302 WHERE tmateriallt.id_materiallt = 308;
+UPDATE snx.tmateriallt SET peso = 0.302 WHERE tmateriallt.id_materiallt = 309;
+UPDATE snx.tmateriallt SET peso = 0.89 WHERE tmateriallt.id_materiallt = 310;
+UPDATE snx.tmateriallt SET peso = 0.302 WHERE tmateriallt.id_materiallt = 311;
+UPDATE snx.tmateriallt SET peso = 1.41 WHERE tmateriallt.id_materiallt = 312;
+UPDATE snx.tmateriallt SET peso = 0.725 WHERE tmateriallt.id_materiallt = 313;
+UPDATE snx.tmateriallt SET peso = 0.302 WHERE tmateriallt.id_materiallt = 314;
+UPDATE snx.tmateriallt SET peso = 4.1 WHERE tmateriallt.id_materiallt = 315;
+UPDATE snx.tmateriallt SET peso = 4.71 WHERE tmateriallt.id_materiallt = 316;
+UPDATE snx.tmateriallt SET peso = 6.8 WHERE tmateriallt.id_materiallt = 317;
+UPDATE snx.tmateriallt SET peso = 12.4 WHERE tmateriallt.id_materiallt = 318;
+UPDATE snx.tmateriallt SET peso = 4.9 WHERE tmateriallt.id_materiallt = 319;
+UPDATE snx.tmateriallt SET peso = 7.9 WHERE tmateriallt.id_materiallt = 320;
+UPDATE snx.tmateriallt SET peso = 13.6 WHERE tmateriallt.id_materiallt = 321;
+UPDATE snx.tmateriallt SET peso = 7.6 WHERE tmateriallt.id_materiallt = 322;
+UPDATE snx.tmateriallt SET peso = 6 WHERE tmateriallt.id_materiallt = 323;
+UPDATE snx.tmateriallt SET peso = 3.9 WHERE tmateriallt.id_materiallt = 324;
+UPDATE snx.tmateriallt SET peso = 2.5 WHERE tmateriallt.id_materiallt = 325;
+UPDATE snx.tmateriallt SET peso = 2.5 WHERE tmateriallt.id_materiallt = 326;
+UPDATE snx.tmateriallt SET peso = 3.9 WHERE tmateriallt.id_materiallt = 327;
+UPDATE snx.tmateriallt SET peso = 20.9 WHERE tmateriallt.id_materiallt = 328;
+UPDATE snx.tmateriallt SET peso = 20.9 WHERE tmateriallt.id_materiallt = 329;
+UPDATE snx.tmateriallt SET peso = 4.168 WHERE tmateriallt.id_materiallt = 330;
+UPDATE snx.tmateriallt SET peso = 7.175 WHERE tmateriallt.id_materiallt = 331;
+UPDATE snx.tmateriallt SET peso = 2.985 WHERE tmateriallt.id_materiallt = 332;
+UPDATE snx.tmateriallt SET peso = 11.702 WHERE tmateriallt.id_materiallt = 333;
+UPDATE snx.tmateriallt SET peso = 4.727 WHERE tmateriallt.id_materiallt = 334;
+UPDATE snx.tmateriallt SET peso = 13.709 WHERE tmateriallt.id_materiallt = 335;
+UPDATE snx.tmateriallt SET peso = 0.55 WHERE tmateriallt.id_materiallt = 336;
+UPDATE snx.tmateriallt SET peso = 0.55 WHERE tmateriallt.id_materiallt = 337;
+UPDATE snx.tmateriallt SET peso = 0.01 WHERE tmateriallt.id_materiallt = 338;
+UPDATE snx.tmateriallt SET peso = 0.003 WHERE tmateriallt.id_materiallt = 339;
+UPDATE snx.tmateriallt SET peso = 0.015 WHERE tmateriallt.id_materiallt = 340;
+UPDATE snx.tmateriallt SET peso = 0.015 WHERE tmateriallt.id_materiallt = 341;
+UPDATE snx.tmateriallt SET peso = 0.015 WHERE tmateriallt.id_materiallt = 342;
+UPDATE snx.tmateriallt SET peso = 0.0004 WHERE tmateriallt.id_materiallt = 343;
+UPDATE snx.tmateriallt SET peso = 11.92 WHERE tmateriallt.id_materiallt = 344;
+UPDATE snx.tmateriallt SET peso = 13.5 WHERE tmateriallt.id_materiallt = 345;
+UPDATE snx.tmateriallt SET peso = 16 WHERE tmateriallt.id_materiallt = 346;
+UPDATE snx.tmateriallt SET peso = 17 WHERE tmateriallt.id_materiallt = 347;
+UPDATE snx.tmateriallt SET peso = 0.55 WHERE tmateriallt.id_materiallt = 348;
+UPDATE snx.tmateriallt SET peso = 0 WHERE tmateriallt.id_materiallt = 349;
+UPDATE snx.tmateriallt SET peso = 0 WHERE tmateriallt.id_materiallt = 350;
+UPDATE snx.tmateriallt SET peso = 0 WHERE tmateriallt.id_materiallt = 351;
+UPDATE snx.tmateriallt SET peso = 0.035 WHERE tmateriallt.id_materiallt = 352;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 353;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 354;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 355;
+UPDATE snx.tmateriallt SET peso = 0.01 WHERE tmateriallt.id_materiallt = 356;
+UPDATE snx.tmateriallt SET peso = 0.104 WHERE tmateriallt.id_materiallt = 357;
+UPDATE snx.tmateriallt SET peso = 0.108 WHERE tmateriallt.id_materiallt = 358;
+UPDATE snx.tmateriallt SET peso = 0.108 WHERE tmateriallt.id_materiallt = 359;
+UPDATE snx.tmateriallt SET peso = 0.4 WHERE tmateriallt.id_materiallt = 360;
+UPDATE snx.tmateriallt SET peso = 0.05 WHERE tmateriallt.id_materiallt = 361;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 362;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 363;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 364;
+UPDATE snx.tmateriallt SET peso = 0.001 WHERE tmateriallt.id_materiallt = 365;
+UPDATE snx.tmateriallt SET peso = 0.0005 WHERE tmateriallt.id_materiallt = 366;
+UPDATE snx.tmateriallt SET peso = 0.054 WHERE tmateriallt.id_materiallt = 367;
+UPDATE snx.tmateriallt SET peso = 0.305 WHERE tmateriallt.id_materiallt = 368;
+UPDATE snx.tmateriallt SET peso = 3.8 WHERE tmateriallt.id_materiallt = 369;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 370;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 371;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 372;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 373;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 374;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 375;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 376;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 377;
+UPDATE snx.tmateriallt SET peso = 0.002 WHERE tmateriallt.id_materiallt = 378;
+UPDATE snx.tmateriallt SET peso = 0.0066 WHERE tmateriallt.id_materiallt = 379;
+UPDATE snx.tmateriallt SET peso = 0.0104 WHERE tmateriallt.id_materiallt = 380;
+UPDATE snx.tmateriallt SET peso = 0.0003 WHERE tmateriallt.id_materiallt = 381;
+UPDATE snx.tmateriallt SET peso = 0 WHERE tmateriallt.id_materiallt = 382;
+UPDATE snx.tmateriallt SET peso = 13.5 WHERE tmateriallt.id_materiallt = 390;
+UPDATE snx.tmateriallt SET peso = 22 WHERE tmateriallt.id_materiallt = 391;
+UPDATE snx.tmateriallt SET peso = 24 WHERE tmateriallt.id_materiallt = 392;
+UPDATE snx.tmateriallt SET peso = 28 WHERE tmateriallt.id_materiallt = 393;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 394;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 395;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 396;
+UPDATE snx.tmateriallt SET peso = 0.09 WHERE tmateriallt.id_materiallt = 397;
+UPDATE snx.tmateriallt SET peso = 0.108 WHERE tmateriallt.id_materiallt = 398;
+UPDATE snx.tmateriallt SET peso = 0.4 WHERE tmateriallt.id_materiallt = 399;
+UPDATE snx.tmateriallt SET peso = 0.4 WHERE tmateriallt.id_materiallt = 400;
+UPDATE snx.tmateriallt SET peso = 0.4 WHERE tmateriallt.id_materiallt = 401;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 402;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 403;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 404;
+UPDATE snx.tmateriallt SET peso = 0.08 WHERE tmateriallt.id_materiallt = 405;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 406;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 407;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 408;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 409;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 410;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 411;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 412;
+UPDATE snx.tmateriallt SET peso = 0.066 WHERE tmateriallt.id_materiallt = 413;
+UPDATE snx.tmateriallt SET peso = 2.4 WHERE tmateriallt.id_materiallt = 414;
+UPDATE snx.tmateriallt SET peso = 2.4 WHERE tmateriallt.id_materiallt = 415;
+
+UPDATE	snx.tucsbmaquinaria
+SET		cantidadmaq = 0
+WHERE	id_unidadconstructivasb = 151;
+
+UPDATE	snx.tucsbmaquinaria
+SET		cantidadmaq = 1
+WHERE	id_unidadconstructivasb = 151 AND id_maquinaria = 52;
+
+/***********************************F-SCP-JYP-CMS-1-09/05/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-10/05/2019****************************************/
+
+begin;
+	do $$
+	
+	begin
+	
+		ALTER TABLE snx.tuceepitem
+		ADD COLUMN cantidadeep numeric(18,5);
+		
+		UPDATE snx.tuceepitem
+		SET	   cantidadeep = 0;
+	
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-10/05/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-15/05/2019****************************************/
+begin;
+	do $$		
+	
+	begin	
+	
+		--Se actualiza las unidades constuctivas
+		PERFORM snx.calcularprecioucsball();
+
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-1-15/05/2019****************************************/

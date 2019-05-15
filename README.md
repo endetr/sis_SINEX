@@ -2,6 +2,11 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.2.3.0 - 2019-05-15
+  * En las tarifas de subestaciones se dividen "Pruebas de Equipos y Fábrica" y "Pruebas y Puesta en Servicio" en dos; una para Bahías de subestaciones y otra para Máquinas.
+  * Se aplican las nuevas tarifas al cálculo de Otros Gastos en las UC de Subestaciones.
+  * Se actualizan los pesos de los materiales usados en UC de Líneas.
+  * Se agrega la columna de cantidad en los items de las UC de estudios especiales.
 * Versión 1.2.2.0 - 2019-04-25
   * Se elimina registro de obra civil repetido en el módulo común civil y efificaciones que intervenía en el cálculo final de las UC de líneas.
   * Se ajusta el cálculo de las cantidades de equipos y materiales en las UC de líneas de comunicaciones.

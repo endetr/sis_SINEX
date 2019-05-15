@@ -1,7 +1,19 @@
-CREATE OR REPLACE FUNCTION snx.insertarotrasucsb(id_otraunidadint character varying, id_ucsbvaloraroucint integer, numerobahiasint integer, id_revistaint integer, distanciatrans numeric DEFAULT 36)
- RETURNS void
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.insertarotrasucsb(character varying, integer, integer, integer, numeric)
+
+-- DROP FUNCTION snx.insertarotrasucsb(character varying, integer, integer, integer, numeric);
+
+CREATE OR REPLACE FUNCTION snx.insertarotrasucsb(
+	id_otraunidadint character varying,
+	id_ucsbvaloraroucint integer,
+	numerobahiasint integer,
+	id_revistaint integer,
+	distanciatrans numeric DEFAULT 36)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+AS $BODY$
+
 
 DECLARE
 	valototaltemp numeric := 0;
@@ -313,9 +325,9 @@ BEGIN
 		SELECT		id_ucsbvaloraroucint AS id_ucsbvalorarouc, 
 					3 AS nivel, uci.descripcion,
 					CAST('' AS character varying) AS unidadabrev,
-					0.0 AS cantidaditem,
-					0.0 AS valorunitario,
-					uci.valor AS valortotal	
+					uci.cantidadeep AS cantidaditem,
+					uci.valor AS valorunitario,
+					uci.cantidadeep * uci.valor AS valortotal	
 		FROM	 	snx.tuceepitem uci			
 		WHERE		'5000000' || CAST(uci.id_unidadconstructivaeep as character varying) = id_otraunidadint;
 															
@@ -361,5 +373,8 @@ BEGIN
 	end if;
 END
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.insertarotrasucsb(character varying, integer, integer, integer, numeric)
+    OWNER TO postgres;

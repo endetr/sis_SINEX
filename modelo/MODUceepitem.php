@@ -33,6 +33,8 @@ class MODUceepitem extends MODbase{
 		$this->captura('id_usuario_mod','int4');
 		$this->captura('usr_reg','varchar');
 		$this->captura('usr_mod','varchar');
+		$this->captura('cantidadeep','numeric');
+		$this->captura('valortotal','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -53,7 +55,8 @@ class MODUceepitem extends MODbase{
 		$this->setParametro('valor','valor','numeric');
 		$this->setParametro('descripcion','descripcion','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-
+		$this->setParametro('cantidadeep','cantidadeep','numeric');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();
@@ -74,7 +77,8 @@ class MODUceepitem extends MODbase{
 		$this->setParametro('valor','valor','numeric');
 		$this->setParametro('descripcion','descripcion','varchar');
 		$this->setParametro('estado_reg','estado_reg','varchar');
-
+		$this->setParametro('cantidadeep','cantidadeep','numeric');
+		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
 		$this->ejecutarConsulta();

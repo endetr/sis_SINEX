@@ -11,6 +11,10 @@ CREATE OR REPLACE FUNCTION snx.calcularotrosgastosucsb(
     ROWS 1000
 AS $BODY$
 
+DECLARE
+	intCantidadMaquinaria int := 0;
+	intCantidadTipoMaquinaria int := 0;
+	
 BEGIN
 	DROP TABLE if exists ttempequipos;
 	DROP TABLE if exists ttempmaquinaria;
@@ -40,6 +44,9 @@ BEGIN
 	INNER JOIN	snx.tmaquinaria maq on ucsbmaq.id_maquinaria = maq.id_maquinaria
 	INNER JOIN  snx.tunidadconstructivasb ucsb ON ucsbmaq.id_unidadconstructivasb = ucsb.id_unidadconstructivasb
 	WHERE 		ucsb.id_unidadconstructivasb = id_unidadconstructivasbint AND ucsbmaq.cantidadmaq <> 0;
+	
+	intCantidadMaquinaria := (SELECT COALESCE(SUM(ttempmaquinaria.cantidadog),0) FROM ttempmaquinaria);
+	intCantidadTipoMaquinaria := (SELECT COALESCE(COUNT(maq.id_maquinaria),0) FROM snx.tucsbmaquinaria ucsbmaq INNER JOIN snx.tmaquinaria maq on ucsbmaq.id_maquinaria = maq.id_maquinaria WHERE ucsbmaq.id_unidadconstructivasb = id_unidadconstructivasbint AND ucsbmaq.cantidadmaq <> 0);
 	
 	--Cantidades materiales
 	CREATE TEMP TABLE ttempmateriales AS
@@ -83,7 +90,10 @@ BEGIN
 				'PRUEBAS DE EQUIPOS EN FÁBRICA'::varchar AS otrosgastos,
 				coalesce((SELECT SUM(ttempequipos.cantidadog) FROM ttempequipos),0) +
 				coalesce((SELECT SUM(ttempmaquinaria.cantidadog) FROM ttempmaquinaria),0) AS cantidadog,
-				coalesce((SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 10),0) AS valorunitario,
+				CASE
+					WHEN intCantidadMaquinaria = 0 AND intCantidadTipoMaquinaria = 0 THEN coalesce((SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 10),0)
+					ELSE coalesce((SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 35),0) 
+				END AS valorunitario,
 				0.0 AS valorog
 	FROM		snx.tunidadconstructivasb ucsb
 	WHERE 		ucsb.id_unidadconstructivasb = id_unidadconstructivasbint;
@@ -110,7 +120,10 @@ BEGIN
 				ucsb.descripcion,
 				'PRUEBAS Y PUESTA EN SERVICIO'::varchar AS otrosgastos,
 				tempa.cantidadog,
-				(SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 12) AS valorunitario,
+				CASE
+					WHEN intCantidadMaquinaria = 0 AND intCantidadTipoMaquinaria = 0 THEN (SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 12)
+					ELSE (SELECT valortarifa FROM snx.ttarifassb WHERE id_tarifasb = 36)
+				END AS valorunitario,
 				0.0 AS valorog
 	FROM		snx.tunidadconstructivasb ucsb
 	INNER JOIN	ttempog tempa ON ucsb.id_unidadconstructivasb = tempa.id_unidadconstructivasb
@@ -356,6 +369,7 @@ BEGIN
 	
 	
 end;
+
 
 $BODY$;
 

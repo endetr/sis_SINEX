@@ -39,29 +39,14 @@ Phx.vista.Ueepotros=Ext.extend(Phx.gridInterfaz,{
 			},
 			type:'Field',
 			form:true 
-		},
-		{
-			config:{
-				name: 'estado_reg',
-				fieldLabel: 'Estado Reg.',
-				allowBlank: true,
-				anchor: '80%',
-				gwidth: 100,
-				maxLength:10
-			},
-				type:'TextField',
-				filters:{pfiltro:'tuco.estado_reg',type:'string'},
-				id_grupo:1,
-				grid:true,
-				form:false
-		},
+		},		
 		{
 			config:{
 				name: 'descripcion',
 				fieldLabel: 'Descripción',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 300,
 				maxLength:1000
 			},
 				type:'TextField',
@@ -173,6 +158,21 @@ Phx.vista.Ueepotros=Ext.extend(Phx.gridInterfaz,{
 			},
 				type:'Field',
 				filters:{pfiltro:'usu2.cuenta',type:'string'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
+		{
+			config:{
+				name: 'estado_reg',
+				fieldLabel: 'Estado Reg.',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:10
+			},
+				type:'TextField',
+				filters:{pfiltro:'tuco.estado_reg',type:'string'},
 				id_grupo:1,
 				grid:true,
 				form:false

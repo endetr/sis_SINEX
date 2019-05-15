@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_uceepitem_sel(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_uceepitem_sel
@@ -63,7 +64,9 @@ BEGIN
 						uci.fecha_mod,
 						uci.id_usuario_mod,
 						usu1.cuenta as usr_reg,
-						usu2.cuenta as usr_mod	
+						usu2.cuenta as usr_mod,
+						uci.cantidadeep,
+						uci.valor * uci.cantidadeep AS valortotal
 						from snx.tuceepitem uci
 						inner join segu.tusuario usu1 on usu1.id_usuario = uci.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = uci.id_usuario_mod
@@ -118,6 +121,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
+
 
 $BODY$;
 

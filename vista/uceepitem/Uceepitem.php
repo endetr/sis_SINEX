@@ -46,7 +46,7 @@ Phx.vista.Uceepitem=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Descripción',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 350,
 				maxLength:1000
 			},
 				type:'TextField',
@@ -55,6 +55,21 @@ Phx.vista.Uceepitem=Ext.extend(Phx.gridInterfaz,{
 				grid:true,
 				form:true
 		},
+		{
+			config:{
+				name: 'cantidadeep',
+				fieldLabel: 'Cantidad',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1179650
+			},
+				type:'NumberField',
+				filters:{pfiltro:'uci.cantidadeep',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},			
 		{
 			config:{
 				name: 'valor',
@@ -69,7 +84,23 @@ Phx.vista.Uceepitem=Ext.extend(Phx.gridInterfaz,{
 				id_grupo:1,
 				grid:true,
 				form:true
-		},		
+		},	
+		{
+			config:{
+				name: 'valortotal',
+				fieldLabel: 'Valor Total (USD)',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1179650,
+				decimalPrecision: 5
+			},
+				type:'NumberField',
+				filters:{pfiltro:'uci.valortotal',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},
 		{
 			config:{
 				name: 'estado_reg',
@@ -198,6 +229,8 @@ Phx.vista.Uceepitem=Ext.extend(Phx.gridInterfaz,{
 		{name:'id_usuario_mod', type: 'numeric'},
 		{name:'usr_reg', type: 'string'},
 		{name:'usr_mod', type: 'string'},
+		{name:'cantidadeep', type: 'numeric'},
+		{name:'valortotal', type: 'numeric'},
 		
 	],
 	sortInfo:{

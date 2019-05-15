@@ -37,7 +37,7 @@ Phx.vista.Unidadconstructivaeep=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Código',
 				allowBlank: true,
 				anchor: '80%',	
-				gwidth: 100,
+				gwidth: 150,
 				maxLength:50
 			},
 				type:'TextField',
@@ -52,7 +52,7 @@ Phx.vista.Unidadconstructivaeep=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Código',
 				allowBlank: true,
 				anchor: '80%',	
-				gwidth: 100,
+				gwidth: 150,
 				maxLength:50
 			},
 				type:'TextField',
@@ -67,7 +67,7 @@ Phx.vista.Unidadconstructivaeep=Ext.extend(Phx.gridInterfaz,{
 				fieldLabel: 'Descripción',
 				allowBlank: true,
 				anchor: '80%',
-				gwidth: 100,
+				gwidth: 350,
 				//gheight:200,
 				maxLength:100
 			},
