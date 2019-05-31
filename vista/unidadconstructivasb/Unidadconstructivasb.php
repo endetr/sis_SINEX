@@ -34,6 +34,14 @@ Phx.vista.Unidadconstructivasb=Ext.extend(Phx.gridInterfaz,{
 			tooltip : '<b>Reset Equipos</b>'
 		});
 		
+		this.addButton('updateCalculos', {
+			text : 'Actualizar Cálculos',
+			iconCls : 'breload1',
+			disabled : false,
+			handler : this.resetcant,
+			tooltip : '<b>Actualizar Cálculos</b>'
+		});
+		
 		this.load({params:{start:0, limit:this.tam_pag}})
 	},
 			
@@ -571,7 +579,33 @@ Phx.vista.Unidadconstructivasb=Ext.extend(Phx.gridInterfaz,{
 				});
 			}
 		 }
-	  }
+	  },
+	  
+	 updateCalculos : function() {		
+	 	var r = confirm("Esta seguro que desea realizar una actualización de los cálculos de todas las UC?");		
+		var rec = this.sm.getSelected();
+		var data = rec.data;
+		
+		if (r == true) {				
+			if (data) {
+				Phx.CP.loadingShow();
+				
+				Ext.Ajax.request({
+					url : '../../sis_SINEX/control/Unidadconstructivasb/updateCalculos',
+					params : {
+						'id_unidadconstructivasb' : data.id_unidadconstructivasb			
+					},			
+					success : function(data) {
+						this.load({params:{start:0, limit:50}})
+						this.successExport();		
+					    },
+						failure : this.conexionFailure,
+						timeout : this.timeout,
+						scope : this
+					});
+			}		 
+		  }
+	 	}
 	}
 )
 </script>

@@ -1,4 +1,4 @@
-﻿﻿/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
+﻿/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
 --Cantidades Tabla Temporal
 TRUNCATE TABLE snx.tucsbequipotemp RESTART IDENTITY;
 INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb, id_equipo, cantidadequ) VALUES (1, 1035, 3);
@@ -15703,3 +15703,36 @@ begin;
 	$$;
 commit;
 /***********************************F-SCP-JYP-CMS-1-15/05/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-29/05/2019****************************************/
+--Cambio pesos en materiales de líneas
+UPDATE snx.tmateriallt SET peso = 0.13000 WHERE id_materiallt = 351;
+UPDATE snx.tmateriallt SET peso = 0.08000 WHERE id_materiallt = 349;
+UPDATE snx.tmateriallt SET peso = 0.10000 WHERE id_materiallt = 350;
+
+--Actualiza valor de Gastos Financieros
+update 	snx.ttarifassb
+set 	valortarifa = 6.69
+where 	id_tarifasb = 14;
+
+--Nuevos items en servicios auxiliares
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (1,2,0,12.34,'activo','Cable de Cobre 70 mm2',null,1,now(),null,null,null,54);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (3,2,0,12.34,'activo','Cable de Cobre 70 mm2',null,1,now(),null,null,null,55);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (3,12,0,40000,'activo','Celda de medición',null,1,now(),null,null,null,56);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (3,12,0,50000,'activo','Celda con interruptor',null,1,now(),null,null,null,57);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (1,12,0,40000,'activo','Celda de medición',null,1,now(),null,null,null,58);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (1,12,0,50000,'activo','Celda con interruptor',null,1,now(),null,null,null,59);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (3,2,0,50,'activo','Cable de media tensión a 33 kV',null,1,now(),null,null,null,60);
+insert into snx.tunidadconstructivaseraux(unidadconstructivaencseraux, id_unidad, cantidadseraux, precio, estado_reg, unidadconstructivaseraux, id_usuario_ai, id_usuario_reg, fecha_reg, usuario_ai, id_usuario_mod, fecha_mod, id_unidadconstructivaseraux) values (1,2,0,50,'activo','Cable de media tensión a 33 kV',null,1,now(),null,null,null,61);
+
+--Elimina factor de indexación no válido
+DELETE FROM snx.tpcu335313335313 WHERE ano = 2019 AND id_mes = 1;
+DELETE FROM snx.tpcu335313335313 WHERE ano = 2018 AND id_mes = 10;
+DELETE FROM snx.tpcu335313335313 WHERE ano = 2018 AND id_mes = 9;
+
+--Insertar factor
+INSERT INTO snx.tpcu335313335313(ano,estado_reg,valor,id_mes,usuario_ai,fecha_reg,id_usuario_reg,id_usuario_ai,fecha_mod,id_usuario_mod)
+VALUES (2018, 'activo', 207.00, 9, null, now(), 1, null, null, null);
+
+
+/***********************************F-SCP-JYP-CMS-1-29/05/2019****************************************/

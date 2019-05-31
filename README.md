@@ -2,6 +2,11 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.2.3.1 - 2019-05-31
+  * Cambio en los pesos en algunos materiales en líneas.
+  * Se agregan items faltantes en servicios auxiliares.
+  * Se corrige tarifa de Gastos Financieros para Subestaciones.
+  * Botón en UC de subestaciones para actualizar los cálculos de todas la UC.
 * Versión 1.2.3.0 - 2019-05-15
   * En las tarifas de subestaciones se dividen "Pruebas de Equipos y Fábrica" y "Pruebas y Puesta en Servicio" en dos; una para Bahías de subestaciones y otra para Máquinas.
   * Se aplican las nuevas tarifas al cálculo de Otros Gastos en las UC de Subestaciones.

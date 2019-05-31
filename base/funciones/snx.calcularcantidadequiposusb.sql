@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION snx.calcularcantidadequiposusb(
     VOLATILE 
 AS $BODY$
 
+
 Declare
 	id_claseaislacion_old integer := 0;
 
@@ -57,7 +58,7 @@ Begin
 
 		--Elimino equipos viejos
 		DELETE FROM snx.tucsbequipo
-		WHERE tucsbequipo.id_equipo IN (SELECT		ucsbe.id_equipo
+		WHERE tucsbequipo.id_ucsbequipo IN (SELECT		ucsbe.id_ucsbequipo
 										FROM		snx.tucsbequipo ucsbe
 										INNER JOIN	snx.tequipo equ ON ucsbe.id_equipo = equ.id_equipo
 										WHERE		ucsbe.id_unidadconstructivasb = id_unidadconstructivasbint AND
@@ -66,6 +67,7 @@ Begin
 	
 	RETURN;
 end;
+
 
 $BODY$;
 

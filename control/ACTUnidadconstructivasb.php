@@ -69,6 +69,33 @@ class ACTUnidadconstructivasb extends ACTbase{
 		}
 	}
 	
+	function updateCalculos(){
+		$cone=new conexion();
+		if($this->tipo_conexion=='persistente'){
+			//echo 'fff';exit;
+			$link=$cone->conectarp();
+		}
+	    elseif($this->tipo_conexion=='seguridad'){
+	    	//echo 'aaa';exit;
+			$link=$cone->conectarSegu();
+		}
+		else{
+			//echo 'sss';exit;
+			$link=$cone->conectarnp($this->remote);
+		}
+		
+		if($link==0){
+
+			$this->res->imprimirRespuesta('No se puede conectar a la base de datos','Revise la cadena de conexion a la BD','modelo');
+		}
+		//Si tengo conexion a la Bd ejecuto la consulta
+		else{			
+			$res=pg_query($link,"SELECT snx.calcularprecioucsball());");
+			
+			return $res;
+		}
+	}
+	
 	function addCantTemp(){
 		$cone=new conexion();
 		if($this->tipo_conexion=='persistente'){
