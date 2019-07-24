@@ -2,6 +2,12 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.3.0.0 - 2019-07-24
+  * Se ingresa las UC de subestaciones G17, G18, G19, G20.
+  * Se ingresa las maquinarias para las UC anteriores Transformador de potencial GIS 115, 230 y 500 kV.
+  * Se ingresa el equipo Barra Tubular.
+  * Se modifican cantidades de maquinaria y equipo para las UUCC SE B604, B605, B606, B104, B105, B106, B504, B505, B506, B204, B205, B206, R07, TD4.
+  * Se modifican cantidades de obra para las maquinarias Banco de Capacitores derivación 0 a 10 MVAr y 10 a 20 MVAr, Banco de Capacitores serie 230 KV.
 * Versión 1.2.3.1 - 2019-05-31
   * Cambio en los pesos en algunos materiales en líneas.
   * Se agregan items faltantes en servicios auxiliares.

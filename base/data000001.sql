@@ -1,4 +1,4 @@
-﻿/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
+﻿﻿/***********************************I-SCP-JYP-CMS-1-18/01/2019****************************************/
 --Cantidades Tabla Temporal
 TRUNCATE TABLE snx.tucsbequipotemp RESTART IDENTITY;
 INSERT INTO snx.tucsbequipotemp (id_unidadconstructivasb, id_equipo, cantidadequ) VALUES (1, 1035, 3);
@@ -15736,3 +15736,1288 @@ VALUES (2018, 'activo', 207.00, 9, null, now(), 1, null, null, null);
 
 
 /***********************************F-SCP-JYP-CMS-1-29/05/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-17/07/2019****************************************/
+
+begin;
+	do $$
+	declare 
+		v_id_material int;
+		
+	begin
+	
+		insert into snx.tmaterial(estado_reg,peso,id_unidad,material,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_ai,id_usuario_mod,fecha_mod,id_factorindexacion,id_ambitoprecio) values
+		('activo', 0.50, 8, 'Tubo de Aluminio', now(), null, 1, null, 1, now(), 4, 1)RETURNING id_material into v_id_material;
+		
+		--Adicionar precio
+		insert into snx.tmaterialprecio(fechaprecio,proyecto,id_moneda,valormaterial,estado_reg,id_material,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2019-07-02','SPVPT',1,364,'activo',v_id_material,null,now(),null,1,null,null);
+		
+		--Equipo material
+		INSERT INTO snx.tequipomaterial(id_usuario_reg,id_equipo,id_material,cantidadequimat)
+		SELECT 1 AS id_usuario_reg,
+			   equi.id_equipo,						   
+			   v_id_material AS id_material,
+			   0 AS cantidadequimat
+		FROM snx.tequipo equi;				
+
+		--Maquinaria material
+		INSERT INTO snx.tmaquinariamaterial(id_usuario_reg,id_maquinaria,id_material,cantidadmate)
+			SELECT 1 AS id_usuario_reg, 
+				   maq.id_maquinaria,						   
+				   v_id_material AS id_material,
+				   0 AS cantidadmate
+		FROM snx.tmaquinaria maq;
+		
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-17/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-17/07/2019****************************************/
+
+begin;
+	do $$
+	declare 
+		v_id_maquinaria1 int;
+		v_id_maquinaria2 int;
+		v_id_maquinaria3 int;
+		
+	begin
+		--Se insertan maquinarias nuevas
+		insert into snx.tmaquinaria(estado_reg,potencia,peso,maquinaria,usuario_ai,fecha_reg,id_usuario_reg,id_usuario_ai,id_usuario_mod,fecha_mod,id_factorindexacion,id_tipopreciomaquinaria,id_ambitoprecio) values
+		('activo',0,0.35,'Transformador de potencial GIS 500 kV ',null,now(),1,null,null,null,1,1,1)RETURNING id_maquinaria into v_id_maquinaria1;
+
+		insert into snx.tmaquinaria(estado_reg,potencia,peso,maquinaria,usuario_ai,fecha_reg,id_usuario_reg,id_usuario_ai,id_usuario_mod,fecha_mod,id_factorindexacion,id_tipopreciomaquinaria,id_ambitoprecio) values
+		('activo',0,0.20,'Transformador de potencial GIS 230 kV ',null,now(),1,null,null,null,1,1,1)RETURNING id_maquinaria into v_id_maquinaria2;
+
+		insert into snx.tmaquinaria(estado_reg,potencia,peso,maquinaria,usuario_ai,fecha_reg,id_usuario_reg,id_usuario_ai,id_usuario_mod,fecha_mod,id_factorindexacion,id_tipopreciomaquinaria,id_ambitoprecio) values
+		('activo',0,0.15,'Transformador de potencial GIS 115 kV ',null,now(),1,null,null,null,1,1,1)RETURNING id_maquinaria into v_id_maquinaria3;
+		
+		--Se inserta el precio
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,42000,'activo',v_id_maquinaria1,null,now(),null,1,null,null);
+
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,30000,'activo',v_id_maquinaria2,null,now(),null,1,null,null);
+
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,25000,'activo',v_id_maquinaria3,null,now(),null,1,null,null);
+		
+		--Se le insertan los Materiales
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria1 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria2 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria3 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		--Se aplica la cantidad
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 410
+		WHERE	tmaquinariamaterial.id_maquinaria = v_id_maquinaria1 AND tmaquinariamaterial.id_material = 179;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 330
+		WHERE	tmaquinariamaterial.id_maquinaria = v_id_maquinaria2 AND tmaquinariamaterial.id_material = 179;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 240
+		WHERE	tmaquinariamaterial.id_maquinaria = v_id_maquinaria3 AND tmaquinariamaterial.id_material = 179;
+	
+		--Se le insertan las obras civiles
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria1 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria2 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria3 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		--Se ajustan cantidades		
+		UPDATE	snx.tmaquinariaobracivil		
+		SET		cantidadmoc = 200
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.35
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 1;
+		
+		UPDATE	snx.tmaquinariaobracivil		
+		SET		cantidadmoc = 150
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.2
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 1;
+		
+		UPDATE	snx.tmaquinariaobracivil		
+		SET		cantidadmoc = 120
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.15
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 1;
+			
+		--Se inserta maquinaria a UCSB
+		INSERT INTO snx.tucsbmaquinaria(id_usuario_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT 1 AS id_usuario_reg,
+			   uncnsb.id_unidadconstructivasb,						   
+			   v_id_maquinaria1 AS id_maquinaria,
+			   0 AS cantidadmaq
+		FROM snx.tunidadconstructivasb uncnsb;
+		
+		INSERT INTO snx.tucsbmaquinaria(id_usuario_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT 1 AS id_usuario_reg,
+			   uncnsb.id_unidadconstructivasb,						   
+			   v_id_maquinaria2 AS id_maquinaria,
+			   0 AS cantidadmaq
+		FROM snx.tunidadconstructivasb uncnsb;
+		
+		INSERT INTO snx.tucsbmaquinaria(id_usuario_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT 1 AS id_usuario_reg,
+			   uncnsb.id_unidadconstructivasb,						   
+			   v_id_maquinaria3 AS id_maquinaria,
+			   0 AS cantidadmaq
+		FROM snx.tunidadconstructivasb uncnsb;
+		
+		end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-2-17/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-3-17/07/2019****************************************/
+
+begin;
+	do $$
+	declare 
+		v_id_equipo int;
+		
+	begin
+		insert into snx.tequipo(equipo,id_claseaislacion,estado_reg,id_usuario_ai,id_usuario_reg,usuario_ai,fecha_reg,fecha_mod,id_usuario_mod,id_factorindexacion,id_ambitoprecio) values
+		('Barra Tubular', 11, 'activo', null, 1, null, now(), null, null, 4, 1)RETURNING id_equipo into v_id_equipo;
+		
+		--Adicionar precio
+		insert into snx.tequipoprecio(fechaprecio,proyecto,id_moneda,valorequipo,estado_reg,id_equipo,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,0,'activo',v_id_equipo,null,now(),null,1,null,null);
+		
+		--Materiales
+		INSERT INTO snx.tequipomaterial (cantidadequimat, estado_reg, id_equipo, id_material, id_usuario_reg,id_usuario_ai, usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadequimat,
+				'activo' AS estado_reg,
+				v_id_equipo as id_equipo,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+
+		UPDATE	snx.tequipomaterial
+		SET		cantidadequimat = 1
+		FROM	snx.tmaterial
+		WHERE	tequipomaterial.id_material = tmaterial.id_material AND
+				tequipomaterial.id_equipo = v_id_equipo AND
+				tmaterial.material = 'Tubo de Aluminio';
+		
+		--Obra Civil
+		insert into snx.tequipoobracivil(id_obracivil, cantidadeoc, id_equipo, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadeoc,
+				v_id_equipo AS id_equipo,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc;
+
+		--Unidad constructiva equipo
+		INSERT INTO snx.tucsbequipo(id_usuario_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT 1 AS id_usuario_reg,
+			   uncnsb.id_unidadconstructivasb,						   
+			   v_id_equipo AS id_equipo,
+			   0 AS cantidadequ
+		FROM snx.tunidadconstructivasb uncnsb;
+
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-3-17/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-4-17/07/2019****************************************/
+
+begin;
+	do $$
+	declare 
+		v_id_unidadconstructivasb1 int;
+		v_id_unidadconstructivasb2 int;
+		v_id_unidadconstructivasb3 int;
+		v_id_unidadconstructivasb4 int;
+		
+	begin
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		(' Acople Barra GIS 500 kV ', 6, 0.00, 'UUCC SE G17', 271.00, 1, 'activo', 9, 819.00, 398.00, 6, 0.00, null, null, '2019-07-12 15:28:32.452339', 1, '2019-07-12 16:16:53.534252', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb1;
+
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Módulo Transformador de barra GIS 115 kV', 2, 0.00, 'UUCC SE G18', 271.00, 1, 'activo', 2, 819.00, 398.00, 6, 0.00, null, null, '2019-07-12 15:42:51.206054', 1, '2019-07-12 16:16:27.819423', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb2;
+
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Módulo Transformador de barra GIS 230 kV', 3, 0.00, 'UUCC SE G19', 271.00, 1, 'activo', 5, 819.00, 398.00, 6, 0.00, null, null, '2019-07-12 16:01:49.623011', 1, '2019-07-12 16:17:19.19084', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb3;
+
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Módulo Transformador de barra GIS 500 kV', 6, 0.00, 'UUCC SE G20', 271.00, 1, 'activo', 9, 819.00, 398.00, 6, 0.00, null, null, '2019-07-12 16:11:44.231323', 1, '2019-07-12 16:13:03.144403', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb4;
+		
+		--Maquinaria
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb1 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb2 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb3 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb4 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		--Cantidades
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb1 AND
+				tmaquinaria.maquinaria = 'Módulo GIS Acople 500 kV';
+				
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb2 AND
+				tmaquinaria.maquinaria = 'Transformador de potencial GIS 115 kV ';
+		
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb3 AND
+				tmaquinaria.maquinaria = 'Transformador de potencial GIS 230 kV ';
+		
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb4 AND
+				tmaquinaria.maquinaria = 'Módulo Transformador de Potencial barra GIS 500 kV';
+		
+		--Equipo
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb1 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 9 OR equ.id_claseaislacion = 11;
+		
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb2 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 2 OR equ.id_claseaislacion = 11;
+		
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb3 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 5 OR equ.id_claseaislacion = 11;
+		
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb4 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 9 OR equ.id_claseaislacion = 11;
+		
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-4-17/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-5-17/07/2019****************************************/
+
+begin;
+	do $$
+		
+	begin
+		--Se actualiza la UC B604
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 6
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B604' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 3
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B604' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B605
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B605' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 6
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B605' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B606
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 12
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B606' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B606' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B104
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 6
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B104' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 6
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B104' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B105
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B105' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B105' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B106
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 12
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B106' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 15
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B106' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B504
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 12
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B504' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B504' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B505
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 21
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B505' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 18
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B505' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B506
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 30
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B506' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 27
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B506' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B204
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 9
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B204' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 6
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B204' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC B205
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 15
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B205' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 12
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B205' AND tequipo.equipo = 'Barra Tubular';
+		
+		
+		--Se actualiza la UC B206
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 21
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B206' AND tequipo.equipo = 'AISLADORES DE PEDESTAL';
+		
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 18
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE B206' AND tequipo.equipo = 'Barra Tubular';
+		
+		--Se actualiza la UC R07
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 0
+		FROM	snx.tequipo, snx.tunidadconstructivasb
+		WHERE	tucsbequipo.id_equipo = tequipo.id_equipo AND
+				tucsbequipo.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND
+				tunidadconstructivasb.codigo = 'UUCC SE R07' AND tequipo.equipo = 'INTERRUPTOR';
+		
+		--Se actualiza la UC TD4
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 0
+		FROM	snx.tmaquinaria, snx.tunidadconstructivasb
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND				
+				tunidadconstructivasb.codigo = 'UUCC SE TD4';
+		
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria, snx.tunidadconstructivasb
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = tunidadconstructivasb.id_unidadconstructivasb AND				
+				tunidadconstructivasb.codigo = 'UUCC SE TD4' AND tmaquinaria.maquinaria = 'Transformador Desfasador 230 / 69 KV.  50 MVA.';
+				
+		--Se actualiza mano de obra Banco de Capacitores derivacion  10 a 20  MVAr.
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2500
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2.6
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 3 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';		
+		
+		
+		--Se actualiza mano de obra Banco de Capacitores serie 230  KV. xx  MVAr.
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3800
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 11
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 3 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		
+		--Se actualiza mano de obra Banco de Capacitores derivacion  0 a 10 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2500
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1.5
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 3 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';		
+				
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-5-17/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-18/07/2019****************************************/
+
+begin;
+	do $$
+		
+	begin
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria in ('Tubería trifásica GIS 115 kV (m)', 'Tubería trifásica GIS 230 kV (m)', 'Tubería monofásica GIS 230 kV (m)', 'Tubería monofásica GIS 500 kV (m)');
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 1 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 120
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.3
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.5
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 45
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 115 kV (m)';
+				
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 1 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 150
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.3
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.5
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 45
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 230 kV (m)';
+				
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 6
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 1 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 500 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 200
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 500 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3.2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 500 kV (m)';		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3.2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 500 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 235.4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Tubería monofásica GIS 500 kV (m)';
+				
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 1 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.3
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.5
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 230 kV (m)';		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0.2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 230 kV (m)';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 45
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Tubería trifásica GIS 230 kV (m)';			
+
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-18/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-23/07/2019****************************************/
+
+begin;
+	do $$
+		
+	begin
+		
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 3 WHERE id_maquinaria = 16;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 40 WHERE id_maquinaria = 30;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 60 WHERE id_maquinaria = 29;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 60.2 WHERE id_maquinaria = 28;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 10 WHERE id_maquinaria = 17;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 10.2 WHERE id_maquinaria = 18;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 40 WHERE id_maquinaria = 19;
+		UPDATE snx.tmaquinaria SET potencia = 40,  peso = 60 WHERE id_maquinaria = 20;
+		
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 495;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 494;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 437 WHERE tmaquinariamaterial.id_maquinariamaterial = 554;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 555;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 493;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 492;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 491;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 490;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 489;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 488;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 487;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 486;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 485;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 484;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 483;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 482;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 481;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2 WHERE tmaquinariamaterial.id_maquinariamaterial = 1119;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 480;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 479;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 478;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 477;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 476;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 568;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 553;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 552;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 551;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 550;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 549;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 4 WHERE tmaquinariamaterial.id_maquinariamaterial = 1122;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 4 WHERE tmaquinariamaterial.id_maquinariamaterial = 1121;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2 WHERE tmaquinariamaterial.id_maquinariamaterial = 1120;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2 WHERE tmaquinariamaterial.id_maquinariamaterial = 1129;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 75 WHERE tmaquinariamaterial.id_maquinariamaterial = 475;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 548;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 547;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 75 WHERE tmaquinariamaterial.id_maquinariamaterial = 527;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 546;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 545;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 544;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 543;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 542;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 541;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 528;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 620;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 619;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 618;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 617;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 616;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 615;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 611;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 610;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 609;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1539 WHERE tmaquinariamaterial.id_maquinariamaterial = 614;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 395 WHERE tmaquinariamaterial.id_maquinariamaterial = 612;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 770 WHERE tmaquinariamaterial.id_maquinariamaterial = 613;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1180;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1181;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1182;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1183;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1184;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1185;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1186;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1187;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1188;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1189;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1190;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1191;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1192;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1193;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1194;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1195;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1196;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1197;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 1198;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1199;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1200;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 1201;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1202;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1203;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1204;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1205;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1209;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1210;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1211;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1216;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1218;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1219;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1220;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 500 WHERE tmaquinariamaterial.id_maquinariamaterial = 1226;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1227;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1228;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1229;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1230;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1231;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1232;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1233;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1234;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1235;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1236;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1237;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2288 WHERE tmaquinariamaterial.id_maquinariamaterial = 1214;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 520 WHERE tmaquinariamaterial.id_maquinariamaterial = 1212;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1215;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2309 WHERE tmaquinariamaterial.id_maquinariamaterial = 1207;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1290 WHERE tmaquinariamaterial.id_maquinariamaterial = 1206;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1144 WHERE tmaquinariamaterial.id_maquinariamaterial = 1213;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 3 WHERE tmaquinariamaterial.id_maquinariamaterial = 1225;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 728 WHERE tmaquinariamaterial.id_maquinariamaterial = 1208;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1238;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1239;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1240;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1241;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1242;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1243;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1244;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1245;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 1246;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1247;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1248;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 1249;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1264;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1266;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1267;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1268;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 500 WHERE tmaquinariamaterial.id_maquinariamaterial = 1274;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1275;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1276;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1277;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1278;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1279;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1280;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1281;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1282;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1283;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1284;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1285;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1286;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1287;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1288;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1289;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1290;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1291;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1292;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1293;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 1294;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1295;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1296;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 1297;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1298;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1299;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1300;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1301;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1305;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1306;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 728 WHERE tmaquinariamaterial.id_maquinariamaterial = 1304;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1290 WHERE tmaquinariamaterial.id_maquinariamaterial = 1302;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2309 WHERE tmaquinariamaterial.id_maquinariamaterial = 1303;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2288 WHERE tmaquinariamaterial.id_maquinariamaterial = 1262;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1144 WHERE tmaquinariamaterial.id_maquinariamaterial = 1261;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1263;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 400 WHERE tmaquinariamaterial.id_maquinariamaterial = 1265;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 3 WHERE tmaquinariamaterial.id_maquinariamaterial = 1273;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1307;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1312;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1314;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1315;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1316;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2288 WHERE tmaquinariamaterial.id_maquinariamaterial = 1310;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 520 WHERE tmaquinariamaterial.id_maquinariamaterial = 1308;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1311;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 400 WHERE tmaquinariamaterial.id_maquinariamaterial = 1313;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1144 WHERE tmaquinariamaterial.id_maquinariamaterial = 1309;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 3 WHERE tmaquinariamaterial.id_maquinariamaterial = 1321;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1100;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1101;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1102;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1103;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1110;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 513;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 512;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 511;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 437 WHERE tmaquinariamaterial.id_maquinariamaterial = 502;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 508;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 507;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 506;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 505;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 504;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 503;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 501;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 500;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 499;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 498;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 497;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 496;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1539 WHERE tmaquinariamaterial.id_maquinariamaterial = 510;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 770 WHERE tmaquinariamaterial.id_maquinariamaterial = 509;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 567;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 566;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 565;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 564;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 563;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 556;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 559;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 558;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 557;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 770 WHERE tmaquinariamaterial.id_maquinariamaterial = 561;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1539 WHERE tmaquinariamaterial.id_maquinariamaterial = 562;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 395 WHERE tmaquinariamaterial.id_maquinariamaterial = 560;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 500 WHERE tmaquinariamaterial.id_maquinariamaterial = 1178;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1179;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1250;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1251;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1252;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1253;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1290 WHERE tmaquinariamaterial.id_maquinariamaterial = 1254;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 2309 WHERE tmaquinariamaterial.id_maquinariamaterial = 1255;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 728 WHERE tmaquinariamaterial.id_maquinariamaterial = 1256;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1257;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1258;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 1259;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 520 WHERE tmaquinariamaterial.id_maquinariamaterial = 1260;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 605;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 604;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 603;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 602;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 608;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 437 WHERE tmaquinariamaterial.id_maquinariamaterial = 606;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 607;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 601;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 600;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 599;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 598;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 597;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 596;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 595;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 594;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 593;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 592;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 591;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 590;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1539 WHERE tmaquinariamaterial.id_maquinariamaterial = 666;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 589;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 588;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 587;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 586;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 585;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 584;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 583;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 582;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 581;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 770 WHERE tmaquinariamaterial.id_maquinariamaterial = 665;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 660;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 874 WHERE tmaquinariamaterial.id_maquinariamaterial = 658;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 659;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 516;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 515;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 514;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 580;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 672;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 671;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 670;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 669;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 668;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 667;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 663;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 662;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 661;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 657;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 656;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 655;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 654;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 75 WHERE tmaquinariamaterial.id_maquinariamaterial = 579;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 458 WHERE tmaquinariamaterial.id_maquinariamaterial = 712;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 874 WHERE tmaquinariamaterial.id_maquinariamaterial = 711;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 395 WHERE tmaquinariamaterial.id_maquinariamaterial = 716;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 770 WHERE tmaquinariamaterial.id_maquinariamaterial = 717;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 874 WHERE tmaquinariamaterial.id_maquinariamaterial = 710;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 641;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 640;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 639;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 638;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 637;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 636;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 635;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 634;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 633;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 632;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 631;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 724;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 723;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 722;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 721;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 720;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 719;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 715;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 714;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 713;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 709;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 708;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 707;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 706;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 705;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 704;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 703;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 702;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 701;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 700;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 699;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 698;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 697;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 696;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 695;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 694;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 540;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 539;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 538;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 537;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 536;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 535;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 534;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 533;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 532;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 531;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 530;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 529;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 693;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 692;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 691;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 690;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 689;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 688;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 687;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 686;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 685;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 684;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 300 WHERE tmaquinariamaterial.id_maquinariamaterial = 683;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 12 WHERE tmaquinariamaterial.id_maquinariamaterial = 653;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 652;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 651;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 100 WHERE tmaquinariamaterial.id_maquinariamaterial = 650;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 649;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 648;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 647;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 646;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 645;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 644;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 643;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 642;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3431;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3432;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3433;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3434;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3453;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3454;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3455;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 0 WHERE tmaquinariamaterial.id_maquinariamaterial = 3456;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 1539 WHERE tmaquinariamaterial.id_maquinariamaterial = 718;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 400 WHERE tmaquinariamaterial.id_maquinariamaterial = 1217;
+		UPDATE snx.tmaquinariamaterial SET cantidadmate = 395 WHERE tmaquinariamaterial.id_maquinariamaterial = 664;
+		
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 1200 WHERE id_maquinariaobracivil = 138;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 1200 WHERE id_maquinariaobracivil = 145;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 137;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 130;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 139;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 146;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 141;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 134;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 2600 WHERE id_maquinariaobracivil = 32;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 1000 WHERE id_maquinariaobracivil = 29;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 1000 WHERE id_maquinariaobracivil = 30;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 2600 WHERE id_maquinariaobracivil = 31;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 47;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 48;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 49;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 50;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 51;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 2500 WHERE id_maquinariaobracivil = 28;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 1200 WHERE id_maquinariaobracivil = 131;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 9;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 144;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 70;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 0 WHERE id_maquinariaobracivil = 132;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 11;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 10;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 87;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 148;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 86;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 104;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 89;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 85;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 96 WHERE id_maquinariaobracivil = 88;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 162;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 173;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 108;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 106;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 149;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 140;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 68;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 69;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 66;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 67;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 147;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 124.8 WHERE id_maquinariaobracivil = 133;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 172;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 159;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 135;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 142;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 160;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 169;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 161;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 12;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 80 WHERE id_maquinariaobracivil = 13;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 4713.6 WHERE id_maquinariaobracivil = 171;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 105;
+		UPDATE snx.tmaquinariaobracivil SET cantidadmoc = 28.8 WHERE id_maquinariaobracivil = 107;
+
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-23/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-2-23/07/2019****************************************/
+
+begin;
+	do $$
+		
+	begin
+		
+		UPDATE	snx.tunidadconstructivasb
+		SET		id_tensionservicio = 2
+		WHERE	tunidadconstructivasb.codigo = 'UUCC SE B107';
+		
+		TRUNCATE snx.tucsbequipotemp RESTART IDENTITY;
+		
+		INSERT INTO snx.tucsbequipotemp	
+		SELECT	id_ucsbequipo AS id_ucsbequipotemp, id_unidadconstructivasb, id_equipo, cantidadequ
+		FROM	snx.tucsbequipo;
+
+		PERFORM snx.calcularprecioucsball();
+
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-2-23/07/2019****************************************/

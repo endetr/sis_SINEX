@@ -12,12 +12,23 @@ CREATE OR REPLACE FUNCTION snx.calcularprecioucsbsingle(
     VOLATILE 
 AS $BODY$
 
+
 Begin
 	DROP TABLE if exists ttempucsequipos;
 	DROP TABLE if exists ttempucsmaquinaria;
 	DROP TABLE if exists ttempucsmateriales;
 	DROP TABLE if exists ttempucsoc;
 	DROP TABLE if exists ttempucsbog;
+	
+	--Limpiar Valores
+	UPDATE		snx.tunidadconstructivasb
+	SET			valorucsbe = 0,
+				valorucsbm = 0,
+				valorucsbmate = 0,
+				valorucsdcont = 0,
+				valorucsog = 0,
+				valorucstotal = 0
+	WHERE		tunidadconstructivasb.id_unidadconstructivasb = id_unidadconstructivasbint;
 	
 	--Valores equipos
 	CREATE TEMP TABLE ttempucsequipos AS
@@ -141,6 +152,7 @@ Begin
 	
 	RETURN;
 end;
+
 
 $BODY$;
 
