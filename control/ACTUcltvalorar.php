@@ -366,8 +366,8 @@ class ACTUcltvalorar extends ACTbase{
 	        $pdf->SetTextColor(0);
 	        $pdf->SetFont('');
 			$pdf->Cell(100, 0, $row['desc_tipoconductor'], 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, $row['distanciatransporte'], 1, 0, 'C', 1);
 			$pdf->Cell(30, 0, $row['distanciatransporteext'], 1, 0, 'C', 1);
+			$pdf->Cell(30, 0, $row['distanciatransporte'], 1, 0, 'C', 1);			
 			$pdf->Cell(30, 0, $row['conductorfase'], 1, 0, 'C', 1);
 			$pdf->Cell(30, 0, $row['desc_configuracionlt'], 1, 0, 'C', 1);			
 			$pdf->Cell(30, 0, $row['desc_hilosguarda'], 1, 0, 'C', 1);
@@ -979,8 +979,8 @@ class ACTUcltvalorar extends ACTbase{
 			$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$row['tipolinea']);
 			$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$row['tensionservicio']);			
 			$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$row['desc_tipoconductor']);
-			$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$row['distanciatransporte']);
-			$Excel->getActiveSheet()->setCellValue('J' . $intRowExcel,$row['distanciatransporteext']);
+			$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$row['distanciatransporteext']);
+			$Excel->getActiveSheet()->setCellValue('J' . $intRowExcel,$row['distanciatransporte']);			
 			$Excel->getActiveSheet()->setCellValue('K' . $intRowExcel,$row['conductorfase']);
 			$Excel->getActiveSheet()->setCellValue('L' . $intRowExcel,$row['desc_configuracionlt']);
 			$Excel->getActiveSheet()->setCellValue('M' . $intRowExcel,$row['desc_hilosguarda']);

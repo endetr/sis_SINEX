@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.3.0.1 - 2019-07-26
+  * Se corrige la impresión de las distancias de transporte en los proyectos de líneas en el PDF y Excel.
 * Versión 1.3.0.0 - 2019-07-24
   * Se ingresa las UC de subestaciones G17, G18, G19, G20.
   * Se ingresa las maquinarias para las UC anteriores Transformador de potencial GIS 115, 230 y 500 kV.
