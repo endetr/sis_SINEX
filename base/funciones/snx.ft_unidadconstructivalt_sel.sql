@@ -1,7 +1,17 @@
-CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_sel(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
- RETURNS character varying
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying)
+
+-- DROP FUNCTION snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying);
+
+CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivalt_sel(
+	p_administrador integer,
+	p_id_usuario integer,
+	p_tabla character varying,
+	p_transaccion character varying)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+AS $BODY$
 
 /**************************************************************************
  SISTEMA:		SINEX
@@ -108,7 +118,8 @@ BEGIN
 						uclt.id_bancoductos,
 						tband.bancoductos,
 						uclt.id_cajaempalme,
-						tcajae.cajaempalme
+						tcajae.cajaempalme,
+						uclt.numaccesos
 						from snx.tunidadconstructivalt uclt
 						inner join segu.tusuario usu1 on usu1.id_usuario = uclt.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = uclt.id_usuario_mod
@@ -216,7 +227,8 @@ BEGIN
 						uclt.id_bancoductos,
 						tband.bancoductos,
 						uclt.id_cajaempalme,
-						tcajae.cajaempalme
+						tcajae.cajaempalme,
+						uclt.numaccesos
 						from snx.tunidadconstructivalt uclt
 						inner join segu.tusuario usu1 on usu1.id_usuario = uclt.id_usuario_reg
 						left join segu.tusuario usu2 on usu2.id_usuario = uclt.id_usuario_mod
@@ -287,5 +299,7 @@ EXCEPTION
 			raise exception '%',v_resp;
 END;
 
-$function$
-;
+$BODY$;
+
+ALTER FUNCTION snx.ft_unidadconstructivalt_sel(integer, integer, character varying, character varying)
+    OWNER TO postgres;

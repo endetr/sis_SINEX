@@ -908,6 +908,22 @@ Phx.vista.Unidadconstructivalt=Ext.extend(Phx.gridInterfaz,{
 		},
 		{
 			config:{
+				name: 'numaccesos',
+				fieldLabel: 'Accesos',
+				allowBlank: false,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1179650,
+				decimalPrecision: 2
+			},
+				type:'NumberField',
+				filters:{pfiltro:'uclt.numaccesos',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:true
+		},
+		{
+			config:{
 				name: 'numddp',
 				fieldLabel: 'DDP (USD/km)',
 				allowBlank: false,
@@ -1251,6 +1267,7 @@ Phx.vista.Unidadconstructivalt=Ext.extend(Phx.gridInterfaz,{
 		{name:'bancoductos', type: 'string'},	
 		{name:'id_cajaempalme', type: 'numeric'},
 		{name:'cajaempalme', type: 'string'},
+		{name:'numaccesos', type: 'numeric'},
 	],
 	sortInfo:{
 		field: 'codigo',

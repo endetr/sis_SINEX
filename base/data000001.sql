@@ -17021,3 +17021,44 @@ begin;
 commit;
 
 /***********************************F-SCP-JYP-CMS-2-23/07/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-26/08/2019****************************************/
+begin;
+	do $$
+		
+	begin
+		--Malla de Tierra
+		DELETE FROM snx.tmcelecmallatierra;
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (1,1,0.14,167.77, 'activo', NULL, '2018-10-17 12:27:32.59423', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (2,2,0.14,273.9, 'activo', NULL, '2018-10-17 12:29:04.464601', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (3,4,0.14,297.01, 'activo', NULL, '2018-10-17 12:29:21.771666', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (4,5,0.13,683.39, 'activo', NULL, '2018-10-17 12:29:46.795964', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (5,7,0.13,757.19, 'activo', NULL, '2018-10-17 12:30:01.086951', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (6,9,0.12,933.46, 'activo', NULL, '2018-10-17 12:30:18.802929', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (7,3,0.14,273.9, 'activo', NULL, '2019-08-05 08:22:49.119407', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (8,6,0.13,683.39, 'activo', NULL, '2019-08-05 08:27:37.114372', NULL,1,NULL,NULL);
+		insert into snx.tmcelecmallatierra(id_mcelecmallatierra,id_claseaislamiento,factortorre,cableporbahina,estado_reg,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,fecha_mod,id_usuario_mod) values (9,8,0.13,757.19, 'activo', NULL, '2019-08-05 08:29:05.777882', NULL,1,NULL,NULL);
+
+		--Apantallamiento
+		DELETE FROM snx.tmcelecapantallamiento;
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (1,75.5,'activo',1,NULL,1,'2018-10-17 12:31:11.241035',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (2,80,'activo',2,NULL,1,'2018-10-17 12:31:23.816249',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (3,79.5,'activo',4,NULL,1,'2018-10-17 12:31:36.291429',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (4,112,'activo',5,NULL,1,'2018-10-17 12:31:45.548767',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (5,146.83,'activo',7,NULL,1,'2018-10-17 12:31:58.281502',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (6,307,'activo',9,NULL,1,'2018-10-17 12:32:07.956255',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (7,80,'activo',3,NULL,1,'2019-08-05 08:31:35.745862',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (8,112,'activo',6,NULL,1,'2019-08-05 08:33:09.416055',NULL,NULL,NULL);
+		insert into snx.tmcelecapantallamiento(id_mcelecapantallamiento,cableporbahia,estado_reg,id_claseaislamiento,id_usuario_ai,id_usuario_reg,fecha_reg,usuario_ai,id_usuario_mod,fecha_mod) values (9,143.83,'activo',8,NULL,1,'2019-08-05 08:34:23.879918',NULL,NULL,NULL);
+		
+		UPDATE snx.ttensionservicio SET um_kv = 0 WHERE tensionservicio = 'No Aplica';
+		UPDATE snx.ttensionservicio SET um_kv = 72.5 WHERE tensionservicio = '69 kV';
+		UPDATE snx.ttensionservicio SET um_kv = 123 WHERE tensionservicio = '115 kV';
+		UPDATE snx.ttensionservicio SET um_kv = 245 WHERE tensionservicio = '230 kV';
+		UPDATE snx.ttensionservicio SET um_kv = 145 WHERE tensionservicio = '132 kV';
+		UPDATE snx.ttensionservicio SET um_kv = 550 WHERE tensionservicio = '500 kV';
+	end
+	$$;
+commit;
+/***********************************F-SCP-JYP-CMS-1-26/08/2019****************************************/
+

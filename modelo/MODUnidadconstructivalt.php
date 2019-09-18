@@ -88,6 +88,7 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->captura('bancoductos','varchar');
 		$this->captura('id_cajaempalme','int4');
 		$this->captura('cajaempalme','varchar');			
+		$this->captura('numaccesos','numeric');
 				
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -172,6 +173,7 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->captura('bancoductos','varchar');
 		$this->captura('id_cajaempalme','int4');
 		$this->captura('cajaempalme','varchar');
+		$this->captura('numaccesos','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -269,6 +271,7 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->setParametro('id_revista','id_revista','int4');
 		$this->setParametro('id_bancoductos','id_bancoductos','int4');
 		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
+		$this->setParametro('numaccesos','numaccesos','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();
@@ -321,6 +324,7 @@ class MODUnidadconstructivalt extends MODbase{
 		$this->setParametro('id_revista','id_revista','int4');
 		$this->setParametro('id_bancoductos','id_bancoductos','int4');
 		$this->setParametro('id_cajaempalme','id_cajaempalme','int4');
+		$this->setParametro('numaccesos','numaccesos','numeric');
 		
 		//Ejecuta la instruccion
 		$this->armarConsulta();

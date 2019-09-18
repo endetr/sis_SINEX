@@ -15,6 +15,7 @@ CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(
 AS $BODY$
 
 
+
 BEGIN
 	DROP TABLE if exists ttempotrasunidades;
 	
@@ -73,7 +74,7 @@ BEGIN
 				mcuc.codigo,
 				mcuc.descripcion,
 				mcuc.codigo_descripcion,
-				mcuc.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,numerobahiasint,mcuc.valortotal,3)) AS valortotal
+				mcuc.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,numerobahiasint,mcuc.valortotal,3,id_revistaint)) AS valortotal
 	FROM		(
 				SELECT		CAST('3000000' || CAST(mcuc.id_unidadconstructivamcelec as character varying) AS character varying) AS id_otraunidad,
 							mcuc.id_unidadconstructivamcelec,
@@ -90,7 +91,8 @@ BEGIN
 								WHEN tuci.descripcion = 'Total cable 4x12 AWG' THEN (mcuc.numerobahias * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
 								ELSE 0.0
 								END AS numeric))
-							from snx.tucmceitem tuci) as valortotal	
+							from snx.tucmceitem tuci
+							WHERE tuci.id_unidadconstructivamcelec = mcuc.id_unidadconstructivamcelec) as valortotal	
 				FROM 		snx.tunidadconstructivamcelec mcuc	
 				INNER JOIN 	snx.tclaseaislacion clas on clas.id_claseaislacion = mcuc.id_claseaislacion
 				INNER JOIN 	snx.ttensionservicio ten on ten.id_tensionservicio = mcuc.id_tensionservicio
@@ -179,6 +181,7 @@ BEGIN
 	RETURN QUERY
 	SELECT * FROM ttempotrasunidades;
 END;
+
 
 
 $BODY$;

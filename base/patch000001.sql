@@ -8701,3 +8701,11 @@ ADD CONSTRAINT fk_tuclt_id_bancoductos FOREIGN KEY (id_bancoductos) REFERENCES s
 ALTER TABLE snx.tunidadconstructivalt
 ADD CONSTRAINT fk_tuclt_id_cajaempalme FOREIGN KEY (id_cajaempalme) REFERENCES snx.tcajaempalme(id_cajaempalme);
 /***********************************F-SCP-JYP-CMS-1-01/03/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-02/09/2019****************************************/
+ALTER TABLE snx.tunidadconstructivalt
+ADD COLUMN numaccesos numeric(18,2);
+
+UPDATE	snx.tunidadconstructivalt
+SET		numaccesos = 15;
+/***********************************F-SCP-JYP-CMS-1-02/09/2019****************************************/

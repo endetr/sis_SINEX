@@ -1,7 +1,16 @@
-CREATE OR REPLACE FUNCTION snx.obtenerucltgcontra(id_unidadconstructivaltint integer)
- RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric)
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.obtenerucltgcontra(integer)
+
+-- DROP FUNCTION snx.obtenerucltgcontra(integer);
+
+CREATE OR REPLACE FUNCTION snx.obtenerucltgcontra(
+	id_unidadconstructivaltint integer)
+    RETURNS TABLE(id_unidadconstructivalt integer, id_descripcion integer, descripcion character varying, unidad character varying, costobase numeric, cantidaditem numeric, costototal numeric) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+
 
 
 DECLARE
@@ -85,9 +94,9 @@ BEGIN
 				5 AS id_descripcion,
 				CAST('Accesos' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				uclt.longitud * 0.75 AS costobase,
+				uclt.longitud * uclt.numaccesos / 100 AS costobase,
 				(SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS cantidaditem,
-				(uclt.longitud * 0.75) * (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS costototal
+				(uclt.longitud * uclt.numaccesos / 100) * (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS costototal
 	FROM		snx.tunidadconstructivalt uclt
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;									 
 			
@@ -186,5 +195,8 @@ BEGIN
 end;
 
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.obtenerucltgcontra(integer)
+    OWNER TO postgres;

@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_unidadconstructivamcelec_sel(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_unidadconstructivamcelec_sel
@@ -52,17 +53,18 @@ BEGIN
 						FROM 	(
 								select    	mcuc.id_unidadconstructivamcelec,      
 											mcuc.numerobahias,
-											(select 		SUM(CAST(CASE
-															WHEN tuci.id_ucmeitem = 1 THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*mcuc.numerobahias) 
-															+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
-															WHEN tuci.id_ucmeitem = 2 THEN ((mcuc.numerobahias * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
-															WHEN tuci.id_ucmeitem = 3 THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
-															WHEN tuci.id_ucmeitem = 4 THEN (mcuc.numerobahias * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-															WHEN tuci.id_ucmeitem = 5 THEN (mcuc.numerobahias * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-															WHEN tuci.id_ucmeitem = 6 THEN (mcuc.numerobahias * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-															ELSE 0.0
-															END AS numeric))
-											from 		snx.tucmceitem tuci) AS totalitems
+											(select SUM(CAST(CASE
+												WHEN tuci.descripcion = ''Cantidad de cable de tierra 4/0 AWG (m)'' THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*mcuc.numerobahias) 
+													+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
+												WHEN tuci.descripcion = ''Cantidad de cable de guarda Alumoweld (m)'' THEN ((mcuc.numerobahias * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
+												WHEN tuci.descripcion = ''Total de luminarias viales'' THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
+												WHEN tuci.descripcion = ''Total de Luminarias en pórticos'' THEN (mcuc.numerobahias * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												WHEN tuci.descripcion = ''Total tubo PVC 2.5 enterrado'' THEN (mcuc.numerobahias * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												WHEN tuci.descripcion = ''Total cable 4x12 AWG'' THEN (mcuc.numerobahias * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												ELSE 0.0
+												END AS numeric))
+											from snx.tucmceitem tuci
+											WHERE tuci.id_unidadconstructivamcelec = mcuc.id_unidadconstructivamcelec) AS totalitems
 								from 		snx.tunidadconstructivamcelec mcuc
 								left join 	snx.tclaseaislacion clas on clas.id_claseaislacion = mcuc.id_claseaislacion
 								left join 	snx.ttensionservicio ten on ten.id_tensionservicio = mcuc.id_tensionservicio															
@@ -100,8 +102,8 @@ BEGIN
     	begin
     		--Sentencia de la consulta
 			v_consulta:='SELECT		mcuc.*,
-									(SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,1,mcuc.totalitems,3)) AS totalog,
-									mcuc.totalitems + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,1,mcuc.totalitems,3)) AS totaluc
+									(SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,mcuc.numerobahias,mcuc.totalitems,3)) AS totalog,
+									mcuc.totalitems + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,mcuc.numerobahias,mcuc.totalitems,3)) AS totaluc
 						FROM		(
 									select	mcuc.id_unidadconstructivamcelec,
 											mcuc.codigo,
@@ -123,16 +125,17 @@ BEGIN
 											clas.claseaislacion as desc_claseaislacion,
 											ten.tensionservicio as desc_tensionservicio,
 											(select SUM(CAST(CASE
-												WHEN tuci.id_ucmeitem = 1 THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*mcuc.numerobahias) 
-												+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
-												WHEN tuci.id_ucmeitem = 2 THEN ((mcuc.numerobahias * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
-												WHEN tuci.id_ucmeitem = 3 THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
-												WHEN tuci.id_ucmeitem = 4 THEN (mcuc.numerobahias * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-												WHEN tuci.id_ucmeitem = 5 THEN (mcuc.numerobahias * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-												WHEN tuci.id_ucmeitem = 6 THEN (mcuc.numerobahias * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												WHEN tuci.descripcion = ''Cantidad de cable de tierra 4/0 AWG (m)'' THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*mcuc.numerobahias) 
+													+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
+												WHEN tuci.descripcion = ''Cantidad de cable de guarda Alumoweld (m)'' THEN ((mcuc.numerobahias * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
+												WHEN tuci.descripcion = ''Total de luminarias viales'' THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
+												WHEN tuci.descripcion = ''Total de Luminarias en pórticos'' THEN (mcuc.numerobahias * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												WHEN tuci.descripcion = ''Total tubo PVC 2.5 enterrado'' THEN (mcuc.numerobahias * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+												WHEN tuci.descripcion = ''Total cable 4x12 AWG'' THEN (mcuc.numerobahias * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
 												ELSE 0.0
 												END AS numeric))
-											from snx.tucmceitem tuci) as totalitems	
+											from snx.tucmceitem tuci
+											WHERE tuci.id_unidadconstructivamcelec = mcuc.id_unidadconstructivamcelec) as totalitems	
 									from snx.tunidadconstructivamcelec mcuc
 									inner join segu.tusuario usu1 on usu1.id_usuario = mcuc.id_usuario_reg
 									left join segu.tusuario usu2 on usu2.id_usuario = mcuc.id_usuario_mod
@@ -192,6 +195,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
+
 
 $BODY$;
 

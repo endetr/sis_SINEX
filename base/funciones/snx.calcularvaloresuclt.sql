@@ -1,7 +1,16 @@
-CREATE OR REPLACE FUNCTION snx.calcularvaloresuclt(id_unidadconstructivaltint integer)
- RETURNS TABLE(id_unidadconstructivalt integer, numddp numeric, nummontaje numeric, numoc numeric, numingenieria numeric, numadmeje numeric, numsupero numeric, numcfinan numeric, numcaamb numeric, numcapred numeric, numcostototaluc numeric)
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.calcularvaloresuclt(integer)
+
+-- DROP FUNCTION snx.calcularvaloresuclt(integer);
+
+CREATE OR REPLACE FUNCTION snx.calcularvaloresuclt(
+	id_unidadconstructivaltint integer)
+    RETURNS TABLE(id_unidadconstructivalt integer, numddp numeric, nummontaje numeric, numoc numeric, numingenieria numeric, numadmeje numeric, numsupero numeric, numcfinan numeric, numcaamb numeric, numcapred numeric, numcostototaluc numeric) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+    ROWS 1000
+AS $BODY$
+
 
 DECLARE
 	calcvanoprom numeric:= 1;
@@ -91,9 +100,9 @@ BEGIN
 				5 AS id_descripcion,
 				CAST('Accesos' AS character varying) AS descripcion,
 				CAST('km' AS character varying) AS unidad,
-				uclt.longitud * 0.75 AS costobase,
+				uclt.longitud * uclt.numaccesos / 100 AS costobase,
 				(SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS cantidaditem,
-				(uclt.longitud * 0.75) * (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS costototal
+				(uclt.longitud * uclt.numaccesos / 100) * (SELECT valorindice FROM snx.tindiceslt WHERE id_indicelt = 4) AS costototal
 	FROM		snx.tunidadconstructivalt uclt
 	WHERE		uclt.id_unidadconstructivalt = id_unidadconstructivaltint;									 
 			
@@ -622,5 +631,8 @@ BEGIN
 																											 
 end;
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.calcularvaloresuclt(integer)
+    OWNER TO postgres;

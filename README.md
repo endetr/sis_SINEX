@@ -2,6 +2,12 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.4.0.0 - 2019-09-19
+  * Se agregan nuevos elementos a las tablas maestras de mallas de tierra y apantallamiento.
+  * Se corrige el cálculo en aisladores en líneas de transmisión.
+  * Se agrega nuevo campo de acceso a las líneas de transmisión.
+  * Se modifica cálculo de Accesos en gastos de contratista de las líneas.
+  * Se corrige cálculo en el módulo común eléctrico.
 * Versión 1.3.0.1 - 2019-07-26
   * Se corrige la impresión de las distancias de transporte en los proyectos de líneas en el PDF y Excel.
 * Versión 1.3.0.0 - 2019-07-24
