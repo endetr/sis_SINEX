@@ -8709,3 +8709,13 @@ ADD COLUMN numaccesos numeric(18,2);
 UPDATE	snx.tunidadconstructivalt
 SET		numaccesos = 15;
 /***********************************F-SCP-JYP-CMS-1-02/09/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-18/09/2019****************************************/
+ALTER TABLE snx.tucsbvalorarouc
+ADD COLUMN tensionservicio character varying(50),
+ADD COLUMN claseaislamiento character varying(50),
+ADD COLUMN areasubestacion numeric(18,2),
+ADD COLUMN longitudvias numeric(18,2),
+ADD COLUMN norma character varying(200),
+ADD COLUMN porcrepuestos numeric(18,2);
+/***********************************F-SCP-JYP-CMS-1-18/09/2019****************************************/

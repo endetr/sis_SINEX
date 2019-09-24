@@ -17062,3 +17062,72 @@ begin;
 commit;
 /***********************************F-SCP-JYP-CMS-1-26/08/2019****************************************/
 
+/***********************************I-SCP-JYP-CMS-2-18/09/2019****************************************/
+
+begin;
+	do $$
+		
+	begin
+		UPDATE	snx.tucsbvalorarouc
+		SET		tensionservicio = '',
+				claseaislamiento = '',
+				areasubestacion = 0.0,
+				longitudvias = 0.0,
+				norma = '',
+				porcrepuestos = 0.0;
+				
+		--Módulo Eléctrico
+		UPDATE	snx.tucsbvalorarouc
+		SET		tensionservicio = Valores.tensionservicio,
+				claseaislamiento = Valores.claseaislamiento,
+				areasubestacion = Valores.areasubestacion,
+				longitudvias = Valores.longitudvias
+		FROM	(		
+				SELECT 		vouc.id_ucsbvalorarouc,
+							vouc.id_ucsbvalorar,
+							vouc.id_otraunidad,
+							ten.tensionservicio as tensionservicio,
+							clas.claseaislacion as claseaislamiento,
+							mcuc.areasub as areasubestacion,
+							mcuc.longitudvia as longitudvias
+				FROM 		snx.tucsbvalorarouc vouc
+				INNER JOIN	snx.tunidadconstructivamcelec mcuc ON ('3000000' || CAST(mcuc.id_unidadconstructivamcelec as character varying)) = vouc.id_otraunidad
+				INNER JOIN 	snx.tclaseaislacion clas on clas.id_claseaislacion = mcuc.id_claseaislacion
+				INNER JOIN 	snx.ttensionservicio ten on ten.id_tensionservicio = mcuc.id_tensionservicio
+				) AS Valores
+		WHERE	tucsbvalorarouc.id_ucsbvalorarouc = Valores.id_ucsbvalorarouc;
+																   
+		--Tableros
+		UPDATE	snx.tucsbvalorarouc
+		SET		porcrepuestos = Valores.porcrepuestos
+		FROM	(		
+				SELECT 		vouc.id_ucsbvalorarouc,
+							vouc.id_ucsbvalorar,
+							vouc.id_otraunidad,
+							uctcpenc.porcrepuestos AS porcrepuestos
+				FROM 		snx.tucsbvalorarouc vouc
+				INNER JOIN	snx.tunidadconstructivaenctablerocp uctcpenc ON ('6000000' || CAST(uctcpenc.id_unidadconstructivaenctablerocp as character varying)) = vouc.id_otraunidad
+				) AS Valores
+		WHERE	tucsbvalorarouc.id_ucsbvalorarouc = Valores.id_ucsbvalorarouc;
+																			 
+		--Estudios Especiales
+		UPDATE	snx.tucsbvalorarouc
+		SET		tensionservicio = Valores.tensionservicio,
+				norma = Valores.norma
+		FROM	(
+				SELECT 		vouc.id_ucsbvalorarouc,
+							vouc.id_ucsbvalorar,
+							vouc.id_otraunidad,
+							ten.tensionservicio as tensionservicio,
+							ucee.norma
+				FROM 		snx.tucsbvalorarouc vouc
+				INNER JOIN snx.tunidadconstructivaeep ucee ON ('5000000' || CAST(ucee.id_unidadconstructivaeep as character varying)) = vouc.id_otraunidad
+				INNER JOIN 	snx.ttensionservicio ten on ten.id_tensionservicio = ucee.id_tensionservicio																				 
+				) AS Valores
+		WHERE	tucsbvalorarouc.id_ucsbvalorarouc = Valores.id_ucsbvalorarouc;	
+		
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-2-18/09/2019****************************************/

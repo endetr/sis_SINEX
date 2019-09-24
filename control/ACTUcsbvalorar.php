@@ -397,7 +397,7 @@ class ACTUcsbvalorar extends ACTbase{
 		$Excel->getActiveSheet()->setCellValue('A7','Altura');
 		$Excel->getActiveSheet()->setCellValue('A8','Distancia de transporte suministros importados [km]');
 		$Excel->getActiveSheet()->setCellValue('A9','Distancia de transporte suministros nacionales [km]');
-		$Excel->getActiveSheet()->setCellValue('A10','Factor para ingeniería');		
+		$Excel->getActiveSheet()->setCellValue('A10','Número de Bahías');		
 		$Excel->getActiveSheet()->setCellValue('A11','Valor Total Proyecto');
 		
 		$Excel->getActiveSheet()->getStyle('A3')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
@@ -711,12 +711,18 @@ class ACTUcsbvalorar extends ACTbase{
 			$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Código');			
 			$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E' .$intRowExcel);
 			$Excel->getActiveSheet()->setCellValue('B' .$intRowExcel,'Descripción');
-			$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');				
-			$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Total');
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getFont()->setBold( true );
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getAlignment()->setWrapText(true);
+			$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');			
+			$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Tensión Servicio');
+			$Excel->getActiveSheet()->setCellValue('H' .$intRowExcel,'Clase Aislamiento');
+			$Excel->getActiveSheet()->setCellValue('I' .$intRowExcel,'Area Subestación (m2)');
+			$Excel->getActiveSheet()->setCellValue('J' .$intRowExcel,'Longitud Vías (m)');
+			$Excel->getActiveSheet()->setCellValue('K' .$intRowExcel,'Norma');
+			$Excel->getActiveSheet()->setCellValue('L' .$intRowExcel,'Porc. Repuestos');							
+			$Excel->getActiveSheet()->setCellValue('M' .$intRowExcel,'Total');
+			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFont()->setBold( true );
+			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setWrapText(true);
 			
 			//Datos 
 			$intRowExcel++;
@@ -724,8 +730,14 @@ class ACTUcsbvalorar extends ACTbase{
 			$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$row['codigo']);
 			$Excel->getActiveSheet()->setCellValue('B' . $intRowExcel,$row['descripcion']);
 			$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$row['cantidaditem']);			
-			$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$row['valortotal']);
-			$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':G' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+			$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$row['tensionservicio']);
+			$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$row['claseaislamiento']);
+			$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$row['areasubestacion']);
+			$Excel->getActiveSheet()->setCellValue('J' . $intRowExcel,$row['longitudvias']);
+			$Excel->getActiveSheet()->setCellValue('K' . $intRowExcel,$row['norma']);
+			$Excel->getActiveSheet()->setCellValue('L' . $intRowExcel,$row['porcrepuestos']);						
+			$Excel->getActiveSheet()->setCellValue('M' . $intRowExcel,$row['valortotal']);
+			$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':M' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 			
 			//Detalle de Items			
 			if (pg_numrows($dsUCOTdet) > 0)
@@ -944,12 +956,12 @@ class ACTUcsbvalorar extends ACTbase{
         $pdf->SetFont('');
 		$pdf->Cell($w[1], 0, pg_fetch_result($dsEncabezado, 0, 5), 1, 0, 'L', 1);
 		$pdf->Ln();
-		
+				
 		$pdf->SetFillColor(206, 206, 206);
         $pdf->SetTextColor(0, 0, 0);        
         $pdf->SetLineWidth(0.3);
         $pdf->SetFont('', 'B');
-		$pdf->Cell($w[0], 0, 'Factor para ingeniería', 1, 0, 'L', 1);		
+		$pdf->Cell($w[0], 0, 'Número de Bahías', 1, 0, 'L', 1);		
 		$pdf->SetFillColor(255, 255, 255);
         $pdf->SetTextColor(0);
         $pdf->SetFont('');
@@ -1218,9 +1230,10 @@ class ACTUcsbvalorar extends ACTbase{
 		    $pdf->SetFont('', 'B');
 			$pdf->Cell(40, 0, 'Código', 1, 0, 'L', 1);
 			$pdf->Cell(80, 0, 'Descripción', 1, 0, 'L', 1);
-			$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);	
-			$pdf->Cell(40, 0, 'Total', 1, 0, 'C', 1);
-			$pdf->Ln();
+			$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);			
+			$pdf->Cell(40, 0, 'Tensión Servicio', 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, 'Clase Aislamiento', 1, 0, 'C', 1);
+			$pdf->Ln();				
 				
 			//Datos
 			$pdf->SetFillColor(255, 255, 255);
@@ -1229,6 +1242,30 @@ class ACTUcsbvalorar extends ACTbase{
 			$pdf->Cell(40, 0, $row['codigo'], 1, 0, 'C', 1);
 			$pdf->Cell(80, 0, $row['descripcion'], 1, 0, 'C', 1);
 			$pdf->Cell(40, 0, $row['cantidaditem'], 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, $row['tensionservicio'], 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, $row['claseaislamiento'], 1, 0, 'C', 1);
+			$pdf->Ln();
+			
+			//Encabezado				
+			$pdf->SetFillColor(206, 206, 206);
+		    $pdf->SetTextColor(0, 0, 0);        
+		    $pdf->SetLineWidth(0.3);
+		    $pdf->SetFont('', 'B');				
+			$pdf->Cell(40, 0, 'Area Sub. (m2)', 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, 'Long. Vías (m)', 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, 'Norma', 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, 'Porc. Repuestos', 1, 0, 'C', 1);				
+			$pdf->Cell(40, 0, 'Total', 1, 0, 'C', 1);
+			$pdf->Ln();
+				
+			//Datos
+			$pdf->SetFillColor(255, 255, 255);
+	        $pdf->SetTextColor(0);
+	        $pdf->SetFont('');				
+			$pdf->Cell(40, 0, $row['areasubestacion'], 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, $row['longitudvias'], 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, $row['norma'], 1, 0, 'C', 1);
+			$pdf->Cell(40, 0, $row['porcrepuestos'], 1, 0, 'C', 1);
 			$pdf->Cell(40, 0, $row['valortotal'], 1, 0, 'C', 1);
 			$pdf->Ln();
 			$pdf->Ln();

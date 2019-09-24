@@ -2,7 +2,9 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
-* Versión 1.4.0.0 - 2019-09-19
+* Versión 1.4.0.1 - 2019-09-24
+  * Se modifican los reportes en PDF y Excel para los proyectos de subestaciones, para incluir todas las variales de las otras unidades constructivas.
+* Versión 1.4.0.0 - 2019-09-18
   * Se agregan nuevos elementos a las tablas maestras de mallas de tierra y apantallamiento.
   * Se corrige el cálculo en aisladores en líneas de transmisión.
   * Se agrega nuevo campo de acceso a las líneas de transmisión.
