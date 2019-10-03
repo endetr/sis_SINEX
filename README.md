@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.4.0.2 - 2019-10-03
+  * Se corrigen parámetros en la creación de los reportes para PDF y Excel.
 * Versión 1.4.0.1 - 2019-09-24
   * Se modifican los reportes en PDF y Excel para los proyectos de subestaciones, para incluir todas las variales de las otras unidades constructivas.
 * Versión 1.4.0.0 - 2019-09-18
