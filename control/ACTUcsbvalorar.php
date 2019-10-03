@@ -706,136 +706,139 @@ class ACTUcsbvalorar extends ACTbase{
 		$intRowExcel++;
 		$intRowAnt = $intRowExcel;		
 		$intRowExcel++;
-		foreach ($arrUCOT as &$row) {
-			//Encabezado
-			$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Código');			
-			$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E' .$intRowExcel);
-			$Excel->getActiveSheet()->setCellValue('B' .$intRowExcel,'Descripción');
-			$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');			
-			$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Tensión Servicio');
-			$Excel->getActiveSheet()->setCellValue('H' .$intRowExcel,'Clase Aislamiento');
-			$Excel->getActiveSheet()->setCellValue('I' .$intRowExcel,'Area Subestación (m2)');
-			$Excel->getActiveSheet()->setCellValue('J' .$intRowExcel,'Longitud Vías (m)');
-			$Excel->getActiveSheet()->setCellValue('K' .$intRowExcel,'Norma');
-			$Excel->getActiveSheet()->setCellValue('L' .$intRowExcel,'Porc. Repuestos');							
-			$Excel->getActiveSheet()->setCellValue('M' .$intRowExcel,'Total');
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFont()->setBold( true );
-			$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setWrapText(true);
-			
-			//Datos 
-			$intRowExcel++;
-			$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E'  .$intRowExcel);
-			$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$row['codigo']);
-			$Excel->getActiveSheet()->setCellValue('B' . $intRowExcel,$row['descripcion']);
-			$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$row['cantidaditem']);			
-			$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$row['tensionservicio']);
-			$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$row['claseaislamiento']);
-			$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$row['areasubestacion']);
-			$Excel->getActiveSheet()->setCellValue('J' . $intRowExcel,$row['longitudvias']);
-			$Excel->getActiveSheet()->setCellValue('K' . $intRowExcel,$row['norma']);
-			$Excel->getActiveSheet()->setCellValue('L' . $intRowExcel,$row['porcrepuestos']);						
-			$Excel->getActiveSheet()->setCellValue('M' . $intRowExcel,$row['valortotal']);
-			$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':M' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
-			
-			//Detalle de Items			
-			if (pg_numrows($dsUCOTdet) > 0)
-			{
-				$intRowExcel = $intRowExcel + 2;				
-				$Excel->getActiveSheet()->mergeCells('A' .$intRowExcel . ':H' . $intRowExcel);
-				$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Ítems');
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFont()->setBold( true );
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setWrapText(true);					
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':H' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+		
+		if (pg_numrows($dsUCOT) > 0)
+		{
+			foreach ($arrUCOT as &$row) {
+				//Encabezado
+				$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Código');			
+				$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E' .$intRowExcel);
+				$Excel->getActiveSheet()->setCellValue('B' .$intRowExcel,'Descripción');
+				$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');			
+				$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Tensión Servicio');
+				$Excel->getActiveSheet()->setCellValue('H' .$intRowExcel,'Clase Aislamiento');
+				$Excel->getActiveSheet()->setCellValue('I' .$intRowExcel,'Area Subestación (m2)');
+				$Excel->getActiveSheet()->setCellValue('J' .$intRowExcel,'Longitud Vías (m)');
+				$Excel->getActiveSheet()->setCellValue('K' .$intRowExcel,'Norma');
+				$Excel->getActiveSheet()->setCellValue('L' .$intRowExcel,'Porc. Repuestos');							
+				$Excel->getActiveSheet()->setCellValue('M' .$intRowExcel,'Total');
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getFont()->setBold( true );
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':M' .$intRowExcel)->getAlignment()->setWrapText(true);
 				
-				$intRowExcel++;	
-				$intRowAnt = $intRowExcel;		
-				$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);
-				$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Descripción');	
-				$Excel->getActiveSheet()->setCellValue('E' .$intRowExcel,'Unidad');
-				$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');
-				$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Valor Unitario');
-				$Excel->getActiveSheet()->setCellValue('H' .$intRowExcel,'Valor Total');
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getAlignment()->setWrapText(true);
-				
+				//Datos 
 				$intRowExcel++;
-				foreach ($arrUCOTdet as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
-					{
-						$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);									
-						$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowItem['descripcion']);
-						$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowItem['unidadabrev']);
-						if ($rowItem['nivel'] == 3)
+				$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E'  .$intRowExcel);
+				$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$row['codigo']);
+				$Excel->getActiveSheet()->setCellValue('B' . $intRowExcel,$row['descripcion']);
+				$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$row['cantidaditem']);			
+				$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$row['tensionservicio']);
+				$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$row['claseaislamiento']);
+				$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$row['areasubestacion']);
+				$Excel->getActiveSheet()->setCellValue('J' . $intRowExcel,$row['longitudvias']);
+				$Excel->getActiveSheet()->setCellValue('K' . $intRowExcel,$row['norma']);
+				$Excel->getActiveSheet()->setCellValue('L' . $intRowExcel,$row['porcrepuestos']);						
+				$Excel->getActiveSheet()->setCellValue('M' . $intRowExcel,$row['valortotal']);
+				$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':M' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+				
+				//Detalle de Items			
+				if (pg_numrows($dsUCOTdet) > 0)
+				{
+					$intRowExcel = $intRowExcel + 2;				
+					$Excel->getActiveSheet()->mergeCells('A' .$intRowExcel . ':H' . $intRowExcel);
+					$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Ítems');
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFont()->setBold( true );
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setWrapText(true);					
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':H' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+					
+					$intRowExcel++;	
+					$intRowAnt = $intRowExcel;		
+					$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);
+					$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Descripción');	
+					$Excel->getActiveSheet()->setCellValue('E' .$intRowExcel,'Unidad');
+					$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Cantidad');
+					$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Valor Unitario');
+					$Excel->getActiveSheet()->setCellValue('H' .$intRowExcel,'Valor Total');
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getAlignment()->setWrapText(true);
+					
+					$intRowExcel++;
+					foreach ($arrUCOTdet as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
 						{
-							$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowItem['cantidaditem']);
-							$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowItem['valorunitario']);
+							$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);									
+							$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowItem['descripcion']);
+							$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowItem['unidadabrev']);
+							if ($rowItem['nivel'] == 3)
+							{
+								$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowItem['cantidaditem']);
+								$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowItem['valorunitario']);
+							}
+							$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$rowItem['valortotal']);
+							
+							if ($rowItem['nivel'] == 1)
+							{
+								$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('DDDDDD');
+								$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
+							}
+							else if ($rowItem['nivel'] == 2)
+							{
+								$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
+							}
+							
+							$intRowExcel++;
 						}
-						$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$rowItem['valortotal']);
-						
-						if ($rowItem['nivel'] == 1)
-						{
-							$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('DDDDDD');
-							$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
-						}
-						else if ($rowItem['nivel'] == 2)
-						{
-							$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':H' . $intRowExcel)->getFont()->setBold( true );
-						}
-						
-						$intRowExcel++;
 					}
+					$Excel->getActiveSheet()->getStyle('A' .$intRowAnt .':H' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');	
 				}
-				$Excel->getActiveSheet()->getStyle('A' .$intRowAnt .':H' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');	
-			}
 
-			//Detalle de Otros Gastos			
-			if (pg_numrows($dsUCOTog) > 0)
-			{
-				$intRowExcel++;				
-				$Excel->getActiveSheet()->mergeCells('A' .$intRowExcel . ':G' . $intRowExcel);
-				$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Otros Gastos');
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFont()->setBold( true );
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setWrapText(true);					
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
-				
-				$intRowExcel++;	
-				$intRowAnt = $intRowExcel;		
-				$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);
-				$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Descripción');	
-				$Excel->getActiveSheet()->setCellValue('E' .$intRowExcel,'Cantidad');				
-				$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Valor Unitario');
-				$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Valor Total');
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getFont()->setBold( true );
-				$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getAlignment()->setWrapText(true);
-				
-				$intRowExcel++;
-				foreach ($arrUCOTog as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
-					{
-						$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);									
-						$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowItem['otrosgastos']);
-						$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowItem['cantidadog']);
-						$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowItem['valorunitario']);
-						$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowItem['valorog']);
-						$intRowExcel++;
+				//Detalle de Otros Gastos			
+				if (pg_numrows($dsUCOTog) > 0)
+				{
+					$intRowExcel++;				
+					$Excel->getActiveSheet()->mergeCells('A' .$intRowExcel . ':G' . $intRowExcel);
+					$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Otros Gastos');
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getFont()->setBold( true );
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel)->getAlignment()->setWrapText(true);					
+					$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':G' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+					
+					$intRowExcel++;	
+					$intRowAnt = $intRowExcel;		
+					$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);
+					$Excel->getActiveSheet()->setCellValue('A' .$intRowExcel,'Descripción');	
+					$Excel->getActiveSheet()->setCellValue('E' .$intRowExcel,'Cantidad');				
+					$Excel->getActiveSheet()->setCellValue('F' .$intRowExcel,'Valor Unitario');
+					$Excel->getActiveSheet()->setCellValue('G' .$intRowExcel,'Valor Total');
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getFont()->setBold( true );
+					$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':G' . $intRowExcel)->getAlignment()->setWrapText(true);
+					
+					$intRowExcel++;
+					foreach ($arrUCOTog as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
+						{
+							$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);									
+							$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowItem['otrosgastos']);
+							$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowItem['cantidadog']);
+							$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowItem['valorunitario']);
+							$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowItem['valorog']);
+							$intRowExcel++;
+						}
 					}
+					$Excel->getActiveSheet()->getStyle('A' .$intRowAnt .':G' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 				}
-				$Excel->getActiveSheet()->getStyle('A' .$intRowAnt .':G' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
-			}
-			
-			$intRowExcel = $intRowExcel + 2;
-		}
 				
+				$intRowExcel = $intRowExcel + 2;
+			}
+		}		
 		
 		
 		$objWriter = PHPExcel_IOFactory::createWriter($Excel, 'Excel5');
@@ -980,239 +983,241 @@ class ACTUcsbvalorar extends ACTbase{
 		$pdf->Ln();
 		$pdf->Ln();		
 		
-		foreach ($arrUCSB as &$row) {
-			
-			//Resumen Unidades Constructivas Subestaciones
-			$pdf->SetFillColor(206, 206, 206);
-	        $pdf->SetTextColor(0, 0, 0);        
-	        $pdf->SetLineWidth(0.3);
-	        $pdf->SetFont('', 'B');
-			$pdf->Cell(0, 0, 'Resumen Unidades Constructivas Subestaciones', 1, 0, 'C', 1);
-			$pdf->Ln();
-			
-			//Encabezado 1
-			$pdf->SetFillColor(206, 206, 206);
-        	$pdf->SetTextColor(0, 0, 0);        
-        	$pdf->SetLineWidth(0.3);
-        	$pdf->SetFont('', 'B');
-			$pdf->Cell(30, 0, 'Código', 1, 0, 'C', 1);
-			$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Tensión Servicio', 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, 'Cantidad', 1, 0, 'C', 1);		
-			$pdf->Cell(30, 0, 'Potencia', 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, 'Equipos', 1, 0, 'C', 1);
-			$pdf->Cell(27, 0, 'Maquinaria', 1, 0, 'C', 1);
-			$pdf->Ln();
-			//Datos 1
-			$pdf->SetFillColor(255, 255, 255);
-	        $pdf->SetTextColor(0);
-	        $pdf->SetFont('');
-			$pdf->Cell(30, 0, $row['codigo'], 1, 0, 'C', 1);
-			$pdf->Cell(100, 0, $row['descripcion'], 1, 0, 'L', 1);
-			$pdf->Cell(40, 0, $row['tensionservicio'], 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, $row['cantidaditem'], 1, 0, 'C', 1);		
-			$pdf->Cell(30, 0, $row['potencia'], 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, $row['valorucsbe'], 1, 0, 'C', 1);
-			$pdf->Cell(27, 0, $row['valorucsbm'], 1, 0, 'L', 1);
-			$pdf->Ln();
-			//Encabezado 2 pegado
-			$pdf->SetFillColor(206, 206, 206);
-        	$pdf->SetTextColor(0, 0, 0);        
-        	$pdf->SetLineWidth(0.3);
-        	$pdf->SetFont('', 'B');
-			$pdf->Cell(30, 0, 'Materiales', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Directo Contratista', 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, 'Otros Gastos', 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, 'Total', 1, 0, 'C', 1);
-			$pdf->Ln();			
-			//Datos 1
-			$pdf->SetFillColor(255, 255, 255);
-	        $pdf->SetTextColor(0);
-	        $pdf->SetFont('');     		
-			$pdf->Cell(30, 0, $row['valorucsbmate'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['valorucsbcont'], 1, 0, 'C', 1);		
-			$pdf->Cell(30, 0, $row['valorucsbog'], 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, $row['valorucsbtotal'], 1, 0, 'C', 1);			
-			$pdf->Ln();
-			
-			//Maquinaria
-			if (pg_numrows($dsUCM) > 0)
-			{
-				
+		if (pg_numrows($dsUCSB) > 0)
+		{
+			foreach ($arrUCSB as &$row) {			
+				//Resumen Unidades Constructivas Subestaciones
 				$pdf->SetFillColor(206, 206, 206);
-		        $pdf->SetTextColor(0, 0, 0);        
-		        $pdf->SetLineWidth(0.3);
-		        $pdf->SetFont('', 'B');
-				$pdf->Cell(204, 0, 'Maquinaria', 1, 0, 'C', 1);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(0, 0, 'Resumen Unidades Constructivas Subestaciones', 1, 0, 'C', 1);
+				$pdf->Ln();
+				
+				//Encabezado 1
+				$pdf->SetFillColor(206, 206, 206);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(30, 0, 'Código', 1, 0, 'C', 1);
+				$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Tensión Servicio', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Cantidad', 1, 0, 'C', 1);		
+				$pdf->Cell(30, 0, 'Potencia', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Equipos', 1, 0, 'C', 1);
+				$pdf->Cell(27, 0, 'Maquinaria', 1, 0, 'C', 1);
+				$pdf->Ln();
+				//Datos 1
+				$pdf->SetFillColor(255, 255, 255);
+				$pdf->SetTextColor(0);
+				$pdf->SetFont('');
+				$pdf->Cell(30, 0, $row['codigo'], 1, 0, 'C', 1);
+				$pdf->Cell(100, 0, $row['descripcion'], 1, 0, 'L', 1);
+				$pdf->Cell(40, 0, $row['tensionservicio'], 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, $row['cantidaditem'], 1, 0, 'C', 1);		
+				$pdf->Cell(30, 0, $row['potencia'], 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, $row['valorucsbe'], 1, 0, 'C', 1);
+				$pdf->Cell(27, 0, $row['valorucsbm'], 1, 0, 'L', 1);
+				$pdf->Ln();
+				//Encabezado 2 pegado
+				$pdf->SetFillColor(206, 206, 206);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(30, 0, 'Materiales', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Directo Contratista', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Otros Gastos', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Total', 1, 0, 'C', 1);
 				$pdf->Ln();			
-				$pdf->SetFillColor(206, 206, 206);
-		        $pdf->SetTextColor(0, 0, 0);        
-		        $pdf->SetLineWidth(0.3);
-				$pdf->Cell(34, 0, 'Maquinaria', 1, 0, 'C', 1);	
-				$pdf->Cell(34, 0, 'Cantidad', 1, 0, 'C', 1);
-				$pdf->Cell(34, 0, 'Valor Unitario', 1, 0, 'C', 1);
-				$pdf->Cell(34, 0, 'Valor Total', 1, 0, 'C', 1);
-				$pdf->Ln();	
+				//Datos 1
+				$pdf->SetFillColor(255, 255, 255);
+				$pdf->SetTextColor(0);
+				$pdf->SetFont('');     		
+				$pdf->Cell(30, 0, $row['valorucsbmate'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['valorucsbcont'], 1, 0, 'C', 1);		
+				$pdf->Cell(30, 0, $row['valorucsbog'], 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, $row['valorucsbtotal'], 1, 0, 'C', 1);			
+				$pdf->Ln();
 				
-				foreach ($arrUCM as &$rowItem) {
+				//Maquinaria
+				if (pg_numrows($dsUCM) > 0)
+				{
+					
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->SetFont('', 'B');
+					$pdf->Cell(204, 0, 'Maquinaria', 1, 0, 'C', 1);
+					$pdf->Ln();			
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->Cell(34, 0, 'Maquinaria', 1, 0, 'C', 1);	
+					$pdf->Cell(34, 0, 'Cantidad', 1, 0, 'C', 1);
+					$pdf->Cell(34, 0, 'Valor Unitario', 1, 0, 'C', 1);
+					$pdf->Cell(34, 0, 'Valor Total', 1, 0, 'C', 1);
+					$pdf->Ln();	
+					
+					foreach ($arrUCM as &$rowItem) {
+							if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
+							{
+					$pdf->SetFillColor(255, 255, 255);
+					$pdf->SetTextColor(0);
+					$pdf->SetFont('');
+					
+					$pdf->Cell(34, 0, $rowItem['maquinaria'], 1, 0, 'C', 1);
+					$pdf->Cell(34, 0, $rowItem['cantidadmaq'], 1, 0, 'C', 1);
+					$pdf->Cell(34, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
+					$pdf->Cell(34, 0, $rowItem['valortotal'], 1, 0, 'C', 1);
+					$pdf->Ln();
+						}
+					}
+				}
+				$pdf->Ln();
+
+				//Equipos
+				if (pg_numrows($dsUCEM) > 0)
+				{
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->SetFont('', 'B');
+					$pdf->Cell(240, 0, 'Equipos', 1, 0, 'C', 1);
+					$pdf->Ln();	
+					$pdf->Cell(100, 0, 'Equipo', 1, 0, 'C', 1);
+					$pdf->Cell(20, 0, 'Unidad', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+					$pdf->Ln();			
+					
+					foreach ($arrUCEM as &$rowItem) {
 						if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
 						{
-				$pdf->SetFillColor(255, 255, 255);
-		        $pdf->SetTextColor(0);
-		        $pdf->SetFont('');
-				
-				$pdf->Cell(34, 0, $rowItem['maquinaria'], 1, 0, 'C', 1);
-				$pdf->Cell(34, 0, $rowItem['cantidadmaq'], 1, 0, 'C', 1);
-				$pdf->Cell(34, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
-				$pdf->Cell(34, 0, $rowItem['valortotal'], 1, 0, 'C', 1);
-				$pdf->Ln();
-					}
-				}
-			}
-			$pdf->Ln();
-
-			//Equipos
-			if (pg_numrows($dsUCEM) > 0)
-			{
-				$pdf->SetFillColor(206, 206, 206);
-		        $pdf->SetTextColor(0, 0, 0);        
-		        $pdf->SetLineWidth(0.3);
-		        $pdf->SetFont('', 'B');
-				$pdf->Cell(240, 0, 'Equipos', 1, 0, 'C', 1);
-				$pdf->Ln();	
-				$pdf->Cell(100, 0, 'Equipo', 1, 0, 'C', 1);
-				$pdf->Cell(20, 0, 'Unidad', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
-				$pdf->Ln();			
-				
-				foreach ($arrUCEM as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
-					{
+							
+						$pdf->SetFillColor(255, 255, 255);
+						$pdf->SetTextColor(0);
+						$pdf->SetFont('');
 						
-					$pdf->SetFillColor(255, 255, 255);
-		        	$pdf->SetTextColor(0);
-		        	$pdf->SetFont('');
-					
-					$pdf->Cell(100, 0, $rowItem['equipo'], 1, 0, 'C', 1);
-					$pdf->Cell(20, 0, $rowItem['unidadabrer'], 1, 0, 'C', 1);
-					$pdf->Cell(40, 0, $rowItem['cantidadequ'], 1, 0, 'C', 1);
-					$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
-					$pdf->Cell(40, 0, $rowItem['valortotal'], 1, 0, 'C', 1);
-					
-					$pdf->Ln();
+						$pdf->Cell(100, 0, $rowItem['equipo'], 1, 0, 'C', 1);
+						$pdf->Cell(20, 0, $rowItem['unidadabrer'], 1, 0, 'C', 1);
+						$pdf->Cell(40, 0, $rowItem['cantidadequ'], 1, 0, 'C', 1);
+						$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
+						$pdf->Cell(40, 0, $rowItem['valortotal'], 1, 0, 'C', 1);
+						
+						$pdf->Ln();
+						}
 					}
-				}
-				}
-			$pdf->Ln();
-		
-			//Materiales
-			if (pg_numrows($dsUCMate) > 0)
-			{
-				$pdf->SetFillColor(206, 206, 206);
-		        $pdf->SetTextColor(0, 0, 0);        
-		        $pdf->SetLineWidth(0.3);
-		        $pdf->SetFont('', 'B');
-				$pdf->Cell(260, 0, 'Materiales', 1, 0, 'C', 1);
-				$pdf->Ln();
-				$pdf->Cell(90, 0, 'Material', 1, 0, 'C', 1);
-				$pdf->Cell(20, 0, 'Unidad', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Cantidad', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Valor Uni. Ext.', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Valor Total Ext', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Valor Uni. Nac.', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Valor Total Nac.', 1, 0, 'C', 1);	
+					}
 				$pdf->Ln();
 			
-				foreach ($arrUCMate as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
-					{
-						$pdf->SetFillColor(255, 255, 255);
-		        		$pdf->SetTextColor(0);
-		        		$pdf->SetFont('');
-					
-						$pdf->Cell(90, 0, $rowItem['material'], 1, 0, 'C', 1);
-						$pdf->Cell(20, 0, $rowItem['unidadbrev'], 1, 0, 'L', 1);
-						$pdf->Cell(30, 0, $rowItem['cantidadmate'], 1, 0, 'C', 1);		
-						$pdf->Cell(30, 0, $rowItem['valorunitarioext'], 1, 0, 'C', 1);		
-						$pdf->Cell(30, 0, $rowItem['valortotalext'], 1, 0, 'C', 1);		
-						$pdf->Cell(30, 0, $rowItem['valorunitarionac'], 1, 0, 'C', 1);	
-						$pdf->Cell(30, 0, $rowItem['valortotalnac'], 1, 0, 'C', 1);
-						$pdf->Ln();
-					}				
+				//Materiales
+				if (pg_numrows($dsUCMate) > 0)
+				{
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->SetFont('', 'B');
+					$pdf->Cell(260, 0, 'Materiales', 1, 0, 'C', 1);
+					$pdf->Ln();
+					$pdf->Cell(90, 0, 'Material', 1, 0, 'C', 1);
+					$pdf->Cell(20, 0, 'Unidad', 1, 0, 'C', 1);
+					$pdf->Cell(30, 0, 'Cantidad', 1, 0, 'C', 1);
+					$pdf->Cell(30, 0, 'Valor Uni. Ext.', 1, 0, 'C', 1);
+					$pdf->Cell(30, 0, 'Valor Total Ext', 1, 0, 'C', 1);
+					$pdf->Cell(30, 0, 'Valor Uni. Nac.', 1, 0, 'C', 1);
+					$pdf->Cell(30, 0, 'Valor Total Nac.', 1, 0, 'C', 1);	
+					$pdf->Ln();
+				
+					foreach ($arrUCMate as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
+						{
+							$pdf->SetFillColor(255, 255, 255);
+							$pdf->SetTextColor(0);
+							$pdf->SetFont('');
+						
+							$pdf->Cell(90, 0, $rowItem['material'], 1, 0, 'C', 1);
+							$pdf->Cell(20, 0, $rowItem['unidadbrev'], 1, 0, 'L', 1);
+							$pdf->Cell(30, 0, $rowItem['cantidadmate'], 1, 0, 'C', 1);		
+							$pdf->Cell(30, 0, $rowItem['valorunitarioext'], 1, 0, 'C', 1);		
+							$pdf->Cell(30, 0, $rowItem['valortotalext'], 1, 0, 'C', 1);		
+							$pdf->Cell(30, 0, $rowItem['valorunitarionac'], 1, 0, 'C', 1);	
+							$pdf->Cell(30, 0, $rowItem['valortotalnac'], 1, 0, 'C', 1);
+							$pdf->Ln();
+						}				
+					}
 				}
+				$pdf->Ln();
+				
+			//Directo Contratista
+			if (pg_numrows($dsUCGC) > 0)
+			{
+				$pdf->SetFillColor(206, 206, 206);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(250, 0, 'Directo Contratista', 1, 0, 'C', 1);
+				$pdf->Ln();
+				$pdf->Cell(100, 0, 'Obra Civil', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Unidad', 1, 0, 'L', 1);
+				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);		
+				$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+				$pdf->Ln();
+				
+				foreach ($arrUCGC as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
+						{
+							$pdf->SetFillColor(255, 255, 255);
+							$pdf->SetTextColor(0);
+							$pdf->SetFont('');
+						
+							$pdf->Cell(100, 0, $rowItem['obracivil'], 1, 0, 'C', 1);
+							$pdf->Cell(30, 0, $rowItem['unidadbrev'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['cantidadpeso'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['valorobracivil'], 1, 0, 'C', 1);
+							$pdf->Ln();
+						}
+					}
 			}
 			$pdf->Ln();
 			
-		//Directo Contratista
-		if (pg_numrows($dsUCGC) > 0)
-		{
-			$pdf->SetFillColor(206, 206, 206);
-		    $pdf->SetTextColor(0, 0, 0);        
-		    $pdf->SetLineWidth(0.3);
-		    $pdf->SetFont('', 'B');
-			$pdf->Cell(250, 0, 'Directo Contratista', 1, 0, 'C', 1);
-			$pdf->Ln();
-			$pdf->Cell(100, 0, 'Obra Civil', 1, 0, 'C', 1);
-			$pdf->Cell(30, 0, 'Unidad', 1, 0, 'L', 1);
-			$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);		
-			$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
-			$pdf->Ln();
-			
-			foreach ($arrUCGC as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
-					{
-						$pdf->SetFillColor(255, 255, 255);
-		        		$pdf->SetTextColor(0);
-		        		$pdf->SetFont('');
-					
-						$pdf->Cell(100, 0, $rowItem['obracivil'], 1, 0, 'C', 1);
-						$pdf->Cell(30, 0, $rowItem['unidadbrev'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['cantidadpeso'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['valorobracivil'], 1, 0, 'C', 1);
-						$pdf->Ln();
+			//Otros Gastos
+			if (pg_numrows($dsUCOG) > 0)
+			{
+				$pdf->SetFillColor(206, 206, 206);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(220, 0, 'Otros Gastos', 1, 0, 'C', 1);
+				$pdf->Ln();
+				$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'L', 1);
+				$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);	
+				$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+				$pdf->Ln();
+				
+				foreach ($arrUCOG as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
+						{
+							$pdf->SetFillColor(255, 255, 255);
+							$pdf->SetTextColor(0);
+							$pdf->SetFont('');
+						
+							$pdf->Cell(100, 0, $rowItem['otrosgastos'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['cantidadog'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['valorog'], 1, 0, 'C', 1);
+							$pdf->Ln();
+						}
 					}
-				}
+			}
+			$pdf->Ln();
+			$pdf->AddPage('L', 'A4');
 		}
-		$pdf->Ln();
+		}		
 		
-		//Otros Gastos
-		if (pg_numrows($dsUCOG) > 0)
-		{
-			$pdf->SetFillColor(206, 206, 206);
-		    $pdf->SetTextColor(0, 0, 0);        
-		    $pdf->SetLineWidth(0.3);
-		    $pdf->SetFont('', 'B');
-			$pdf->Cell(220, 0, 'Otros Gastos', 1, 0, 'C', 1);
-			$pdf->Ln();
-			$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'L', 1);
-			$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);	
-			$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
-			$pdf->Ln();
-			
-			foreach ($arrUCOG as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarcuc'] == $row['id_ucsvalorarcuc'])
-					{
-						$pdf->SetFillColor(255, 255, 255);
-		        		$pdf->SetTextColor(0);
-		        		$pdf->SetFont('');
-					
-						$pdf->Cell(100, 0, $rowItem['otrosgastos'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['cantidadog'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['valorog'], 1, 0, 'C', 1);
-						$pdf->Ln();
-					}
-				}
-		}
-		$pdf->Ln();
-		$pdf->AddPage('L', 'A4');
-	}
-
 		//Resumen Otras Unidades Constructivas
 		$pdf->SetFillColor(206, 206, 206);
 	    $pdf->SetTextColor(0, 0, 0);        
@@ -1222,142 +1227,146 @@ class ACTUcsbvalorar extends ACTbase{
 		$pdf->Ln();				
 		$pdf->Ln();
 		
-		foreach ($arrUCOT as &$row) {
-			//Encabezado
-			$pdf->SetFillColor(206, 206, 206);
-		    $pdf->SetTextColor(0, 0, 0);        
-		    $pdf->SetLineWidth(0.3);
-		    $pdf->SetFont('', 'B');
-			$pdf->Cell(40, 0, 'Código', 1, 0, 'L', 1);
-			$pdf->Cell(80, 0, 'Descripción', 1, 0, 'L', 1);
-			$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);			
-			$pdf->Cell(40, 0, 'Tensión Servicio', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Clase Aislamiento', 1, 0, 'C', 1);
-			$pdf->Ln();				
-				
-			//Datos
-			$pdf->SetFillColor(255, 255, 255);
-	        $pdf->SetTextColor(0);
-	        $pdf->SetFont('');				
-			$pdf->Cell(40, 0, $row['codigo'], 1, 0, 'C', 1);
-			$pdf->Cell(80, 0, $row['descripcion'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['cantidaditem'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['tensionservicio'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['claseaislamiento'], 1, 0, 'C', 1);
-			$pdf->Ln();
-			
-			//Encabezado				
-			$pdf->SetFillColor(206, 206, 206);
-		    $pdf->SetTextColor(0, 0, 0);        
-		    $pdf->SetLineWidth(0.3);
-		    $pdf->SetFont('', 'B');				
-			$pdf->Cell(40, 0, 'Area Sub. (m2)', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Long. Vías (m)', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Norma', 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, 'Porc. Repuestos', 1, 0, 'C', 1);				
-			$pdf->Cell(40, 0, 'Total', 1, 0, 'C', 1);
-			$pdf->Ln();
-				
-			//Datos
-			$pdf->SetFillColor(255, 255, 255);
-	        $pdf->SetTextColor(0);
-	        $pdf->SetFont('');				
-			$pdf->Cell(40, 0, $row['areasubestacion'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['longitudvias'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['norma'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['porcrepuestos'], 1, 0, 'C', 1);
-			$pdf->Cell(40, 0, $row['valortotal'], 1, 0, 'C', 1);
-			$pdf->Ln();
-			$pdf->Ln();
-			
-			//Detalle de Items			
-			if (pg_numrows($dsUCOTdet) > 0)
-			{
-				
+		if (pg_numrows($dsUCOT) > 0)
+		{
+			foreach ($arrUCOT as &$row) {
 				//Encabezado
 				$pdf->SetFillColor(206, 206, 206);
-			    $pdf->SetTextColor(0, 0, 0);        
-			    $pdf->SetLineWidth(0.3);
-			    $pdf->SetFont('', 'B');
-				$pdf->Cell(260, 0, 'Ítems', 1, 0, 'C', 1);
-				$pdf->Ln();	
-				$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Unidad', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');
+				$pdf->Cell(40, 0, 'Código', 1, 0, 'L', 1);
+				$pdf->Cell(80, 0, 'Descripción', 1, 0, 'L', 1);
+				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);			
+				$pdf->Cell(40, 0, 'Tensión Servicio', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Clase Aislamiento', 1, 0, 'C', 1);
+				$pdf->Ln();				
+					
+				//Datos
+				$pdf->SetFillColor(255, 255, 255);
+				$pdf->SetTextColor(0);
+				$pdf->SetFont('');				
+				$pdf->Cell(40, 0, $row['codigo'], 1, 0, 'C', 1);
+				$pdf->Cell(80, 0, $row['descripcion'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['cantidaditem'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['tensionservicio'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['claseaislamiento'], 1, 0, 'C', 1);
 				$pdf->Ln();
 				
-				foreach ($arrUCOTdet as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
-					{
-						if ($rowItem['nivel'] == 1)
+				//Encabezado				
+				$pdf->SetFillColor(206, 206, 206);
+				$pdf->SetTextColor(0, 0, 0);        
+				$pdf->SetLineWidth(0.3);
+				$pdf->SetFont('', 'B');				
+				$pdf->Cell(40, 0, 'Area Sub. (m2)', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Long. Vías (m)', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Norma', 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, 'Porc. Repuestos', 1, 0, 'C', 1);				
+				$pdf->Cell(40, 0, 'Total', 1, 0, 'C', 1);
+				$pdf->Ln();
+					
+				//Datos
+				$pdf->SetFillColor(255, 255, 255);
+				$pdf->SetTextColor(0);
+				$pdf->SetFont('');				
+				$pdf->Cell(40, 0, $row['areasubestacion'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['longitudvias'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['norma'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['porcrepuestos'], 1, 0, 'C', 1);
+				$pdf->Cell(40, 0, $row['valortotal'], 1, 0, 'C', 1);
+				$pdf->Ln();
+				$pdf->Ln();
+				
+				//Detalle de Items			
+				if (pg_numrows($dsUCOTdet) > 0)
+				{
+					
+					//Encabezado
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->SetFont('', 'B');
+					$pdf->Cell(260, 0, 'Ítems', 1, 0, 'C', 1);
+					$pdf->Ln();	
+					$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Unidad', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+					$pdf->Ln();
+					
+					foreach ($arrUCOTdet as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
 						{
-							$pdf->SetFillColor(221, 221, 221);
-							$pdf->SetFont('','B');
-						}
-						else if ($rowItem['nivel'] == 2)
-						{
-							$pdf->SetFillColor(255, 255, 255);
-							$pdf->SetFont('','B');		
-							
-						}
-						else {
-							$pdf->SetFillColor(255, 255, 255);
-							$pdf->SetFont('');		
+							if ($rowItem['nivel'] == 1)
+							{
+								$pdf->SetFillColor(221, 221, 221);
+								$pdf->SetFont('','B');
+							}
+							else if ($rowItem['nivel'] == 2)
+							{
+								$pdf->SetFillColor(255, 255, 255);
+								$pdf->SetFont('','B');		
+								
+							}
+							else {
+								$pdf->SetFillColor(255, 255, 255);
+								$pdf->SetFont('');		
+							}					
+							$pdf->SetTextColor(0);			        
+							$pdf->Cell(100, 0, $rowItem['descripcion'], 1, 0, 'L', 1);
+							$pdf->Cell(40, 0, $rowItem['unidadabrev'], 1, 0, 'C', 1);
+							if ($rowItem['nivel'] == 3)
+							{
+								$pdf->Cell(40, 0, $rowItem['cantidaditem'], 1, 0, 'C', 1);	
+								$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'R', 1);
+							}
+							else {
+								$pdf->Cell(40, 0, '', 1, 0, 'C', 1);	
+								$pdf->Cell(40, 0, '', 1, 0, 'R', 1);
+							}
+							$pdf->Cell(40, 0, $rowItem['valortotal'], 1, 0, 'R', 1);
+							$pdf->Ln();
 						}					
-				        $pdf->SetTextColor(0);			        
-						$pdf->Cell(100, 0, $rowItem['descripcion'], 1, 0, 'L', 1);
-						$pdf->Cell(40, 0, $rowItem['unidadabrev'], 1, 0, 'C', 1);
-						if ($rowItem['nivel'] == 3)
-						{
-							$pdf->Cell(40, 0, $rowItem['cantidaditem'], 1, 0, 'C', 1);	
-							$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'R', 1);
-						}
-						else {
-							$pdf->Cell(40, 0, '', 1, 0, 'C', 1);	
-							$pdf->Cell(40, 0, '', 1, 0, 'R', 1);
-						}
-						$pdf->Cell(40, 0, $rowItem['valortotal'], 1, 0, 'R', 1);
-						$pdf->Ln();
-					}					
+					}
+					$pdf->Ln();
 				}
 				$pdf->Ln();
-			}
-			$pdf->Ln();
 
-			//Detalle de Otros Gastos			
-			if (pg_numrows($dsUCOTog) > 0)
-			{
-				//Encabezado
-				$pdf->SetFillColor(206, 206, 206);
-			    $pdf->SetTextColor(0, 0, 0);        
-			    $pdf->SetLineWidth(0.3);
-			    $pdf->SetFont('', 'B');
-				$pdf->Cell(220, 0, 'Otros Gastos', 1, 0, 'C', 1);
-				$pdf->Ln();	
-				$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);				
-				$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
-				$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
-				$pdf->Ln();
-				
-				foreach ($arrUCOTog as &$rowItem) {
-					if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
-					{
-						$pdf->SetFillColor(255, 255, 255);
-			    		$pdf->SetTextColor(0, 0, 0);
-			    		$pdf->SetFont('');
-						$pdf->Cell(100, 0, $rowItem['otrosgastos'], 1, 0, 'L', 1);
-						$pdf->Cell(40, 0, $rowItem['cantidadog'], 1, 0, 'C', 1);
-						$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'R', 1);
-						$pdf->Cell(40, 0, $rowItem['valorog'], 1, 0, 'R', 1);
-						$pdf->Ln();
-					}					
+				//Detalle de Otros Gastos			
+				if (pg_numrows($dsUCOTog) > 0)
+				{
+					//Encabezado
+					$pdf->SetFillColor(206, 206, 206);
+					$pdf->SetTextColor(0, 0, 0);        
+					$pdf->SetLineWidth(0.3);
+					$pdf->SetFont('', 'B');
+					$pdf->Cell(220, 0, 'Otros Gastos', 1, 0, 'C', 1);
+					$pdf->Ln();	
+					$pdf->Cell(100, 0, 'Descripción', 1, 0, 'C', 1);				
+					$pdf->Cell(40, 0, 'Cantidad', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Unitario', 1, 0, 'C', 1);
+					$pdf->Cell(40, 0, 'Valor Total', 1, 0, 'C', 1);
+					$pdf->Ln();
+					
+					foreach ($arrUCOTog as &$rowItem) {
+						if ($rowItem['id_ucsbvalorarouc'] == $row['id_ucsbvalorarouc'])
+						{
+							$pdf->SetFillColor(255, 255, 255);
+							$pdf->SetTextColor(0, 0, 0);
+							$pdf->SetFont('');
+							$pdf->Cell(100, 0, $rowItem['otrosgastos'], 1, 0, 'L', 1);
+							$pdf->Cell(40, 0, $rowItem['cantidadog'], 1, 0, 'C', 1);
+							$pdf->Cell(40, 0, $rowItem['valorunitario'], 1, 0, 'R', 1);
+							$pdf->Cell(40, 0, $rowItem['valorog'], 1, 0, 'R', 1);
+							$pdf->Ln();
+						}					
+					}
 				}
+				$pdf->Ln();
 			}
-			$pdf->Ln();
 		}
+		
 		
 		//Directo Contratista		
 		$pdf->Output(__DIR__ . '/../reportes/ProyectoUUESE-' .pg_fetch_result($dsEncabezado, 0, 1) .'.pdf','F');		
