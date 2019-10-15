@@ -2,6 +2,11 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.0 - 2019-10-15
+  * Cambio en cantidades de obra civil para banco de capacitores y reactores.
+  * Cambio en cantidad del equipo Barra tubular en UUCC SE B505.
+  * Creacón de Suministro Suelto - Total de medidores de tarifación en tableros de medida comercial para Tableros de Control y Protección.
+  * Eliminación de duplicados y correción de cantidades en servicios de Tableros de Control y Protección.
 * Versión 1.4.0.2 - 2019-10-03
   * Se corrigen parámetros en la creación de los reportes para PDF y Excel.
 * Versión 1.4.0.1 - 2019-09-24

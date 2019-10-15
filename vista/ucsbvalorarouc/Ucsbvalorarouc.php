@@ -253,7 +253,7 @@ Phx.vista.Ucsbvalorarouc=Ext.extend(Phx.gridInterfaz,{
 		}
 	],
 	tam_pag:50,	
-	title:'Otras unidades constructibas',
+	title:'Otras unidades constructivas',
 	ActSave:'../../sis_SINEX/control/Ucsbvalorarouc/insertarUcsbvalorarouc',
 	ActDel:'../../sis_SINEX/control/Ucsbvalorarouc/eliminarUcsbvalorarouc',
 	ActList:'../../sis_SINEX/control/Ucsbvalorarouc/listarUcsbvalorarouc',

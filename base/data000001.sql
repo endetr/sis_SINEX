@@ -17131,3 +17131,348 @@ begin;
 commit;
 
 /***********************************F-SCP-JYP-CMS-2-18/09/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-15/10/2019****************************************/
+
+begin;
+	do $$
+		
+	begin		
+		
+		--Banco de Capacitores derivacion  0 a 10 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2505.
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil IN (3,5,6) AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 168
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  0 a 10 MVAr';
+		
+		--Banco de Capacitores derivacion  10 a 20  MVAr.
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2508
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 3 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 5
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 9
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 336
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores derivacion  10 a 20  MVAr.';
+				
+		--Banco de Capacitores serie 230  KV. xx  MVAr.
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3835
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 11
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 3 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 13
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 924
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 24
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 11
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Banco de Capacitores serie 230  KV. xx  MVAr.';
+				
+		--Reactor de Neutro x Mohm
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1000
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 177
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Reactor de Neutro x Mohm';
+				
+		--Reactor monofasico 0 a 5 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1000
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 12
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 16
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 589
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Reactor monofasico 0 a 5 MVAr';
+		
+		--Reactor monofásico 5.1 a 10 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1000
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 12
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 16
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 601
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Reactor monofásico 5.1 a 10 MVAr';
+		 
+		--Reactor trifasico 10 a 20 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2600
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 48
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 62
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2357
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 14
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 10 a 20 MVAr';
+				
+		--Reactor trifasico 20.1 a 30 MVAr
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 0
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2600
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 2 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 94
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 4 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 72
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 5 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 22
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 6 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3535
+		FROM	snx.tmaquinaria
+		WHERE	tmaquinariaobracivil.id_maquinaria = tmaquinaria.id_maquinaria AND tmaquinariaobracivil.id_obracivil = 7 AND
+				tmaquinaria.maquinaria = 'Reactor trifasico 20.1 a 30 MVAr';
+		
+		--Equipo Barra
+		UPDATE	snx.tucsbequipo
+		SET		cantidadequ = 27
+		FROM	snx.tucsbequipo TA
+		JOIN	snx.tequipo TB ON TA.id_equipo = TB.id_equipo
+		JOIN	snx.tunidadconstructivasb TC ON TA.id_unidadconstructivasb = TC.id_unidadconstructivasb
+		WHERE	tucsbequipo.id_ucsbequipo = TA.id_ucsbequipo AND TC.codigo = 'UUCC SE B505' AND TB.equipo = 'Barra Tubular';
+		
+		TRUNCATE snx.tucsbequipotemp RESTART IDENTITY;
+		
+		INSERT INTO snx.tucsbequipotemp	
+		SELECT	id_ucsbequipo AS id_ucsbequipotemp, id_unidadconstructivasb, id_equipo, cantidadequ
+		FROM	snx.tucsbequipo;		
+		
+		--Suministro Suelto - Total de medidores de tarifación en tableros de medida comercial
+		INSERT INTO snx.tunidadconstructivatablerocp
+		(
+			id_unidadconstructivaenctablerocp,
+			precio,
+			cantidadtablerocp,
+			estado_reg,
+			unidadconstructivatablerocp,
+			id_usuario_ai,
+			id_usuario_reg,
+			usuario_ai,
+			fecha_reg,
+			id_usuario_mod,
+			fecha_mod
+          ) 
+		  VALUES
+		  (
+			3,
+			3116,
+			0,
+			'activo',
+			'Suministro Suelto - Total de medidores de tarifación en tableros de medida comercial',
+			null,
+			1,
+			null,
+			now(),
+			null,
+			null
+ 		  );
+		  
+		--Eliminar servicios en tableros de control y protección
+		DELETE FROM	snx.tunidadconstructivatablerocpserv
+		WHERE	unidadconstructivatablerocpserv IN ('Programación, configuración y parametrización de reles, incluye la configuración de lógicas internas e intercambio de mensajes GOOSE y otros con el SAS, además la integración de Bahías.',
+													'Curso de formación en programación y gestión del SAS, aefectuarse en oficinas de ENDE en Cochabamba, con una duración de 40 horas. El temario debe incluir SICAM PASS, WIN CC.');
+
+		--Correción de cantidades
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 20310
+		WHERE	unidadconstructivatablerocpserv = 'Programación, configuración y parametrización del SAS, trabajo a efectuarse en fábrica.';
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 51485
+		WHERE	unidadconstructivatablerocpserv = '"Integración, pruebas de pre-energización y puesta en servicio, Trabajos a efectuarse en sitio, con participación del personal.Esta incluido la integración de seis (6) de MT al SAS de la subestación. Con personal."';
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 610
+		WHERE	unidadconstructivatablerocpserv = 'integración de celda de media tensión al SAS';
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 22031
+		WHERE	unidadconstructivatablerocpserv = 'Programación, configuración y parametrización de reles.Incluye la configuración de lógicas internas e intercambio de mensajes GOOSE y otros con el SAS, además la integración de Bahías.';
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 6444
+		WHERE	unidadconstructivatablerocpserv = 'Curso de formación en programación y gestión del SAS, a efectuarse en oficinas de ENDE en Cochabamba, con una duración de 40 horas. El temario debe incluir SICAM PASS, WIN CC';
+		UPDATE	snx.tunidadconstructivatablerocpserv
+		SET		precio = 59947
+		WHERE	unidadconstructivatablerocpserv = 'Integración, pruebas de pre-energización y puesta en servicio,  Trabajos a efectuarse en sitio, con participación del personal. Esta incluido la integración de seis (6) de MT al SAS de la  subestación.';
+		
+		
+		PERFORM snx.calcularprecioucsball();
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-15/10/2019****************************************/
