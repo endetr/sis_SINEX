@@ -11,7 +11,6 @@ CREATE OR REPLACE FUNCTION snx.obteneruclteqmate(
     ROWS 1000
 AS $BODY$
 
-
 	
 BEGIN
 	DROP TABLE if exists ttempeqmate;
@@ -91,7 +90,7 @@ BEGIN
 					WHEN ucltitem.id_item = 7 AND uclteqmate.id_puestatierra = 4 THEN 180
 					WHEN ucltitem.id_item = 7 AND uclteqmate.id_puestatierra > 4 THEN 0
 					WHEN ucltitem.id_item = 8 AND (uclteqmate.id_aislador = 1 OR uclteqmate.id_aislador = 2 OR uclteqmate.id_aislador = 5) THEN caltu.factor
-					WHEN ucltitem.id_item = 8 AND (uclteqmate.id_aislador <> 1 OR uclteqmate.id_aislador <> 2 OR uclteqmate.id_aislador <> 5) THEN ((nclt.factor * tens.um_kv) / (sqrt(3) * exp(-1 * caltu.valoraltura / 8150) * 292)) + 1
+					WHEN ucltitem.id_item = 8 AND (uclteqmate.id_aislador <> 1 AND uclteqmate.id_aislador <> 2 AND uclteqmate.id_aislador <> 5) THEN ((nclt.factor * tens.um_kv) / (sqrt(3) * exp(-1 * caltu.valoraltura / 8150) * 292)) + 1
 					WHEN ucltitem.id_item = 9 THEN uclt.estructuraamarrepeso * uclt.estructuraamarrecantidad
 					WHEN ucltitem.id_item = 10 THEN uclt.estructuraamarrecantidad
 					WHEN ucltitem.id_item = 11 AND (uclteqmate.id_aislador = 1 OR uclteqmate.id_aislador = 2 OR uclteqmate.id_aislador = 5) THEN caltu.factor
@@ -128,10 +127,10 @@ BEGIN
 					WHEN ucltitem.id_item = 36 AND uclt.id_unidadconstructivalt = 19 THEN 0
 					WHEN ucltitem.id_item = 36 AND uclt.id_configuracionlt = 1 THEN (uclt.longitud/2.5*2) 
 					WHEN ucltitem.id_item = 36 AND uclt.id_configuracionlt = 2 THEN (uclt.longitud/2.5*2) * 2
-					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 1 THEN 3*((uclt.longitud/2)+1)
-					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 2 THEN 3*((uclt.longitud/2)+1)*2
-					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 1 THEN ((uclt.longitud/2.5*2) + 1) + ((uclt.longitud/2.5*2)) - 1
-					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 2 THEN (((uclt.longitud/2.5*2) + 1) * 2) + ((uclt.longitud/2.5*2) * 2) - 2					
+					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 1 THEN ROUND(3*((uclt.longitud/2)+1),0)
+					WHEN ucltitem.id_item = 37 AND uclt.id_unidadconstructivalt = 19 AND uclt.id_configuracionlt = 2 THEN ROUND(3*((uclt.longitud/2)+1)*2,0)
+					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 1 THEN ROUND(((uclt.longitud/2.5*2) + 1) + ((uclt.longitud/2.5*2)) - 1,0)
+					WHEN ucltitem.id_item = 37 AND uclt.id_configuracionlt = 2 THEN ROUND((((uclt.longitud/2.5*2) + 1) * 2) + ((uclt.longitud/2.5*2) * 2) - 2,0)					
 					WHEN ucltitem.id_item = 38 AND uclt.id_configuracionlt = 1 AND uclt.id_pararrayolinea = 2 THEN 6
 					WHEN ucltitem.id_item = 38 AND uclt.id_configuracionlt = 2 AND uclt.id_pararrayolinea = 2 THEN 12
 					WHEN ucltitem.id_item = 39 AND uclt.id_unidadconstructivalt = 19 THEN 0
@@ -400,7 +399,6 @@ BEGIN
 	SELECT * FROM ttempeqmate;																											 
 																											 
 end;
-
 
 $BODY$;
 

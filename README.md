@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.1 - 2019-10-18
+  * Se Aplica redondeo en el cálculo en la cantidad de Empalme cable de potencia para las UC de líneas.
 * Versión 1.5.0.0 - 2019-10-15
   * Cambio en cantidades de obra civil para banco de capacitores y reactores.
   * Cambio en cantidad del equipo Barra tubular en UUCC SE B505.
