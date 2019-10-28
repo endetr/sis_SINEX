@@ -266,7 +266,7 @@ Phx.vista.Ucsbvalorarcuc=Ext.extend(Phx.gridInterfaz,{
 		{
 			config:{
 				name: 'valorucsbtotal',
-				fieldLabel: 'Valor Total',
+				fieldLabel: 'Valor Parcial',
 				allowBlank: true,
 				anchor: '80%',
 				gwidth: 100,
@@ -274,6 +274,22 @@ Phx.vista.Ucsbvalorarcuc=Ext.extend(Phx.gridInterfaz,{
 			},
 				type:'NumberField',
 				filters:{pfiltro:'sbvc.valorucsbtotal',type:'numeric'},
+				id_grupo:1,
+				grid:true,
+				form:false
+		},	
+		{
+			config:{
+				name: 'valorucsbfinal',
+				fieldLabel: 'Valor Total',
+				allowBlank: true,
+				anchor: '80%',
+				gwidth: 100,
+				maxLength:1179650,
+				decimalPrecision: 2
+			},
+				type:'NumberField',
+				filters:{pfiltro:'sbvc.valorucsbfinal',type:'numeric'},
 				id_grupo:1,
 				grid:true,
 				form:false
@@ -406,6 +422,7 @@ Phx.vista.Ucsbvalorarcuc=Ext.extend(Phx.gridInterfaz,{
 		{name:'valorucsbtotal', type: 'numeric'},
 		{name:'valorucsbmate', type: 'numeric'},
 		{name:'valorucsbe', type: 'numeric'},
+		{name:'valorucsbfinal', type: 'numeric'},
 		{name:'id_ucsbvalorar', type: 'numeric'},
 		{name:'id_usuario_ai', type: 'numeric'},
 		{name:'id_usuario_reg', type: 'numeric'},

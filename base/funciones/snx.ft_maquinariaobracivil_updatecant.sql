@@ -10,6 +10,7 @@ CREATE OR REPLACE FUNCTION snx.ft_maquinariaobracivil_updatecant(
     VOLATILE 
 AS $BODY$
 
+
 BEGIN
 	--Peso
 	UPDATE	snx.tmaquinariaobracivil
@@ -21,6 +22,7 @@ BEGIN
 							WHEN 2 THEN 0.1 * TB.potencia
 							WHEN 3 THEN 2 * TB.potencia
 							WHEN 4 THEN 2 * TB.potencia
+							WHEN 5 THEN 2 * TB.potencia
 						END AS peso	
 			FROM		snx.tmaquinariaobracivil TA
 			INNER JOIN	snx.tmaquinaria TB ON TA.id_maquinaria = TB.id_maquinaria
@@ -87,6 +89,7 @@ BEGIN
 
 	RETURN;
 END;
+
 
 $BODY$;
 

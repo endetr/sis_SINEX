@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_maquinaria_ime(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SINEX
  FUNCION: 		snx.ft_maquinaria_ime
@@ -57,6 +58,7 @@ BEGIN
 									WHEN 2 THEN 0.1 * v_parametros.potencia
 									WHEN 3 THEN 2 * v_parametros.potencia
 									WHEN 4 THEN 2 * v_parametros.potencia
+									WHEN 5 THEN 2 * v_parametros.potencia
 								END AS peso							
 						);
 		
@@ -154,6 +156,7 @@ BEGIN
 										WHEN 2 THEN 0.1 * v_parametros.potencia
 										WHEN 3 THEN 2 * v_parametros.potencia
 										WHEN 4 THEN 2 * v_parametros.potencia
+										WHEN 5 THEN 2 * v_parametros.potencia
 									END AS peso							
 							);
 						
@@ -231,6 +234,7 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
+
 
 $BODY$;
 

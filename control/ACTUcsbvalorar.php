@@ -371,7 +371,8 @@ class ACTUcsbvalorar extends ACTbase{
 		$Excel->getActiveSheet()->getColumnDimension('K')->setWidth(15);
 		$Excel->getActiveSheet()->getColumnDimension('L')->setWidth(15);
 		$Excel->getActiveSheet()->getColumnDimension('M')->setWidth(15);
-		$Excel->getActiveSheet()->getColumnDimension('N')->setWidth(15);		
+		$Excel->getActiveSheet()->getColumnDimension('N')->setWidth(15);
+		$Excel->getActiveSheet()->getColumnDimension('O')->setWidth(15);			
 		
 		//Encabezado
 		$Excel->getActiveSheet()->mergeCells('A1:N1');
@@ -439,12 +440,12 @@ class ACTUcsbvalorar extends ACTbase{
 		$Excel->getActiveSheet()->getStyle('A3:F11')->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 		
 		//Resumen Unidades Constructivas Subestaciones
-		$Excel->getActiveSheet()->mergeCells('A13:N13');
+		$Excel->getActiveSheet()->mergeCells('A13:O13');
 		$Excel->getActiveSheet()->setCellValue('A13','Resumen Unidades Constructivas Subestaciones');	
 		$Excel->getActiveSheet()->getStyle('A13')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
 		$Excel->getActiveSheet()->getStyle('A13')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$Excel->getActiveSheet()->getStyle('A13')->getFont()->setBold( true );
-		$Excel->getActiveSheet()->getStyle('A13:N13')->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+		$Excel->getActiveSheet()->getStyle('A13:O13')->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 		
 		if (pg_numrows($dsUCSB) > 0)
 		{
@@ -461,11 +462,12 @@ class ACTUcsbvalorar extends ACTbase{
 				$Excel->getActiveSheet()->setCellValue('K' .$intRowExcel,'Materiales');
 				$Excel->getActiveSheet()->setCellValue('L' .$intRowExcel,'Directo Contratista');
 				$Excel->getActiveSheet()->setCellValue('M' .$intRowExcel,'Otros Gastos');
-				$Excel->getActiveSheet()->setCellValue('N' .$intRowExcel,'Total');			
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':N' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':N' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':N' .$intRowExcel)->getFont()->setBold( true );
-				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':N' .$intRowExcel)->getAlignment()->setWrapText(true);	
+				$Excel->getActiveSheet()->setCellValue('N' .$intRowExcel,'Valor Parcial');
+				$Excel->getActiveSheet()->setCellValue('O' .$intRowExcel,'Valor Total');			
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':O' .$intRowExcel)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':O' .$intRowExcel)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':O' .$intRowExcel)->getFont()->setBold( true );
+				$Excel->getActiveSheet()->getStyle('A' .$intRowExcel .':O' .$intRowExcel)->getAlignment()->setWrapText(true);	
 				//Datos Encabezado UC 
 				$intRowExcel++;	
 				$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E'  .$intRowExcel);
@@ -479,8 +481,9 @@ class ACTUcsbvalorar extends ACTbase{
 				$Excel->getActiveSheet()->setCellValue('K' . $intRowExcel,$row['valorucsbmate']);
 				$Excel->getActiveSheet()->setCellValue('L' . $intRowExcel,$row['valorucsbcont']);
 				$Excel->getActiveSheet()->setCellValue('M' . $intRowExcel,$row['valorucsbog']);
-				$Excel->getActiveSheet()->setCellValue('N' . $intRowExcel,$row['valorucsbtotal']);	
-				$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':N' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+				$Excel->getActiveSheet()->setCellValue('N' . $intRowExcel,$row['valorucsbtotal']);
+				$Excel->getActiveSheet()->setCellValue('O' . $intRowExcel,$row['valorucsbfinal']);	
+				$Excel->getActiveSheet()->getStyle('A' .($intRowExcel-1) .':O' .$intRowExcel)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 				
 				//Maquinaria
 				if (pg_numrows($dsUCM) > 0)
@@ -1027,7 +1030,8 @@ class ACTUcsbvalorar extends ACTbase{
 				$pdf->Cell(30, 0, 'Materiales', 1, 0, 'C', 1);
 				$pdf->Cell(40, 0, 'Directo Contratista', 1, 0, 'C', 1);
 				$pdf->Cell(30, 0, 'Otros Gastos', 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, 'Total', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Valor Parcial', 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, 'Valor Total', 1, 0, 'C', 1);
 				$pdf->Ln();			
 				//Datos 1
 				$pdf->SetFillColor(255, 255, 255);
@@ -1036,7 +1040,8 @@ class ACTUcsbvalorar extends ACTbase{
 				$pdf->Cell(30, 0, $row['valorucsbmate'], 1, 0, 'C', 1);
 				$pdf->Cell(40, 0, $row['valorucsbcont'], 1, 0, 'C', 1);		
 				$pdf->Cell(30, 0, $row['valorucsbog'], 1, 0, 'C', 1);
-				$pdf->Cell(30, 0, $row['valorucsbtotal'], 1, 0, 'C', 1);			
+				$pdf->Cell(30, 0, $row['valorucsbtotal'], 1, 0, 'C', 1);
+				$pdf->Cell(30, 0, $row['valorucsbfinal'], 1, 0, 'C', 1);				
 				$pdf->Ln();
 				
 				//Maquinaria

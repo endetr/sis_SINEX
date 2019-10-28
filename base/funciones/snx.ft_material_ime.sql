@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_material_ime(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SINEX
  FUNCION: 		snx.ft_material_ime
@@ -192,6 +193,7 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
+
 
 $BODY$;
 

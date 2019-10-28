@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarcuc_sel(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_ucsbvalorarcuc_sel
@@ -64,6 +65,7 @@ BEGIN
 						sbvc.valorucsbtotal,
 						sbvc.valorucsbmate,
 						sbvc.valorucsbe,
+						sbvc.cantidaditem * sbvc.valorucsbtotal AS valorucsbfinal,
 						sbvc.id_ucsbvalorar,
 						sbvc.id_usuario_ai,
 						sbvc.id_usuario_reg,
@@ -131,6 +133,7 @@ EXCEPTION
 			v_resp = pxp.f_agrega_clave(v_resp,'procedimientos',v_nombre_funcion);
 			raise exception '%',v_resp;
 END;
+
 
 $BODY$;
 

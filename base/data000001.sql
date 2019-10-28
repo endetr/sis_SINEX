@@ -17476,3 +17476,343 @@ begin;
 commit;
 
 /***********************************F-SCP-JYP-CMS-1-15/10/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-23/10/2019****************************************/
+
+begin;
+	do $$
+	declare 
+		v_id_maquinaria1 int;
+		v_id_maquinaria2 int;
+		v_id_maquinaria3 int;
+		
+	begin		
+		--Nuevo tipo precio para maquinaria
+		INSERT INTO snx.ttipopreciomaquinaria(id_tipopreciomaquinaria, tipopreciomaquinaria, id_usuario_reg, fecha_reg, estado_reg)
+		VALUES
+		(5, 'REAC MONO VAR', 1, now(), 'activo');
+		
+		INSERT INTO snx.tmaquinariafactor(id_obracivil,id_tipopreciomaquinaria,numfactor,id_usuario_reg, fecha_reg, estado_reg)
+		SELECT	id_obracivil, 
+				5 AS id_tipopreciomaquinaria, 
+				numfactor, 
+				id_usuario_reg, fecha_reg, estado_reg
+		FROM 	snx.tmaquinariafactor WHERE id_tipopreciomaquinaria = 4;
+		
+		--Creación de las nuevas maquinarias
+		INSERT INTO snx.tmaquinaria(maquinaria, potencia, peso, id_factorindexacion, id_ambitoprecio, id_tipopreciomaquinaria, id_usuario_reg, fecha_reg, estado_reg)
+		VALUES('Reactor de potencia monofásico Variable 500 / √3 kV - 10 a 20  MVAR', 20, 40, 3, 1, 5, 1, now(), 'activo') RETURNING id_maquinaria into v_id_maquinaria1;
+		
+		INSERT INTO snx.tmaquinaria(maquinaria, potencia, peso, id_factorindexacion, id_ambitoprecio, id_tipopreciomaquinaria, id_usuario_reg, fecha_reg, estado_reg)
+		VALUES('Reactor de potencia monofásico Variable 500 / √3 kV - 20.1 a 30 MVAR', 30, 60, 3, 1, 5, 1, now(), 'activo') RETURNING id_maquinaria into v_id_maquinaria2;
+		
+		INSERT INTO snx.tmaquinaria(maquinaria, potencia, peso, id_factorindexacion, id_ambitoprecio, id_tipopreciomaquinaria, id_usuario_reg, fecha_reg, estado_reg)
+		VALUES('Reactor de potencia monofásico Variable 500 / √3 kV - 30.1 a 40 MVAR', 40, 80, 3, 1, 5, 1, now(), 'activo') RETURNING id_maquinaria into v_id_maquinaria3;
+		
+		--Se inserta el precio
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,27615,'activo',v_id_maquinaria1,null,now(),null,1,null,null);
+
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,27540,'activo',v_id_maquinaria2,null,now(),null,1,null,null);
+
+		insert into snx.tmaquinariaprecio(fechaprecio,proyecto,id_moneda,valormaquinaria,estado_reg,id_maquinaria,id_usuario_ai,fecha_reg,usuario_ai,id_usuario_reg,id_usuario_mod,fecha_mod) values
+		('2018-09-30','SPVPT',1,27502.5,'activo',v_id_maquinaria3,null,now(),null,1,null,null);
+		
+		--Se le insertan los Materiales
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria1 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria2 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		INSERT INTO snx.tmaquinariamaterial (cantidadmate, estado_reg, id_maquinaria, id_material,id_usuario_reg, id_usuario_ai,  usuario_ai, fecha_reg, id_usuario_mod, fecha_mod)
+		SELECT	0 AS cantidadmate,
+				'activo' AS estado_reg,
+				v_id_maquinaria3 as id_maquinaria,
+				id_material,
+				1 AS id_usuario_reg,
+				null AS id_usuario_ai, 
+				null AS usuario_ai,
+				now() AS fecha_reg,
+				null AS id_usuario_mod,
+				now() AS fecha_mod
+		FROM	snx.tmaterial;
+		
+		--Se aplica la cantidad
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 2309
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 180;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 2288
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 187;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 1290
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 179;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 1144
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 186;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 728
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 181;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 520
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 185;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 500
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 152;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 400
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 190;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 100
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 171;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 12
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 174;
+		
+		UPDATE	snx.tmaquinariamaterial
+		SET		cantidadmate= 3
+		WHERE	tmaquinariamaterial.id_maquinaria IN (v_id_maquinaria1,v_id_maquinaria2,v_id_maquinaria3) AND tmaquinariamaterial.id_material = 206;
+		
+		--Se le insertan las obras civiles
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria1 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria2 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		insert into snx.tmaquinariaobracivil(id_obracivil, cantidadmoc, id_maquinaria, estado_reg, id_usuario_ai, fecha_reg, usuario_ai, id_usuario_reg, fecha_mod, id_usuario_mod)
+		SELECT	oc.id_obracivil,
+				0 AS cantidadmoc,
+				v_id_maquinaria3 as id_maquinaria,
+				'activo' AS estado_reg,
+				null AS id_usuario_ai, 
+				now() AS fecha_reg, 
+				null AS usuario_ai, 
+				1 AS id_usuario_reg, 
+				now() AS fecha_mod, 
+				null AS id_usuario_mod
+		FROM	snx.tobracivil oc
+		WHERE  id_obracivil IN (1,2,3,4,5,6,7);
+		
+		--Cantidades de obras civiles
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 2356.80
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 7;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 62.4
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 4;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 48
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 5;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1200
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 40
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 1;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 14.4
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria1 AND tmaquinariaobracivil.id_obracivil = 6;
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 3535.2
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 7;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 93.6
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 4;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 72
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 5;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1200
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 60
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 1;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 21.6
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria2 AND tmaquinariaobracivil.id_obracivil = 6;
+		
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 4713.6
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 7;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 124.8
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 4;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 96
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 5;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 1200
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 2;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 80
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 1;
+		UPDATE	snx.tmaquinariaobracivil
+		SET		cantidadmoc = 28.8
+		WHERE	tmaquinariaobracivil.id_maquinaria = v_id_maquinaria3 AND tmaquinariaobracivil.id_obracivil = 6;
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-23/10/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-25/10/2019****************************************/
+
+begin;
+	do $$
+		declare 
+		v_id_unidadconstructivasb1 int;
+		v_id_unidadconstructivasb2 int;
+		v_id_unidadconstructivasb3 int;
+		
+	begin
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Reactor de potencia monofásico variable 500 / √3 kV - 10 a 20  MVAR', 6, 0.00, 'UUCC SE R08', 1000.00, 1, 'activo', 9, 100.00, 50.00, 1, 55000.00, null, null, '2019-10-24 16:01:49.623011', 1, '2019-10-24 16:17:19.19084', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb1;
+		
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Reactor de potencia monofásico variable 500 / √3 kV - 20.1 a 30  MVAR', 6, 0.00, 'UUCC SE R09', 1000.00, 1, 'activo', 9, 100.00, 50.00, 1, 20000.00, null, null, '2019-10-24 15:42:51.206054', 1, '2019-10-24 16:16:27.819423', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb2;
+
+		insert into snx.tunidadconstructivasb(descripcion,id_tensionservicio,superficie,codigo,alturainstalacion,id_ubicacion,estado_reg,id_claseaislacion,distanciatransporte,distanciatransportemate,numerobahias,varloringenieria,id_usuario_ai,usuario_ai,fecha_reg,id_usuario_reg,fecha_mod,id_usuario_mod) values
+		('Reactor de potencia monofásico variable 500 / √3 kV - 30.1 a 40  MVAR', 6, 0.00, 'UUCC SE R10', 1000.00, 1, 'activo', 9, 100.00, 50.00, 1, 20000.00, null, null, '2019-10-24 15:28:32.452339', 1, '2019-10-24 16:16:53.534252', 1)RETURNING id_unidadconstructivasb into v_id_unidadconstructivasb3;
+
+		--Maquinaria
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb1 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb2 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		INSERT INTO snx.tucsbmaquinaria (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_maquinaria,cantidadmaq)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb3 AS id_unidadconstructivasb,
+				id_maquinaria,
+				0 AS cantidadmaq					
+		FROM	snx.tmaquinaria;
+		
+		--Cantidades
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb1 AND
+				tmaquinaria.maquinaria = 'Reactor de potencia monofásico Variable 500 / √3 kV - 10 a 20  MVAR';
+				
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb2 AND
+				tmaquinaria.maquinaria = 'Reactor de potencia monofásico Variable 500 / √3 kV - 20.1 a 30 MVAR';
+		
+		UPDATE	snx.tucsbmaquinaria
+		SET		cantidadmaq = 1
+		FROM	snx.tmaquinaria
+		WHERE	tucsbmaquinaria.id_maquinaria = tmaquinaria.id_maquinaria AND
+				tucsbmaquinaria.id_unidadconstructivasb = v_id_unidadconstructivasb3 AND
+				tmaquinaria.maquinaria = 'Reactor de potencia monofásico Variable 500 / √3 kV - 30.1 a 40 MVAR';
+		
+		--Equipo
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb1 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 9 OR equ.id_claseaislacion = 9;
+		
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb2 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 2 OR equ.id_claseaislacion = 9;
+		
+		INSERT INTO snx.tucsbequipo (id_usuario_reg,fecha_reg,estado_reg,id_unidadconstructivasb,id_equipo,cantidadequ)
+		SELECT	1 AS id_usuario_reg,
+				now() AS fecha_reg,
+				'activo' AS estado_reg,					
+				v_id_unidadconstructivasb3 AS id_unidadconstructivasb,
+				id_equipo,
+				0 AS cantidadequ					
+		FROM	snx.tequipo equ
+		WHERE 	equ.id_claseaislacion = 5 OR equ.id_claseaislacion = 9;
+	
+		PERFORM snx.calcularprecioucsball();
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-25/10/2019****************************************/

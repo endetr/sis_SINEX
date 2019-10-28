@@ -2,6 +2,9 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.2 - 2019-10-25
+  * Se agrega en el listado de maquinaria los reactores de potencia monofásica variable.
+  * Se agrega en el listado de UC de subestaciones los reactores de potencia monofásica variable.
 * Versión 1.5.0.1 - 2019-10-18
   * Se ajusta el cálculo de empalmes para cables de potencia en números enteros, y empalmes cada 500 metros para líneas de longitud mayor a 500 m.
 * Versión 1.5.0.0 - 2019-10-15

@@ -4,12 +4,13 @@
 
 CREATE OR REPLACE FUNCTION snx.ft_tucsbvalorarcuc_get(
 	id_ucsbvalorarint integer)
-    RETURNS TABLE(id_ucsvalorarcuc integer, id_ucsbvalorar integer, codigo character varying, descripcion character varying, tensionservicio character varying, cantidaditem numeric, potencia numeric, valorucsbe numeric, valorucsbm numeric, valorucsbmate numeric, valorucsbcont numeric, valorucsbog numeric, valorucsbtotal numeric) 
+    RETURNS TABLE(id_ucsvalorarcuc integer, id_ucsbvalorar integer, codigo character varying, descripcion character varying, tensionservicio character varying, cantidaditem numeric, potencia numeric, valorucsbe numeric, valorucsbm numeric, valorucsbmate numeric, valorucsbcont numeric, valorucsbog numeric, valorucsbtotal numeric, valorucsbfinal numeric) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE 
     ROWS 1000
 AS $BODY$
+
 
 			    
 BEGIN
@@ -27,11 +28,13 @@ BEGIN
 				vucu.valorucsbmate,
 				vucu.valorucsbcont,
 				vucu.valorucsbog,
-				vucu.valorucsbtotal
+				vucu.valorucsbtotal,
+				vucu.cantidaditem * vucu.valorucsbtotal AS valorucsbfinal
 	from 		snx.tucsbvalorarcuc vucu
 	inner join	snx.ttensionservicio tserv on vucu.id_tensionservicio = tserv.id_tensionservicio
 	where		vucu.id_ucsbvalorar = id_ucsbvalorarint;													   
 END;
+
 
 $BODY$;
 

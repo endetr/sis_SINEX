@@ -1,7 +1,18 @@
-CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarcuc_ime(p_administrador integer, p_id_usuario integer, p_tabla character varying, p_transaccion character varying)
- RETURNS character varying
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying)
+
+-- DROP FUNCTION snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying);
+
+CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarcuc_ime(
+	p_administrador integer,
+	p_id_usuario integer,
+	p_tabla character varying,
+	p_transaccion character varying)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE 
+AS $BODY$
+
 
 /**************************************************************************
  SISTEMA:		SPVPT
@@ -67,13 +78,15 @@ BEGIN
 			PERFORM snx.calcularcantidadequiposusb(v_parametros.id_unidadconstructivasb,id_claseaislacionint);
 			
 			--Actualizar maquinaria
-			UPDATE	snx.tmaquinaria
-			SET		potencia = v_parametros.potencia
-			FROM 	snx.tucsbmaquinaria ucsbm			
-			WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
-					tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
-					ucsbm.cantidadmaq > 0;
-					
+			If v_parametros.potencia > 0 THEN			
+				UPDATE	snx.tmaquinaria
+				SET		potencia = v_parametros.potencia
+				FROM 	snx.tucsbmaquinaria ucsbm			
+				WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
+						tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
+						ucsbm.cantidadmaq > 0 AND tmaquinaria.id_tipopreciomaquinaria <> 5;
+			END IF;
+			
 			--Actualizar valores UCSB
 			UPDATE	snx.tunidadconstructivasb
 			SET		alturainstalacion = tucsbvalorar.altura,
@@ -330,12 +343,14 @@ BEGIN
 			PERFORM snx.calcularcantidadequiposusb(v_parametros.id_unidadconstructivasb,id_claseaislacionint);
 						
 			--Actualizar maquinaria
-			UPDATE	snx.tmaquinaria
-			SET		potencia = v_parametros.potencia
-			FROM 	snx.tucsbmaquinaria ucsbm			
-			WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
-					tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
-					ucsbm.cantidadmaq > 0;
+			If v_parametros.potencia > 0 THEN			
+				UPDATE	snx.tmaquinaria
+				SET		potencia = v_parametros.potencia
+				FROM 	snx.tucsbmaquinaria ucsbm			
+				WHERE	tmaquinaria.id_maquinaria = ucsbm.id_maquinaria AND 
+						tmaquinaria.id_tipopreciomaquinaria in (2,4) AND
+						ucsbm.cantidadmaq > 0 AND tmaquinaria.id_tipopreciomaquinaria <> 5;
+			END IF;
 																   
 			--Actualizar valores UCSB
 			UPDATE	snx.tunidadconstructivasb
@@ -605,5 +620,8 @@ EXCEPTION
 				        
 END;
 
-$function$
-;
+
+$BODY$;
+
+ALTER FUNCTION snx.ft_ucsbvalorarcuc_ime(integer, integer, character varying, character varying)
+    OWNER TO postgres;

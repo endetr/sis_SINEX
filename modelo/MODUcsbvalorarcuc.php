@@ -33,6 +33,7 @@ class MODUcsbvalorarcuc extends MODbase{
 		$this->captura('valorucsbtotal','numeric');
 		$this->captura('valorucsbmate','numeric');
 		$this->captura('valorucsbe','numeric');
+		$this->captura('valorucsbfinal','numeric');
 		$this->captura('id_ucsbvalorar','int4');
 		$this->captura('id_usuario_ai','int4');
 		$this->captura('id_usuario_reg','int4');
