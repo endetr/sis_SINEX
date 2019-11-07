@@ -17816,3 +17816,33 @@ begin;
 commit;
 
 /***********************************F-SCP-JYP-CMS-1-25/10/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-01/11/2019****************************************/
+
+begin;
+	do $$
+	begin
+
+	--Se actualiza precio a maquinaria
+	UPDATE	snx.tmaquinariaprecio
+	SET		valormaquinaria = 516062
+	FROM	snx.tmaquinaria
+	WHERE	tmaquinariaprecio.id_maquinaria = tmaquinaria.id_maquinaria AND 
+			tmaquinaria.maquinaria = 'Autotransformador monofasico 230 / 115 KV. 50 MVA.';
+	
+	--Se cambia nombre de items
+	UPDATE	snx.tucltmaestraitem
+	SET		item = 'Sistema de puesta a tierra (indicativo)'
+	WHERE	id_item = 7;
+
+	UPDATE	snx.tucltmaestraitem
+	SET		item = 'Cadena de aisladores (cantidad indicativa)'
+	WHERE	id_item in (8, 11);
+	
+	DELETE FROM snx.tueepotros WHERE descripcion LIKE 'Impuestos por pagos%';
+	
+	end
+	$$;
+commit;
+
+/***********************************F-SCP-JYP-CMS-1-01/11/2019****************************************/

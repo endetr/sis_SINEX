@@ -7,14 +7,12 @@ CREATE OR REPLACE FUNCTION snx.obtenerotrasunidadesconstructivas(
 	numerobahiasint integer,
 	id_revistaint integer,
 	distanciatrans numeric DEFAULT 36)
-    RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric) 
+    RETURNS TABLE(id_otraunidad character varying, codigo character varying, descripcion character varying, codigo_descripcion character varying, valortotal numeric, tensionservicio character varying, claseaislamiento character varying, areasubestacion numeric, longitudvias numeric, norma character varying, porcrepuestos numeric) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE 
     ROWS 1000
 AS $BODY$
-
-
 
 BEGIN
 	DROP TABLE if exists ttempotrasunidades;
@@ -22,7 +20,10 @@ BEGIN
 	--Módulo Común
 	CREATE TEMP table ttempotrasunidades AS 
 	SELECT		TA.id_otraunidad, TA.codigo, TA.descripcion, TA.codigo_descripcion,
-				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivamo,numerobahiasint,TA.valortotal,1,id_revistaint,distanciatrans)) AS valortotal
+				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivamo,numerobahiasint,TA.valortotal,1,id_revistaint,distanciatrans)) AS valortotal,
+				CAST('' as character varying) AS tensionservicio, CAST('' as character varying) AS claseaislamiento, 
+				CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				CAST('' as character varying) AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM		(
 				SELECT		CAST('1000000' || CAST(unconmo.id_unidadconstructivamo as character varying) AS character varying) AS id_otraunidad,				
 							unconmo.id_unidadconstructivamo,
@@ -33,7 +34,7 @@ BEGIN
 								WHEN id_revistaint=1 THEN cast(sum(valoc.preciounitariorlp * mooc.cantidadobra) as numeric(18,2))	
 								WHEN id_revistaint=2 THEN cast(sum(valoc.preciounitariorcb * mooc.cantidadobra) as numeric(18,2))
 								ELSE cast(sum(valoc.preciounitariorsc * mooc.cantidadobra) as numeric(18,2))
-							END AS valortotal
+							END AS valortotal							
 				FROM 		snx.tunidadconstructivamo unconmo	
 				INNER JOIN 	snx.tucmogrupo mogr on unconmo.id_unidadconstructivamo = mogr.id_unidadconstructivamo
 				INNER JOIN 	snx.tucmoobracivil mooc on mogr.id_ucmogrupo = mooc.id_ucmogrupo
@@ -46,7 +47,9 @@ BEGIN
 	--Edificiones
 	INSERT INTO ttempotrasunidades
 	SELECT		TA.id_otraunidad, TA.codigo, TA.descripcion, TA.codigo_descripcion,
-				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivaedif,numerobahiasint,TA.valortotal,2,id_revistaint,distanciatrans)) AS valortotal
+				TA.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(TA.id_unidadconstructivaedif,numerobahiasint,TA.valortotal,2,id_revistaint,distanciatrans)) AS valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM		(										  
 				SELECT		CAST('2000000' || CAST(uce.id_unidadconstructivaedif as character varying) AS character varying) AS id_otraunidad,
 							uce.id_unidadconstructivaedif,
@@ -74,7 +77,9 @@ BEGIN
 				mcuc.codigo,
 				mcuc.descripcion,
 				mcuc.codigo_descripcion,
-				mcuc.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,numerobahiasint,mcuc.valortotal,3,id_revistaint)) AS valortotal
+				mcuc.valortotal + (SELECT SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(mcuc.id_unidadconstructivamcelec,numerobahiasint,mcuc.valortotal,3,id_revistaint)) AS valortotal,
+				mcuc.tensionservicio, mcuc.claseaislamiento , mcuc.areasubestacion, mcuc.longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM		(
 				SELECT		CAST('3000000' || CAST(mcuc.id_unidadconstructivamcelec as character varying) AS character varying) AS id_otraunidad,
 							mcuc.id_unidadconstructivamcelec,
@@ -92,7 +97,8 @@ BEGIN
 								ELSE 0.0
 								END AS numeric))
 							from snx.tucmceitem tuci
-							WHERE tuci.id_unidadconstructivamcelec = mcuc.id_unidadconstructivamcelec) as valortotal	
+							WHERE tuci.id_unidadconstructivamcelec = mcuc.id_unidadconstructivamcelec) as valortotal,
+							ten.tensionservicio, clas.claseaislacion AS claseaislamiento, mcuc.areasub AS areasubestacion, mcuc.longitudvia AS longitudvias																					 
 				FROM 		snx.tunidadconstructivamcelec mcuc	
 				INNER JOIN 	snx.tclaseaislacion clas on clas.id_claseaislacion = mcuc.id_claseaislacion
 				INNER JOIN 	snx.ttensionservicio ten on ten.id_tensionservicio = mcuc.id_tensionservicio
@@ -105,7 +111,9 @@ BEGIN
 				ucc.codigo_unicomp AS codigo,
 				ucc.unidadconstructivacomp AS descripcion,
 				CAST(ucc.codigo_unicomp || ' - ' || ucc.unidadconstructivacomp AS character varying) AS codigo_descripcion,			
-				(ucc.capacidad * ucc.valor) AS valortotal	
+				(ucc.capacidad * ucc.valor) AS valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM 		snx.tunidadconstructivacomp ucc
 	WHERE		('4000000' || CAST(ucc.id_unidadconstructivacomp as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = '';															
 															
@@ -115,7 +123,9 @@ BEGIN
 				CAST(ucee.codigo_unieepp || ' (' || ten.tensionservicio || ')' AS character varying) AS codigo,	
 				ucee.descripcion,
 				CAST(ucee.codigo_unieepp || ' (' || ten.tensionservicio || ') - ' || ucee.descripcion AS character varying) AS codigo_descripcion,																				
-				cast(((select sum(valor * cantidadeep) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as valortotal				
+				cast(((select sum(valor * cantidadeep) from snx.tuceepitem where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep) * (1 + (select sum(valor/100) from snx.tueepotros where id_unidadconstructivaeep = ucee.id_unidadconstructivaeep))) as numeric(18,2)) as valortotal,
+				ten.tensionservicio AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				ucee.norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM 		snx.tunidadconstructivaeep ucee
 	INNER JOIN	snx.ttensionservicio ten on Ten.id_tensionservicio = ucee.id_tensionservicio
 	WHERE		('5000000' || CAST(ucee.id_unidadconstructivaeep as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = '';		
@@ -126,7 +136,9 @@ BEGIN
 				uctcpenc.codigo,
 				uctcpenc.descripcion,
 				CAST(uctcpenc.codigo || ' - ' || uctcpenc.descripcion AS character varying) AS codigo_descripcion,							
-				coalesce(items.valoritem,0) + coalesce(uctcserv.valorserv,0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uctcpenc.id_unidadconstructivaenctablerocp,numerobahiasint,coalesce(items.valoritem,0)+coalesce(uctcserv.valorserv,0),4)) AS valortotal
+				coalesce(items.valoritem,0) + coalesce(uctcserv.valorserv,0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uctcpenc.id_unidadconstructivaenctablerocp,numerobahiasint,coalesce(items.valoritem,0)+coalesce(uctcserv.valorserv,0),4)) AS valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento,CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, uctcpenc.porcrepuestos AS porcrepuestos
 	FROM 		snx.tunidadconstructivaenctablerocp uctcpenc	
 	LEFT JOIN 	(
 				  SELECT 	items.id_unidadconstructivaenctablerocp,
@@ -148,7 +160,9 @@ BEGIN
 				ucsaenc.codigo,
 				ucsaenc.descripcion,
 				CAST(ucsaenc.codigo || ' - ' || ucsaenc.descripcion AS character varying) AS codigo_descripcion,
-				coalesce(SUM(items.cantidadseraux * items.precio),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(ucsaenc.unidadconstructivaencseraux,numerobahiasint,coalesce(SUM(items.cantidadseraux * items.precio),0))) as valortotal
+				coalesce(SUM(items.cantidadseraux * items.precio),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(ucsaenc.unidadconstructivaencseraux,numerobahiasint,coalesce(SUM(items.cantidadseraux * items.precio),0))) as valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM		snx.tunidadconstructivaencseraux ucsaenc	
 	LEFT JOIN 	snx.tunidadconstructivaseraux items ON ucsaenc.unidadconstructivaencseraux = items.unidadconstructivaencseraux
 	WHERE		('7000000' || CAST(ucsaenc.unidadconstructivaencseraux as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = ''
@@ -160,7 +174,9 @@ BEGIN
 				uccmenc.codigo,
 				uccmenc.descripcion,
 				CAST(uccmenc.codigo || ' - ' || uccmenc.descripcion AS character varying) AS codigo_descripcion,
-				coalesce(SUM(items.cantidadcomun * items.precio),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uccmenc.id_unidadconstructivaenccomun,numerobahiasint,coalesce(SUM(items.cantidadcomun * items.precio),0))) AS valortotal
+				coalesce(SUM(items.cantidadcomun * items.precio),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uccmenc.id_unidadconstructivaenccomun,numerobahiasint,coalesce(SUM(items.cantidadcomun * items.precio),0))) AS valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM 		snx.tunidadconstructivaenccomun uccmenc	
 	LEFT JOIN	snx.tunidadconstructivacomun items ON uccmenc.id_unidadconstructivaenccomun = items.id_unidadconstructivaenccomun
 	WHERE		('8000000' || CAST(uccmenc.id_unidadconstructivaenccomun as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = ''
@@ -172,7 +188,9 @@ BEGIN
 				uceta.codigo,
 				uceta.unidadconstructivaeta as descripcion,
 				CAST(uceta.codigo || ' - ' || uceta.unidadconstructivaeta AS character varying) AS codigo_descripcion,
-				coalesce(SUM(items.cantidaditem * items.valorunitario),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uceta.id_unidadconstructivaeta,0,coalesce(SUM(items.cantidaditem * items.valorunitario),0),9)) AS valortotal
+				coalesce(SUM(items.cantidaditem * items.valorunitario),0) + (SELECT	SUM(valorog) FROM	snx.calcularotrosgastosotrasuc(uceta.id_unidadconstructivaeta,0,coalesce(SUM(items.cantidaditem * items.valorunitario),0),9)) AS valortotal,
+				'' AS tensionservicio, '' AS claseaislamiento, CAST(0.0 as numeric) AS areasubestacion, CAST(0.0 as numeric) AS longitudvias,
+				'' AS norma, CAST(0.0 as numeric) AS porcrepuestos
 	FROM 		snx.tunidadconstructivaeta uceta
 	LEFT JOIN 	snx.tunidadconstructivaetaitem items on uceta.id_unidadconstructivaeta = items.id_unidadconstructivaeta
 	WHERE		('9000000' || CAST(uceta.id_unidadconstructivaeta as character varying) = id_otraunidadint AND id_otraunidadint <> '') OR id_otraunidadint = ''
@@ -181,8 +199,6 @@ BEGIN
 	RETURN QUERY
 	SELECT * FROM ttempotrasunidades;
 END;
-
-
 
 $BODY$;
 

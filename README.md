@@ -2,6 +2,12 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.3 - 2019-11-07
+  * Se realizá cambio en el precio de la maquinaria Autotransformador monofasico 230 / 115 KV. 50 MVA.
+  * Se arregla la generación de los reportes de PDF y Excel para cotizaciones UC de Subestaciones.
+  * Se agrega la palabra indicativo a sistema puesta a tierra y cadenas de aisladores en UC de líneas.
+  * Se pasa el valor del peso de estructuras en UC de líneas a extranjero
+  * Se elimina de estudios especiales el elemento llamado Impuestos por pagos en el exterior.
 * Versión 1.5.0.2 - 2019-10-25
   * Se agrega en el listado de maquinaria los reactores de potencia monofásica variable.
   * Se agrega en el listado de UC de subestaciones los reactores de potencia monofásica variable.

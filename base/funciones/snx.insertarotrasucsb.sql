@@ -14,7 +14,6 @@ CREATE OR REPLACE FUNCTION snx.insertarotrasucsb(
     VOLATILE 
 AS $BODY$
 
-
 DECLARE
 	valototaltemp numeric := 0;
 	id_ucsbotro integer := 0;
@@ -175,24 +174,24 @@ BEGIN
 		SELECT		id_ucsbvaloraroucint AS id_ucsbvalorarouc, 
 					3 AS nivel, tuci.descripcion, CAST('' AS character varying) AS unidadabrev,
 					CAST(CASE
-							WHEN tuci.id_ucmeitem = 1 THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*numerobahiasint) 
-							+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)))
-							WHEN tuci.id_ucmeitem = 2 THEN ((numerobahiasint * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion)))
-							WHEN tuci.id_ucmeitem = 3 THEN (ceil(mcuc.longitudvia / 25))
-							WHEN tuci.id_ucmeitem = 4 THEN (numerobahiasint * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
-							WHEN tuci.id_ucmeitem = 5 THEN (numerobahiasint * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
-							WHEN tuci.id_ucmeitem = 6 THEN (numerobahiasint * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
+							WHEN tuci.descripcion = 'Cantidad de cable de tierra 4/0 AWG (m)' THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*numerobahiasint) 
+								+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)))
+							WHEN tuci.descripcion = 'Cantidad de cable de guarda Alumoweld (m)' THEN ((numerobahiasint * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion)))
+							WHEN tuci.descripcion = 'Total de luminarias viales' THEN (ceil(mcuc.longitudvia / 25))
+							WHEN tuci.descripcion = 'Total de Luminarias en pórticos' THEN (numerobahiasint * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
+							WHEN tuci.descripcion = 'Total tubo PVC 2.5 enterrado' THEN (numerobahiasint * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
+							WHEN tuci.descripcion = 'Total cable 4x12 AWG' THEN (numerobahiasint * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))
 							ELSE 0.0
 					END AS numeric) AS cantidaditem,
 					tuci.precio AS valorunitario,
 					CAST(CASE
-							WHEN tuci.id_ucmeitem = 1 THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*numerobahiasint) 
-							+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
-							WHEN tuci.id_ucmeitem = 2 THEN ((numerobahiasint * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
-							WHEN tuci.id_ucmeitem = 3 THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
-							WHEN tuci.id_ucmeitem = 4 THEN (numerobahiasint * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-							WHEN tuci.id_ucmeitem = 5 THEN (numerobahiasint * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
-							WHEN tuci.id_ucmeitem = 6 THEN (numerobahiasint * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+							WHEN tuci.descripcion = 'Cantidad de cable de tierra 4/0 AWG (m)' THEN (((select cableporbahina from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion)*numerobahiasint) 
+								+(mcuc.areasub * (select factortorre from snx.tmcelecmallatierra where id_claseaislamiento = mcuc.id_claseaislacion))) * tuci.precio
+							WHEN tuci.descripcion = 'Cantidad de cable de guarda Alumoweld (m)' THEN ((numerobahiasint * (select cableporbahia from snx.tmcelecapantallamiento where id_claseaislamiento = mcuc.id_claseaislacion))* tuci.precio)
+							WHEN tuci.descripcion = 'Total de luminarias viales' THEN (ceil(mcuc.longitudvia / 25))* tuci.precio
+							WHEN tuci.descripcion = 'Total de Luminarias en pórticos' THEN (numerobahiasint * (select luminariaporpb from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+							WHEN tuci.descripcion = 'Total tubo PVC 2.5 enterrado' THEN (numerobahiasint * (select tubopvc from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
+							WHEN tuci.descripcion = 'Total cable 4x12 AWG' THEN (numerobahiasint * (select totalcable from snx.tmceleciluminacion where id_tensionservicio = mcuc.id_tensionservicio))* tuci.precio
 							ELSE 0.0
 						END AS numeric) AS valortotal
 		FROM 		snx.tucmceitem tuci
@@ -330,7 +329,8 @@ BEGIN
 					uci.cantidadeep * uci.valor AS valortotal	
 		FROM	 	snx.tuceepitem uci			
 		WHERE		'5000000' || CAST(uci.id_unidadconstructivaeep as character varying) = id_otraunidadint;
-															
+			
+		valototaltemp := (SELECT SUM(valortotal) FROM snx.tucsbvaloraroucdet WHERE tucsbvaloraroucdet.id_ucsbvalorarouc = id_ucsbvaloraroucint AND tucsbvaloraroucdet.nivel=3);																							 
 		id_ucsbotro := (SELECT ucee.id_unidadconstructivaeep FROM snx.tunidadconstructivaeep ucee WHERE '5000000' || CAST(ucee.id_unidadconstructivaeep as character varying) = id_otraunidadint);
 											  
 		--Otros Gastos
@@ -338,8 +338,8 @@ BEGIN
 		SELECT	id_ucsbvaloraroucint AS id_ucsbvalorarouc, 
 				tuco.descripcion AS otrosgastos,
 				tuco.valor AS cantidadog,
-				0.0 AS valorunitario,
-				0.0 AS valorog
+				valototaltemp AS valorunitario,
+				valototaltemp * tuco.valor / 100 AS valorog
 		FROM	snx.tueepotros tuco
 		WHERE	tuco.id_unidadconstructivaeep = id_ucsbotro;
 	END IF;	
@@ -372,7 +372,6 @@ BEGIN
 		FROM 	snx.calcularotrosgastosotrasuc(id_ucsbotro,0,valototaltemp,9,id_revistaint,distanciatrans) tvalores;			
 	end if;
 END
-
 
 $BODY$;
 

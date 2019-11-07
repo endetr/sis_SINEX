@@ -72,7 +72,7 @@ BEGIN
 				ucltitem.id_item,
 				ucltitem.item,
 				und.id_unidad,
-				und.unidadabrev,
+				und.unidadabrev,																														 
 				CAST(CASE
 					WHEN ucltitem.id_item = 1 AND (uclt.id_configuracionlt <> 2 OR uclt.id_unidadconstructivalt IN (9,18)) THEN uclt.longitud * uclt.conductorfase * 3 * 1.03
 					WHEN ucltitem.id_item = 1 AND uclt.id_configuracionlt = 2 AND uclt.id_unidadconstructivalt NOT IN (9,18) THEN uclt.longitud * uclt.conductorfase * 2 * 3 * 1.03				
@@ -150,7 +150,7 @@ BEGIN
 					ELSE 0.0
 				END AS numeric) AS cantidaditem,
 				CASE
-					WHEN ucltitem.id_item = 7 OR ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN 0.0
+					WHEN ucltitem.id_item = 7 THEN 0.0
 					WHEN ucltitem.id_item = 1 THEN tcondumate.preciomateriallt
 					WHEN ucltitem.id_item = 2 OR ucltitem.id_item = 3 OR ucltitem.id_item = 4 OR ucltitem.id_item = 5 OR
 						 ucltitem.id_item = 14 OR ucltitem.id_item = 21 OR ucltitem.id_item = 22 OR
@@ -193,6 +193,7 @@ BEGIN
 																													END AS valor
 																											 FROM 	snx.tunidadconstructivalt 
 																											 WHERE 	tunidadconstructivalt.id_unidadconstructivalt = id_unidadconstructivaltint)					
+					WHEN ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN snx.calcularpreciomateriallt(uclteqmate.id_codigo)																						 
 					WHEN ucltitem.id_item = 10 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 1 AND ttempestrumate.id_funcionestructura = 3 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 13 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 1 AND ttempestrumate.id_funcionestructura = 2 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)																																																																		
 					WHEN ucltitem.id_item = 16 OR ucltitem.id_item = 23 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 1)
@@ -242,8 +243,7 @@ BEGIN
 				END AS costounitarioext,
 				CASE
 					WHEN ucltitem.id_item = 1 OR ucltitem.id_item = 2 OR ucltitem.id_item = 3 OR ucltitem.id_item = 4 OR ucltitem.id_item = 6 OR ucltitem.id_item = 7 OR ucltitem.id_item = 8 OR ucltitem.id_item = 11 THEN 0
-					WHEN ucltitem.id_item = 9 OR ucltitem.id_item = 12 OR
-						 ucltitem.id_item = 39 OR ucltitem.id_item = 40 OR ucltitem.id_item = 41 OR ucltitem.id_item = 42 OR ucltitem.id_item = 44
+					WHEN ucltitem.id_item = 39 OR ucltitem.id_item = 40 OR ucltitem.id_item = 41 OR ucltitem.id_item = 42 OR ucltitem.id_item = 44
 						 THEN snx.calcularpreciomateriallt(uclteqmate.id_codigo)
 					WHEN ucltitem.id_item = 10 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 2 AND ttempestrumate.id_funcionestructura = 3 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 13 THEN (SELECT SUM(ttempestrumate.costounitario) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_ambitoprecio = 2 AND ttempestrumate.id_funcionestructura = 2 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
@@ -261,6 +261,7 @@ BEGIN
 						 ucltitem.id_item = 31 OR ucltitem.id_item = 32 OR ucltitem.id_item = 33 OR 
 						 ucltitem.id_item = 34 OR ucltitem.id_item = 43 THEN (SELECT COALESCE(tpeso.peso,0) FROM snx.tmateriallt tpeso WHERE tpeso.id_materiallt =  tmateesp.id_materiallt AND id_ambitoprecio=1)
 					WHEN ucltitem.id_item = 6 THEN tparamate.peso
+					WHEN ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN 1
 					WHEN ucltitem.id_item = 10 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_funcionestructura = 3 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 13 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_extralt = uclteqmate.id_extralt AND ttempestrumate.id_funcionestructura = 2 AND ttempestrumate.id_unidadconstructivalt = uclt.id_unidadconstructivalt AND ttempestrumate.id_puestatierra = uclteqmate.id_puestatierra AND ttempestrumate.id_aislador = uclteqmate.id_aislador)
 					WHEN ucltitem.id_item = 16 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 3)
@@ -296,8 +297,7 @@ BEGIN
 						 ucltitem.id_item = 31 OR ucltitem.id_item = 32 OR ucltitem.id_item = 33 OR 
 						 ucltitem.id_item = 34 OR ucltitem.id_item = 43 THEN (SELECT COALESCE(tpeso.peso,0) FROM snx.tmateriallt tpeso WHERE tpeso.id_materiallt =  tmateesp.id_materiallt AND id_ambitoprecio=2)	
 					WHEN ucltitem.id_item = 38 THEN tparamate.peso
-					WHEN ucltitem.id_item = 7 OR ucltitem.id_item = 8 OR ucltitem.id_item = 11 THEN 0.0
-					WHEN ucltitem.id_item = 9 OR ucltitem.id_item = 12 THEN 1										
+					WHEN ucltitem.id_item = 7 OR ucltitem.id_item = 8 OR ucltitem.id_item = 11 THEN 0.0															
 					WHEN ucltitem.id_item = 23 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 3)
 					WHEN ucltitem.id_item = 25 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 4)
 					WHEN ucltitem.id_item = 27 THEN (SELECT SUM(ttempestrumate.peso) FROM ttempestrumate WHERE ttempestrumate.id_funcionestructura = 2)					

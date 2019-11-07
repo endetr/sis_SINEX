@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION snx.ft_ucsbvalorarouc_ime(
     VOLATILE 
 AS $BODY$
 
+
 /**************************************************************************
  SISTEMA:		SPVPT
  FUNCION: 		snx.ft_ucsbvalorarouc_ime
@@ -73,7 +74,13 @@ BEGIN
 				usuario_ai,
 				fecha_reg,
 				fecha_mod,
-				id_usuario_mod			
+				id_usuario_mod,
+				tensionservicio,
+				claseaislamiento,
+				areasubestacion,
+				longitudvias,
+				norma,
+				porcrepuestos
           	) 
 			SELECT		v_parametros.id_ucsbvalorar,
 						OUC.valortotal,
@@ -87,7 +94,13 @@ BEGIN
 						v_parametros._nombre_usuario_ai,
 						now(),
 						null,
-						null
+						null,
+						OUC.tensionservicio,
+						OUC.claseaislamiento,
+						OUC.areasubestacion,
+						OUC.longitudvias,
+						OUC.norma,
+						OUC.porcrepuestos
 			FROM		snx.obtenerotrasunidadesconstructivas(v_parametros.id_otraunidad, numerobahiasint, id_revistaint, distanciatransnacint) OUC			
 			RETURNING 	id_ucsbvalorarouc into v_id_ucsbvalorarouc;
 			
@@ -127,7 +140,13 @@ BEGIN
 					fecha_mod = now(),
 					id_usuario_mod = p_id_usuario,
 					id_usuario_ai = v_parametros._id_usuario_ai,
-					usuario_ai = v_parametros._nombre_usuario_ai
+					usuario_ai = v_parametros._nombre_usuario_ai,
+					tensionservicio = OUCSB.tensionservicio,
+					claseaislamiento = OUCSB.claseaislamiento,
+					areasubestacion = OUCSB.areasubestacion,
+					longitudvias = OUCSB.longitudvias,
+					norma = OUCSB.norma,
+					porcrepuestos = OUCSB.porcrepuestos
 			FROM	snx.obtenerotrasunidadesconstructivas(v_parametros.id_otraunidad, numerobahiasint, id_revistaint, distanciatransnacint) OUCSB
 			where 	tucsbvalorarouc.id_ucsbvalorarouc = v_parametros.id_ucsbvalorarouc;
             
@@ -186,6 +205,7 @@ EXCEPTION
 		raise exception '%',v_resp;
 				        
 END;
+
 
 $BODY$;
 
