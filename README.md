@@ -2,6 +2,9 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.4 - 2019-11-20
+  * Se pasa el valor del peso de estructuras en UC de líneas a nacional
+  * Se corrige el cálculo del equipo y material de la línea de transmisión código UUCC L 16
 * Versión 1.5.0.3 - 2019-11-07
   * Se realizá cambio en el precio de la maquinaria Autotransformador monofasico 230 / 115 KV. 50 MVA.
   * Se arregla la generación de los reportes de PDF y Excel para cotizaciones UC de Subestaciones.
