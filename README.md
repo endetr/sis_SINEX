@@ -2,6 +2,10 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.5 - 2020-01-15
+  * Se arregla la generación de los reportes de PDF y Excel para la línea de transmisión UUCC L 08.
+  * Se agrega en la función de SQL el campo de numaccesos.
+  * Se agrega en el reporte de PDF y Excel para las líneas de transmisión el campo accesos.
 * Versión 1.5.0.4 - 2019-11-20
   * Se pasa el valor del peso de estructuras en UC de líneas a nacional
   * Se corrige el cálculo del equipo y material de la línea de transmisión código UUCC L 16

@@ -432,7 +432,7 @@ class ACTUcltvalorar extends ACTbase{
 			$pdf->Cell(30, 0, 'Tipo', 1, 0, 'C', 1);
 			$pdf->Ln();
 			$pdf->Cell(25, 0, 'Sumergido (%)', 1, 0, 'C', 1);
-			$pdf->Cell(25, 0, 'Malez (%)', 1, 0, 'C', 1);
+			$pdf->Cell(25, 0, 'Maleza (%)', 1, 0, 'C', 1);
 			$pdf->Cell(25, 0, 'Matorral (%)', 1, 0, 'C', 1);
 			$pdf->Cell(25, 0, 'Forestación (%)', 1, 0, 'C', 1);
 			$pdf->Cell(25, 0, 'Bosque (%)', 1, 0, 'C', 1);
@@ -465,8 +465,10 @@ class ACTUcltvalorar extends ACTbase{
         	$pdf->SetLineWidth(0.3);
         	$pdf->SetFont('', 'B');
 			$pdf->Cell(30, 0, 'Nivel', 1, 0, 'C', 1);	
+			$pdf->Cell(30, 0, '', 1, 0, 'C', 1);	
 			$pdf->Ln();
 			$pdf->Cell(30, 0, 'Contaminación', 1, 0, 'C', 1);
+			$pdf->Cell(30, 0, 'Accesos (%)', 1, 0, 'C', 1);
 			$pdf->Ln();	
 			
 			//Datos 5
@@ -474,6 +476,7 @@ class ACTUcltvalorar extends ACTbase{
 	        $pdf->SetTextColor(0);
 	        $pdf->SetFont('');
 			$pdf->Cell(30, 0, $row['desc_nivelcontaminacionlt'], 1, 0, 'C', 1);
+			$pdf->Cell(30, 0, $row['numaccesos'], 1, 0, 'C', 1);
 			
 			
 			$pdf->Ln();	
@@ -665,7 +668,7 @@ class ACTUcltvalorar extends ACTbase{
 			$pdf->Ln();
 			$pdf->SetFillColor(255, 255, 255);
 		    $pdf->SetTextColor(0);
-		    $pdf->SetFont('');
+		    $pdf->SetFont('');		
 			foreach ($arrUCEM as &$rowEM) {
 				if ($rowEM['id_ucltvaloraruc'] == $row['id_ucltvaloraruc'])
 				{
@@ -702,16 +705,21 @@ class ACTUcltvalorar extends ACTbase{
 			$pdf->SetFillColor(255, 255, 255);
 		    $pdf->SetTextColor(0);
 		    $pdf->SetFont('');
-			foreach ($arrUCOC as &$rowOC) {
-				if ($rowOC['id_ucltvaloraruc'] == $row['id_ucltvaloraruc'])
-				{
-					$pdf->Cell(117, 0, $rowOC['terrenolt'] .' - ' .$rowOC['funcionestructura'] .' - ' .$rowOC['tipocimentacion'], 1, 0, 'L', 1);					
-					$pdf->Cell(20, 0, number_format(floatval($rowOC['cantidaditem']), 2, ".", ","), 1, 0, 'C', 1);
-					$pdf->Cell(35, 0, number_format(floatval($rowOC['costounitariooc']), 2, ".", ","), 1, 0, 'R', 1);
-					$pdf->Cell(35, 0, number_format(floatval($rowOC['costototaloc']), 2, ".", ","), 1, 0, 'R', 1);
-					$pdf->Cell(35, 0, number_format(floatval($rowOC['pesounitariooc']), 2, ".", ","), 1, 0, 'R', 1);
-					$pdf->Cell(35, 0, number_format(floatval($rowOC['pesototaloc']), 2, ".", ","), 1, 0, 'R', 1);
-					$pdf->Ln();
+			if (empty($arrUCOC)) {
+				
+			}else {
+				foreach ($arrUCOC as &$rowOC) {
+					
+					if ($rowOC['id_ucltvaloraruc'] == $row['id_ucltvaloraruc'])
+					{
+						$pdf->Cell(117, 0, $rowOC['terrenolt'] .' - ' .$rowOC['funcionestructura'] .' - ' .$rowOC['tipocimentacion'], 1, 0, 'L', 1);					
+						$pdf->Cell(20, 0, number_format(floatval($rowOC['cantidaditem']), 2, ".", ","), 1, 0, 'C', 1);
+						$pdf->Cell(35, 0, number_format(floatval($rowOC['costounitariooc']), 2, ".", ","), 1, 0, 'R', 1);
+						$pdf->Cell(35, 0, number_format(floatval($rowOC['costototaloc']), 2, ".", ","), 1, 0, 'R', 1);
+						$pdf->Cell(35, 0, number_format(floatval($rowOC['pesounitariooc']), 2, ".", ","), 1, 0, 'R', 1);
+						$pdf->Cell(35, 0, number_format(floatval($rowOC['pesototaloc']), 2, ".", ","), 1, 0, 'R', 1);
+						$pdf->Ln();
+					}
 				}
 			}
 			$pdf->Ln();
@@ -915,12 +923,12 @@ class ACTUcltvalorar extends ACTbase{
 		$Excel->getActiveSheet()->getStyle('A7')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
 		$Excel->getActiveSheet()->getStyle('A7')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 		$Excel->getActiveSheet()->getStyle('A7')->getFont()->setBold( true );
-		$Excel->getActiveSheet()->mergeCells('AJ7:AT7');
+		$Excel->getActiveSheet()->mergeCells('AJ7:AU7');
 		$Excel->getActiveSheet()->setCellValue('AJ7','Resumen Unidades Constructivas');	
 		$Excel->getActiveSheet()->getStyle('AJ7')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
 		$Excel->getActiveSheet()->getStyle('AJ7')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$Excel->getActiveSheet()->getStyle('AJ7')->getFont()->setBold( true );
-		$Excel->getActiveSheet()->getStyle('A7:AT7')->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+		$Excel->getActiveSheet()->getStyle('A7:AU7')->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 		
 		//Encabezado
 		$Excel->getActiveSheet()->setCellValue('A9','Código');			
@@ -956,21 +964,22 @@ class ACTUcltvalorar extends ACTbase{
 		$Excel->getActiveSheet()->setCellValue('AG9','Longitud (km)');		
 		$Excel->getActiveSheet()->setCellValue('AH9','Tipo Estructura');
 		$Excel->getActiveSheet()->setCellValue('AI9','Nivel Contaminación');		
-		$Excel->getActiveSheet()->setCellValue('AJ9','DDP');
-		$Excel->getActiveSheet()->setCellValue('AK9','Montaje');
-		$Excel->getActiveSheet()->setCellValue('AL9','Obra Civil');
-		$Excel->getActiveSheet()->setCellValue('AM9','Ingeniería');		
-		$Excel->getActiveSheet()->setCellValue('AN9','Administración Ejecución');
-		$Excel->getActiveSheet()->setCellValue('AO9','Supervicion de Obra');
-		$Excel->getActiveSheet()->setCellValue('AP9','Costos Financieros');
-		$Excel->getActiveSheet()->setCellValue('AQ9','Costos Aspectos Ambientales');
-		$Excel->getActiveSheet()->setCellValue('AR9','Costos Aspectos Prediales');
-		$Excel->getActiveSheet()->setCellValue('AS9','Costo Total UC (USD/km)');
-		$Excel->getActiveSheet()->setCellValue('AT9','Costo Total UC (USD)');				
-		$Excel->getActiveSheet()->getStyle('A9:AT9')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
-		$Excel->getActiveSheet()->getStyle('A9:AT9')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		$Excel->getActiveSheet()->getStyle('A9:AT9')->getFont()->setBold( true );
-		$Excel->getActiveSheet()->getStyle('A9:AT9')->getAlignment()->setWrapText(true);
+		$Excel->getActiveSheet()->setCellValue('AJ9','Accesos (%)');		
+		$Excel->getActiveSheet()->setCellValue('AK9','DDP');
+		$Excel->getActiveSheet()->setCellValue('AL9','Montaje');
+		$Excel->getActiveSheet()->setCellValue('AM9','Obra Civil');
+		$Excel->getActiveSheet()->setCellValue('AN9','Ingeniería');		
+		$Excel->getActiveSheet()->setCellValue('AO9','Administración Ejecución');
+		$Excel->getActiveSheet()->setCellValue('AP9','Supervicion de Obra');
+		$Excel->getActiveSheet()->setCellValue('AQ9','Costos Financieros');
+		$Excel->getActiveSheet()->setCellValue('AR9','Costos Aspectos Ambientales');
+		$Excel->getActiveSheet()->setCellValue('AS9','Costos Aspectos Prediales');
+		$Excel->getActiveSheet()->setCellValue('AT9','Costo Total UC (USD/km)');
+		$Excel->getActiveSheet()->setCellValue('AU9','Costo Total UC (USD)');						
+		$Excel->getActiveSheet()->getStyle('A9:AU9')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CECECE');
+		$Excel->getActiveSheet()->getStyle('A9:AU9')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		$Excel->getActiveSheet()->getStyle('A9:AU9')->getFont()->setBold( true );
+		$Excel->getActiveSheet()->getStyle('A9:AU9')->getAlignment()->setWrapText(true);
 		foreach ($arrResumUC as &$row) {		
 			//Datos 
 			$Excel->getActiveSheet()->mergeCells('B' .$intRowExcel .':E'  .$intRowExcel);
@@ -1005,23 +1014,24 @@ class ACTUcltvalorar extends ACTbase{
 			$Excel->getActiveSheet()->setCellValue('AF' . $intRowExcel,$row['desc_areaprotegida']);		
 			$Excel->getActiveSheet()->setCellValue('AG' . $intRowExcel,$row['longitud']);				
 			$Excel->getActiveSheet()->setCellValue('AH' . $intRowExcel,$row['desc_tipoestructura']);
-			$Excel->getActiveSheet()->setCellValue('AI' . $intRowExcel,$row['desc_nivelcontaminacionlt']);
-			$Excel->getActiveSheet()->setCellValue('AJ' . $intRowExcel,$row['numddp']);
-			$Excel->getActiveSheet()->setCellValue('AK' . $intRowExcel,$row['nummontaje']);
-			$Excel->getActiveSheet()->setCellValue('AL' . $intRowExcel,$row['numoc']);
-			$Excel->getActiveSheet()->setCellValue('AM' . $intRowExcel,$row['numingenieria']);			
-			$Excel->getActiveSheet()->setCellValue('AN' . $intRowExcel,$row['numadmeje']);
-			$Excel->getActiveSheet()->setCellValue('AO' . $intRowExcel,$row['numsupero']);
-			$Excel->getActiveSheet()->setCellValue('AP' . $intRowExcel,$row['numcfinan']);
-			$Excel->getActiveSheet()->setCellValue('AQ' . $intRowExcel,$row['numcaamb']);
-			$Excel->getActiveSheet()->setCellValue('AR' . $intRowExcel,$row['numcapred']);
-			$Excel->getActiveSheet()->setCellValue('AS' . $intRowExcel,$row['numcostototaluc']);
-			$Excel->getActiveSheet()->setCellValue('AT' . $intRowExcel,$row['numcostototaluct']);
+			$Excel->getActiveSheet()->setCellValue('AI' . $intRowExcel,$row['desc_nivelcontaminacionlt']);			
+			$Excel->getActiveSheet()->setCellValue('AJ' . $intRowExcel,$row['numaccesos']);			
+			$Excel->getActiveSheet()->setCellValue('AK' . $intRowExcel,$row['numddp']);
+			$Excel->getActiveSheet()->setCellValue('AL' . $intRowExcel,$row['nummontaje']);
+			$Excel->getActiveSheet()->setCellValue('AM' . $intRowExcel,$row['numoc']);
+			$Excel->getActiveSheet()->setCellValue('AN' . $intRowExcel,$row['numingenieria']);			
+			$Excel->getActiveSheet()->setCellValue('AO' . $intRowExcel,$row['numadmeje']);
+			$Excel->getActiveSheet()->setCellValue('AP' . $intRowExcel,$row['numsupero']);
+			$Excel->getActiveSheet()->setCellValue('AQ' . $intRowExcel,$row['numcfinan']);
+			$Excel->getActiveSheet()->setCellValue('AR' . $intRowExcel,$row['numcaamb']);
+			$Excel->getActiveSheet()->setCellValue('AS' . $intRowExcel,$row['numcapred']);
+			$Excel->getActiveSheet()->setCellValue('AT' . $intRowExcel,$row['numcostototaluc']);
+			$Excel->getActiveSheet()->setCellValue('AU' . $intRowExcel,$row['numcostototaluct']);			
 			
 			$intRowExcel++;
 		}
 				
-		$Excel->getActiveSheet()->getStyle('A9:AT' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
+		$Excel->getActiveSheet()->getStyle('A9:AU' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
 		
 		//Resumen de UCLT		
 		$intRowExcel++;
@@ -1134,17 +1144,21 @@ class ACTUcltvalorar extends ACTbase{
 			$Excel->getActiveSheet()->getStyle('A' . $intRowExcel . ':I' . $intRowExcel)->getAlignment()->setWrapText(true);
 			
 			$intRowExcel++;
-			foreach ($arrUCOC as &$rowOC) {
-				if ($rowOC['id_ucltvaloraruc'] == $row['id_ucltvaloraruc'])
-				{
-					$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);					
-					$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowOC['terrenolt'] . ' - ' .$rowOC['funcionestructura'] . ' - ' .$rowOC['tipocimentacion']);
-					$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowOC['cantidaditem']);
-					$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowOC['costounitariooc']);
-					$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowOC['costototaloc']);
-					$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$rowOC['pesounitariooc']);
-					$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$rowOC['pesototaloc']);
-					$intRowExcel = $intRowExcel + 1;
+			if (empty($arrUCOC)) {
+				
+			}else {
+				foreach ($arrUCOC as &$rowOC) {
+					if ($rowOC['id_ucltvaloraruc'] == $row['id_ucltvaloraruc'])
+					{
+						$Excel->getActiveSheet()->mergeCells('A' . $intRowExcel . ':D' . $intRowExcel);					
+						$Excel->getActiveSheet()->setCellValue('A' . $intRowExcel,$rowOC['terrenolt'] . ' - ' .$rowOC['funcionestructura'] . ' - ' .$rowOC['tipocimentacion']);
+						$Excel->getActiveSheet()->setCellValue('E' . $intRowExcel,$rowOC['cantidaditem']);
+						$Excel->getActiveSheet()->setCellValue('F' . $intRowExcel,$rowOC['costounitariooc']);
+						$Excel->getActiveSheet()->setCellValue('G' . $intRowExcel,$rowOC['costototaloc']);
+						$Excel->getActiveSheet()->setCellValue('H' . $intRowExcel,$rowOC['pesounitariooc']);
+						$Excel->getActiveSheet()->setCellValue('I' . $intRowExcel,$rowOC['pesototaloc']);
+						$intRowExcel = $intRowExcel + 1;
+					}
 				}
 			}
 			$Excel->getActiveSheet()->getStyle('A' .$intRowAnt .':I' .($intRowExcel-1))->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)->getColor()->setRGB('000000');
