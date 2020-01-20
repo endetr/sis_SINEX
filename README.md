@@ -2,8 +2,10 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.6 - 2020-01-20
+  * Se corrige el valor total en la generación de los reportes de PDF y Excel para la líneas de transmisión en la parte del montaje, ítem: Sistema de puesta a tierra (indicativo).
 * Versión 1.5.0.5 - 2020-01-15
-  * Se arregla la generación de los reportes de PDF y Excel para la línea de transmisión UUCC L 08.
+  * Se corrige la generación de los reportes de PDF y Excel para la línea de transmisión UUCC L 08.
   * Se agrega en la función de SQL el campo de numaccesos.
   * Se agrega en el reporte de PDF y Excel para las líneas de transmisión el campo accesos.
 * Versión 1.5.0.4 - 2019-11-20
