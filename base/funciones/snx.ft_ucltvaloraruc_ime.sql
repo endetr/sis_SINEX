@@ -105,7 +105,8 @@ BEGIN
 				porcterrenocerros,			
 				desc_areaprotegida,
 				desc_tipoestructura,
-				desc_nivelcontaminacionlt
+				desc_nivelcontaminacionlt,
+				numaccesos
           	) 
 			SELECT		v_parametros.id_ucltvalorar,
 						uclt.id_tipolinea, 
@@ -158,6 +159,7 @@ BEGIN
 						arp.areaprotegida as desc_areaprotegida,						
 						tipes.tipoestructura as desc_tipoestructura,
 						nic.nivelcontaminacionlt as desc_nivelcontaminacionlt
+						uclt.numaccesos
 			FROM		snx.tunidadconstructivalt uclt
 			left join 	snx.tpararrayatolinea par on par.id_pararrayolinea = uclt.id_pararrayolinea
 			left join 	snx.ttipolinea tipl on tipl.id_tipolinea = uclt.id_tipolinea

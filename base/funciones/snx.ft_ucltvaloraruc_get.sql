@@ -64,7 +64,7 @@ BEGIN
 				vuclt.desc_areaprotegida,
 				vuclt.desc_tipoestructura,
 				vuclt.desc_nivelcontaminacionlt,
-				tucalt.numaccesos
+				vuclt.numaccesos
 	from 		snx.tucltvaloraruc vuclt
 	inner join 	snx.ttipolinea tlin on vuclt.id_tipolinea = tlin.id_tipolinea
 	inner join 	snx.ttensionservicio tserv on vuclt.id_tensionservicio = tserv.id_tensionservicio	

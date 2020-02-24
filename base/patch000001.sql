@@ -8719,3 +8719,8 @@ ADD COLUMN longitudvias numeric(18,2),
 ADD COLUMN norma character varying(200),
 ADD COLUMN porcrepuestos numeric(18,2);
 /***********************************F-SCP-JYP-CMS-1-18/09/2019****************************************/
+
+/***********************************I-SCP-JYP-CMS-1-24/02/2020****************************************/
+ALTER TABLE snx.tucltvaloraruc
+ADD COLUMN numaccesos numeric;
+/***********************************F-SCP-JYP-CMS-1-24/02/2020****************************************/ 

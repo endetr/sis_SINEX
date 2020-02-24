@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.7 - 2020-02-24
+  * Se crea columna de accesos para el histórico de líneas de transmisión en los proyectos
 * Versión 1.5.0.6 - 2020-01-20
   * Se corrige el valor total en la generación de los reportes de PDF y Excel para la líneas de transmisión en la parte del montaje, ítem: Sistema de puesta a tierra (indicativo).
 * Versión 1.5.0.5 - 2020-01-15
