@@ -158,7 +158,7 @@ BEGIN
 						uclt.porcterrenocerros,			
 						arp.areaprotegida as desc_areaprotegida,						
 						tipes.tipoestructura as desc_tipoestructura,
-						nic.nivelcontaminacionlt as desc_nivelcontaminacionlt
+						nic.nivelcontaminacionlt as desc_nivelcontaminacionlt,
 						uclt.numaccesos
 			FROM		snx.tunidadconstructivalt uclt
 			left join 	snx.tpararrayatolinea par on par.id_pararrayolinea = uclt.id_pararrayolinea

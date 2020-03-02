@@ -2,6 +2,8 @@
 Proyecto creado por Colombianos
 
 ## Control de Cambios
+* Versión 1.5.0.8 - 2020-03-02
+  * Se corrige la función snx.ft_ucltvaloraruc_ime
 * Versión 1.5.0.7 - 2020-02-24
   * Se crea columna de accesos para el histórico de líneas de transmisión en los proyectos
 * Versión 1.5.0.6 - 2020-01-20
